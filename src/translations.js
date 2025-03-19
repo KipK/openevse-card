@@ -37,6 +37,19 @@ let translations =  {
 		"session": "sitzung",
 		"elapsed": "verstrichene zeit",
 		"charge rate": "laderate"
+	},
+	"es": {
+		"disabled": "desactivado",
+		"sleeping": "desactivado",
+		"active": "activo",
+		"charging": "cargando",
+		"not connected": "en espera",
+		"error": "error",
+		"power": "potencia",
+		"current": "corriente",
+		"session": "sesión",
+		"elapsed": "tiempo transcurrido",
+		"charge rate": "amperaje"
 	}
 };
 
