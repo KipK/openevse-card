@@ -1,0 +1,63 @@
+{
+    "name": "@kipk/openevse-card",
+    "private": true,
+    "version": "1.0.0",
+    "description": "OpenEVSE custom card for home assistant",
+    "main": "openevse-card.js",
+    "module": "openevse-card.js",
+    "type": "module",
+    "scripts": {
+        "build": "rollup -c",
+        "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
+        "lint:eslint": "eslint \"src/**/*.js\"",
+        "lint:lit-analyzer": "lit-analyzer src/openevse-card.js",
+        "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\" --ignore-path ./.eslintignore --write",
+        "analyze": "cem analyze --litelement --globs \"**/*.js\" --exclude docs",
+        "analyze:watch": "cem analyze --litelement --globs \"**/*.js\" --exclude docs --watch",
+        "deploy": "npm run build && npm run copy",
+        "copy": "scp -P 2222 ./dist/openevse-card.js root@homeassistant.local:/homeassistant/www/community/openevse-card/"
+    },
+    "keywords": [
+        "web-components",
+        "lit-element",
+        "javascript",
+        "lit"
+    ],
+    "author": "@KipK",
+    "license": "BSD-3",
+    "dependencies": {
+        "custom-card-helpers": "^1.9.0",
+        "lit": "^3.2.1"
+    },
+    "devDependencies": {
+        "@11ty/eleventy": "^1.0.1",
+        "@11ty/eleventy-plugin-syntaxhighlight": "^4.0.0",
+        "@babel/eslint-parser": "^7.17.0",
+        "@custom-elements-manifest/analyzer": "^0.6.3",
+        "@open-wc/testing": "^4.0.0",
+        "@rollup/plugin-node-resolve": "^15.2.3",
+        "@rollup/plugin-replace": "^5.0.7",
+        "@rollup/plugin-terser": "^0.4.4",
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/commit-analyzer": "^13.0.1",
+        "@semantic-release/exec": "^7.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/github": "^11.0.1",
+        "@semantic-release/npm": "^12.0.1",
+        "@semantic-release/release-notes-generator": "^14.0.3",
+        "@web/dev-server": "^0.1.31",
+        "@web/dev-server-legacy": "^1.0.0",
+        "@web/test-runner": "^0.15.0",
+        "@web/test-runner-playwright": "^0.9.0",
+        "@webcomponents/webcomponentsjs": "^2.8.0",
+        "conventional-changelog-conventionalcommits": "^8.0.0",
+        "eslint": "^8.15.0",
+        "lit-analyzer": "^1.2.1",
+        "prettier": "^2.6.2",
+        "rimraf": "^3.0.2",
+        "rollup": "^4.36.0",
+        "rollup-plugin-summary": "^2.0.1",
+        "semantic-release": "^24.2.3"
+    },
+    "customElements": "custom-elements.json"
+}
