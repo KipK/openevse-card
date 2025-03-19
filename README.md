@@ -9,9 +9,11 @@ This is a Lovelace custom card for @firstof9 [OpenEVSE integration](https://gith
 
 ### HACS (recommended)
 
-( NOT YET AVAILABLE )
-This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community Store).
-<small>_HACS is a third party community store and is not included in Home Assistant out of the box._</small>
+Add this url to HACS repositories: 
+
+https://github.com/KipK/openevse-card
+
+Install "OpenEvse custom card" from hacs
 
 ### Manual install
 
