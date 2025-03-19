@@ -9,10 +9,8 @@ This is a Lovelace custom card for @firstof9 [OpenEVSE integration](https://gith
 
 ### HACS (recommended)
 
-Add this url to HACS repositories:
-https://github.com/KipK/openevse-card
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=KipK&repository=openevse-card&category=lovelace)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=KipK&repository=openevse-card&category=plugin)
 
 
 1. Follow the link [here](https://hacs.xyz/docs/faq/custom_repositories/)
