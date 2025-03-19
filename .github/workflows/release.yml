@@ -1,34 +1,22 @@
 name: Release
-
-on: workflow_dispatch
-
+on:
+    push:
+        tags:
+            - "v*.*.*"
 jobs:
-  release-bundle:
-    runs-on: ubuntu-latest
-
-    outputs:
-      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
-      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 
-        uses: actions/setup-node@v4.3.0
-        with:
-          node-version: 23.x
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-          key: ${{ runner.OS }}-node-23.x-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-23.x
-            ${{ runner.OS }}-
-      - name: Install dependencies
-        run: npm ci
-      - name: Release
-        id: semantic
-        run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REF: ${{ github.ref }}
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Install
+              run: npm ci
+            - name: Build
+              run: npm run build
+            - name: Release
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  draft: true
+                  generate_release_notes: true
+                  files: dist/*.js
