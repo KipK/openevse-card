@@ -10,7 +10,7 @@
         "build": "rollup -c",
         "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
         "lint:eslint": "eslint \"src/**/*.js\"",
-        "lint:lit-analyzer": "lit-analyzer src/openevse-card.js",
+        "lint:lit-analyzer": "lit-analyzer src/*.js",
         "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\" --ignore-path ./.eslintignore --write",
         "analyze": "cem analyze --litelement --globs \"**/*.js\" --exclude docs",
         "analyze:watch": "cem analyze --litelement --globs \"**/*.js\" --exclude docs --watch",
@@ -38,13 +38,6 @@
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-replace": "^5.0.7",
         "@rollup/plugin-terser": "^0.4.4",
-        "@semantic-release/changelog": "^6.0.3",
-        "@semantic-release/commit-analyzer": "^13.0.1",
-        "@semantic-release/exec": "^7.0.3",
-        "@semantic-release/git": "^10.0.1",
-        "@semantic-release/github": "^11.0.1",
-        "@semantic-release/npm": "^12.0.1",
-        "@semantic-release/release-notes-generator": "^14.0.3",
         "@web/dev-server": "^0.1.31",
         "@web/dev-server-legacy": "^1.0.0",
         "@web/test-runner": "^0.15.0",
@@ -56,8 +49,7 @@
         "prettier": "^2.6.2",
         "rimraf": "^3.0.2",
         "rollup": "^4.36.0",
-        "rollup-plugin-summary": "^2.0.1",
-        "semantic-release": "^24.2.3"
+        "rollup-plugin-summary": "^2.0.1"
     },
     "customElements": "custom-elements.json"
 }

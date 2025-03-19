@@ -127,7 +127,7 @@ const cardStyles = css`
 		}
 		.override-button[data-option="disabled"] {
 			border-radius: 0 10px 10px 0;
-			var: (--evse-disabled-color);
+			color: var(--evse-disabled-color);
 		}
 		.override-button:hover[data-option="active"] {
 			background: var(--evse-active-color);
