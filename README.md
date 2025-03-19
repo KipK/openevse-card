@@ -34,7 +34,7 @@ Javascript module
 install requirements:
 
 ```bash
-npm -i
+npm install
 ```
 
 build:
