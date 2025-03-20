@@ -7,6 +7,10 @@ This is a Lovelace custom card for @firstof9 [OpenEVSE integration](https://gith
 
 ## Installation
 
+First install and setup **beta** release of [OpenEVSE Ha integration](https://github.com/firstof9/openevse) using HACS or manually as documented.
+
+Then follow the guide below
+
 ### HACS (recommended)
 
 
