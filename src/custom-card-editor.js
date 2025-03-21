@@ -346,7 +346,7 @@ class CustomCardEditor extends LitElement {
                 ${this.deviceEntitiesLoaded ? html`
                     <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
                         ${missingEntities.length === 0
-                        ? this._t("entity_auto_success") + '!'
+                        ? this._t("entity_auto_success") + "!"
                         : this._t("entity_auto_fail") + ": " + missingEntities.join(', ')
                     }
                     </div>
@@ -359,6 +359,22 @@ class CustomCardEditor extends LitElement {
         ` : ''}
         
         <div class="form-container">
+            ${!this.config.device_id ? html`
+            <ha-form
+                .hass=${this.hass}  
+                .data=${this.openEVSEEntities}
+                .schema=${[
+                    {
+                        name: "device_id",
+                        selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
+                        label: "OpenEVSE Device",
+                        helper_text: "Select your OpenEVSE device to automatically populate all entities",
+                        required: true
+                    }
+                ]}
+                @value-changed=${this._handleConfigChange}
+            ></ha-form>
+            `: html`
             <!-- Main configuration -->
             <ha-form
                 .hass=${this.hass}
@@ -397,29 +413,30 @@ class CustomCardEditor extends LitElement {
                         .hass="${this.hass}"
                         .includeDomains=${['sensor', 'binary_sensor']}
                         .entityFilter=${(stateObj) => {
-                        // Si pas d'ID de périphérique sélectionné, autoriser toutes les entités
-                        if (!this.config.device_id) return true;
+                    // Si pas d'ID de périphérique sélectionné, autoriser toutes les entités
+                    if (!this.config.device_id) return true;
 
-                        // Trouver l'entité dans le registre d'entités
-                        const entityId = stateObj.entity_id;
-                        const entityRegistry = this.hass.entities || {};
+                    // Trouver l'entité dans le registre d'entités
+                    const entityId = stateObj.entity_id;
+                    const entityRegistry = this.hass.entities || {};
 
-                        // Vérifier si l'entité appartient au périphérique sélectionné
-                        for (const regEntityId in entityRegistry) {
-                            const entity = entityRegistry[regEntityId];
-                            if (entity.entity_id === entityId && entity.device_id === this.config.device_id) {
-                                return true;
-                            }
+                    // Vérifier si l'entité appartient au périphérique sélectionné
+                    for (const regEntityId in entityRegistry) {
+                        const entity = entityRegistry[regEntityId];
+                        if (entity.entity_id === entityId && entity.device_id === this.config.device_id) {
+                            return true;
                         }
+                    }
 
-                        return false;
-                    }}
+                    return false;
+                }}
                         @value-changed="${this._addOptionalEntity}"
                     ></ha-entity-picker>
                 </div>
             </div>
+            `}
         </div>
-    `;
+    `
     }
 }
 
