@@ -36,6 +36,7 @@ Javascript module
 Configure it with the card configurator
 
 ![image](assets/config.png)
+
 ## Build
 
 install requirements:
