@@ -11,7 +11,11 @@ class CustomCard extends LitElement {
             config: {type: Object},
             _sliderValue: {type: Number},
             _dragging: { type: Boolean },
-            _lang: { type: String }
+            _lang: { type: String },
+            _localTimeElapsed: { type: Number },       // Track time locally
+            _lastEntityTime: { type: Number },         // Last received entity value
+            _timeUpdateInterval: { type: Object },      // Store interval reference
+            _isCharging: { type: Boolean } 
         };
     }
 
@@ -20,7 +24,39 @@ class CustomCard extends LitElement {
         this._sliderValue = undefined;
         this._dragging = false;
         this._translations = translations;
+        this._localTimeElapsed = 0;
+        this._lastEntityTime = 0;
+        this._timeUpdateInterval = null,
+        this._isCharging = false;
     }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        if (this._timeUpdateInterval) {
+            clearInterval(this._timeUpdateInterval);
+            this._timeUpdateInterval = null;
+        }
+    }
+
+    _setupTimeInterval() {
+        // Clear any existing interval
+        if (this._timeUpdateInterval) {
+            clearInterval(this._timeUpdateInterval);
+            this._timeUpdateInterval = null;
+        }
+
+        // Only set up interval if charging
+        if (this._isCharging) {
+            // Set up new interval that runs every second
+            this._timeUpdateInterval = setInterval(() => {
+                // Increment local time by 1 second in minutes (1/60)
+                this._localTimeElapsed += (1 / 60);
+                this.requestUpdate();
+            }, 1000);
+        }
+    }
+
+
 
     firstUpdated() {
         this._lang = this.hass?.language || "en";
@@ -29,6 +65,65 @@ class CustomCard extends LitElement {
     updated(changedProperties) {
         if (changedProperties.has("hass") && this.hass) {
             this._lang = this.hass.language || "en";
+
+            // Check if charging status has changed
+            if (this.config && this.config.charging_status_entity &&
+                this.hass.states[this.config.charging_status_entity]) {
+
+                const chargingEntity = this.hass.states[this.config.charging_status_entity];
+                const isNowCharging = chargingEntity.state === "charging";
+
+                // If charging status changed
+                if (isNowCharging !== this._isCharging) {
+                    this._isCharging = isNowCharging;
+
+                    // Update interval based on new status
+                    this._setupTimeInterval();
+                }
+            }
+
+            // Check if time_elapsed_entity exists and has changed
+            if (this.config && this.config.time_elapsed_entity &&
+                this.hass.states[this.config.time_elapsed_entity]) {
+
+                const timeEntity = this.hass.states[this.config.time_elapsed_entity];
+                const newTime = parseFloat(timeEntity.state);
+
+                // If the entity time has changed, update our local time
+                if (!isNaN(newTime) && newTime !== this._lastEntityTime) {
+                    this._lastEntityTime = newTime;
+                    this._localTimeElapsed = newTime;
+                }
+            }
+        }
+
+        // Handle first load setup
+        if (changedProperties.has("config") && !changedProperties.has("hass") &&
+            this.config && this.hass) {
+
+            // Check charging status on first load
+            if (this.config.charging_status_entity &&
+                this.hass.states[this.config.charging_status_entity]) {
+
+                const chargingEntity = this.hass.states[this.config.charging_status_entity];
+                this._isCharging = chargingEntity.state === "charging";
+            }
+
+            // Initialize time elapsed
+            if (this.config.time_elapsed_entity &&
+                this.hass.states[this.config.time_elapsed_entity]) {
+
+                const timeEntity = this.hass.states[this.config.time_elapsed_entity];
+                if (timeEntity) {
+                    this._lastEntityTime = parseFloat(timeEntity.state);
+                    this._localTimeElapsed = this._lastEntityTime;
+
+                    // Set up timer if charging
+                    if (this._isCharging) {
+                        this._setupTimeInterval();
+                    }
+                }
+            }
         }
     }
 
@@ -365,19 +460,17 @@ class CustomCard extends LitElement {
                       `
                     : ''}
                 ${timeElapsedEntity
-                    ? html`
-                      <div class="grid-item">
-                          <div class="grid-item-label">${this._t("elapsed")}</div>
-                          <div
-                          class="grid-item-value current-value"
-                          >
-                          ${timeElapsedEntity?this._convertTime(
-                              timeElapsedEntity.state
-                          ):"00:00:00"}
-                          </div>
-                      </div>
-                      `
-                    : ''}
+                ? html`
+                <div class="grid-item">
+                    <div class="grid-item-label">${this._t("elapsed")}</div>
+                    <div
+                    class="grid-item-value current-value"
+                    >
+                    ${this._convertTime(this._localTimeElapsed || 0)}
+                    </div>
+                </div>
+                `
+                : ''}
                 </div>
                 <div class="override-controls">
                 <div class="override-row">

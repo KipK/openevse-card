@@ -303,85 +303,123 @@ class CustomCardEditor extends LitElement {
             this._translations["en"]?.[key] ||
             key;
     }
-
     render() {
         if (!this.hass) {
             return html``;
         }
 
-        const schema = mainSchema();
-        const optSchema = optionalEntitySchema();
-        const missingEntities = this._getMissingEntities();
+        // Get entities for the selected device
+        const deviceEntities = {};
+        const allDeviceEntities = [];
 
-        // Log the configuration for debugging
-        console.log("Current config:", this.config);
-        console.log("Detected entities:", this.openEVSEEntities);
+        if (this.config.device_id && this.hass.entities) {
+            const entityRegistry = Object.values(this.hass.entities);
+
+            // Filter entities by device ID
+            const deviceEntityList = entityRegistry.filter(entity =>
+                entity.device_id === this.config.device_id
+            );
+
+            // Group entities by domain
+            deviceEntityList.forEach(entity => {
+                const domain = entity.entity_id.split('.')[0];
+
+                if (!deviceEntities[domain]) {
+                    deviceEntities[domain] = [];
+                }
+
+                deviceEntities[domain].push(entity.entity_id);
+                allDeviceEntities.push(entity.entity_id);
+            });
+        }
+
+        // Create schema with entity lists
+        const schema = mainSchema(deviceEntities);
+        const optSchema = optionalEntitySchema(allDeviceEntities);
+        const missingEntities = this._getMissingEntities();
 
         return html`
         <!-- Auto-detection status -->
-                ${this.config.device_id ? html`
-                    <div class="entity-section">
-                        <h3>${this._t("required_entities")}</h3>
-                        ${this.deviceEntitiesLoaded ? html`
-                            <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
-                                ${missingEntities.length === 0
+        ${this.config.device_id ? html`
+            <div class="entity-section">
+                <h3>${this._t("required_entities")}</h3>
+                ${this.deviceEntitiesLoaded ? html`
+                    <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
+                        ${missingEntities.length === 0
                         ? this._t("entity_auto_success") + '!'
                         : this._t("entity_auto_fail") + ": " + missingEntities.join(', ')
                     }
-                            </div>
-                        ` : html`
-                            <div class="entity-status">
-                                ${this._t("entity_auto_loading")}
-                            </div>
-                        `}
                     </div>
-                ` : ''}
+                ` : html`
+                    <div class="entity-status">
+                        ${this._t("entity_auto_loading")}
+                    </div>
+                `}
+            </div>
+        ` : ''}
+        
+        <div class="form-container">
+            <!-- Main configuration -->
+            <ha-form
+                .hass=${this.hass}
+                .data=${this.config}
+                .schema=${schema}
+                .computeLabel=${(schema) => schema.label || schema.name}
+                .computeHelper=${(schema) => schema.helper_text}
+                @value-changed=${this._handleConfigChange}
+            ></ha-form>
+            
+            <!-- Additional entities -->
+            <div class="entities">
+                <h3>${this._t("additional entities")}</h3>
                 
-            <div class="form-container">
-                <!-- Main configuration -->
-                <ha-form
-                    .hass=${this.hass}
-                    .data=${this.config}
-                    .schema=${schema}
-                    .computeLabel=${(schema) => schema.label || schema.name}
-                    .computeHelper=${(schema) => schema.helper_text}
-                    @value-changed=${this._handleConfigChange}
-                ></ha-form>
-                
-                
-                <!-- Additional entities -->
-                <div class="entities">
-                    <h3> ${this._t("additional entities")}</h3>
-                    
-                    ${this.optionalEntities?.map((entity, index) => html`
-                        <div class="entity-row">
-                            <ha-form
-                                .hass=${this.hass}
-                                .data=${entity}
-                                .schema=${optSchema}
-                                .computeLabel=${(schema) => schema.label || schema.name}
-                                @value-changed=${(ev) => this._updateOptionalEntity(index, ev.detail.value)}
-                            ></ha-form>
-                            
-                            <div class="entity-actions">
-                                <ha-icon-button
-                                    .path=${"M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"}
-                                    @click=${() => this._removeEntity(index)}
-                                ></ha-icon-button>
-                            </div>
+                ${this.optionalEntities?.map((entity, index) => html`
+                    <div class="entity-row">
+                        <ha-form
+                            .hass=${this.hass}
+                            .data=${entity}
+                            .schema=${optSchema}
+                            .computeLabel=${(schema) => schema.label || schema.name}
+                            @value-changed=${(ev) => this._updateOptionalEntity(index, ev.detail.value)}
+                        ></ha-form>
+                        
+                        <div class="entity-actions">
+                            <ha-icon-button
+                                .path=${"M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"}
+                                @click=${() => this._removeEntity(index)}
+                            ></ha-icon-button>
                         </div>
-                    `)}
-                    
-                    <div class="add-entity">
-                         <ha-entity-picker
-                            .hass="${this.hass}"
-                            .includeDomains=${['sensor', 'binary_sensor']}
-                            @value-changed="${this._addOptionalEntity}"
-                        ></ha-entity-picker>
                     </div>
+                `)}
+                
+                <div class="add-entity">
+                    <ha-entity-picker
+                        .hass="${this.hass}"
+                        .includeDomains=${['sensor', 'binary_sensor']}
+                        .entityFilter=${(stateObj) => {
+                        // Si pas d'ID de périphérique sélectionné, autoriser toutes les entités
+                        if (!this.config.device_id) return true;
+
+                        // Trouver l'entité dans le registre d'entités
+                        const entityId = stateObj.entity_id;
+                        const entityRegistry = this.hass.entities || {};
+
+                        // Vérifier si l'entité appartient au périphérique sélectionné
+                        for (const regEntityId in entityRegistry) {
+                            const entity = entityRegistry[regEntityId];
+                            if (entity.entity_id === entityId && entity.device_id === this.config.device_id) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }}
+                        @value-changed="${this._addOptionalEntity}"
+                    ></ha-entity-picker>
                 </div>
             </div>
-        `;
+        </div>
+    `;
     }
 }
 
