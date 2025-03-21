@@ -76,16 +76,21 @@ class CustomCardEditor extends LitElement {
     }
 
     // Gestion des entités optionnelles
-    _addOptionalEntity() {
-        this.optionalEntities = [
-            ...this.optionalEntities,
-            { id: "", name: "", icon: "" }
-        ];
+    _addOptionalEntity(ev) {
+        const entityId = ev.target.value;
 
-        this._fireConfigChanged({
-            ...this.config,
-            optional_entities: this.optionalEntities
-        });
+        if (entityId && !this.optionalEntities.some((e) => e.id === entityId)) {
+            this.optionalEntities = [
+                ...this.optionalEntities,
+                { id: entityId, name: null, icon: null },
+            ];
+            this._fireConfigChanged({
+                ...this.config,
+                optional_entities: this.optionalEntities
+            });
+        }
+
+       
     }
 
     _removeEntity(index) {
@@ -98,7 +103,7 @@ class CustomCardEditor extends LitElement {
     }
 
     _updateOptionalEntity(index, changedValues) {
-        this.optionalEntities = this.optionalEntities.map((entity, i) =>
+        this.optionalEntities = this.optionalEntities?.map((entity, i) =>
             i === index ? { ...entity, ...changedValues } : entity
         );
 
@@ -124,6 +129,7 @@ class CustomCardEditor extends LitElement {
                     .data=${this.config}
                     .schema=${schema}
                     .computeLabel=${(schema) => schema.label || schema.name}
+                    .computeHelper=${(schema) => schema.helper_text}
                     @value-changed=${(ev) => this._dispatchConfigChanged(ev.detail.value)}
                 ></ha-form>
                 
@@ -151,9 +157,11 @@ class CustomCardEditor extends LitElement {
                     `)}
                     
                     <div class="add-entity">
-                        <ha-button @click=${this._addOptionalEntity}>
-                            Add Entity
-                        </ha-button>
+                         <ha-entity-picker
+                            .hass="${this.hass}"
+                            .includeDomains=${['sensor', 'binary_sensor']}
+                            @value-changed="${this._addOptionalEntity}"
+                        ></ha-entity-picker>
                     </div>
                 </div>
             </div>

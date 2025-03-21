@@ -1,8 +1,9 @@
-import {LitElement, html} from 'lit';
+import { LitElement, html } from 'lit';
 
 import {cardStyles} from './styles.js';
 
 import translations from './translations.js'
+
 class CustomCard extends LitElement {
     static get properties() {
         return {
@@ -85,7 +86,7 @@ class CustomCard extends LitElement {
         event.detail = {entityId: entity_id};
         this.dispatchEvent(event);
     }
-
+        
     // Custom slider handlers
     _handleSliderStart(ev) {
         const chargeRateEntity =
@@ -95,19 +96,15 @@ class CustomCard extends LitElement {
         this._dragging = true;
         this._updateSliderValue(ev);
         this.addEventListener('mousemove', this._handleSliderMove);
-        this.addEventListener('touchmove', this._handleSliderMove, {
-            passive: false,
-        });
+        this.addEventListener("touchmove", this._handleSliderMove);
         this.addEventListener('mouseup', this._handleSliderEnd);
         this.addEventListener('mouseout', this._handleSliderEnd);
         this.addEventListener('touchend', this._handleSliderEnd);
-        ev.preventDefault();
     }
 
     _handleSliderMove = (ev) => {
         if (this._dragging) {
             this._updateSliderValue(ev);
-            ev.preventDefault();
         }
     };
 
@@ -206,12 +203,12 @@ class CustomCard extends LitElement {
                 return {
                     name: entity.name
                         ? entity.name
-                        : this.hass.states[entity.id].attributes.friendly_name,
-                    value: this.hass.formatEntityState(
+                        : this.hass.states[entity.id]?.attributes.friendly_name,
+                    value: entity.id?this.hass.formatEntityState(
                         this.hass.states[entity.id]
-                    ),
+                    ):null,
                     icon: entity.icon,
-                    id: entity.id,
+                    id: entity.id?entity.id:null,
                 };
             }) ?? [];
 
@@ -234,255 +231,256 @@ class CustomCard extends LitElement {
 
         return html`
             <ha-card>
-                ${this.config.header
-                    ? html`<h1 class="card-header">
-                          ${this.config.name || 'OpenEVSE'}
-                      </h1>`
-                    : ''}
-                <div class="card-content">
-                    <div class="evse-states">
-                        <div class="status-icons">
-                            <div
-                                class="status-icon clickable"
-                                @click=${() =>
-                                    this._showMoreInfo(
-                                        this.config.status_entity
-                                    )}
-                            >
-                                <ha-icon
-                                    icon="${statusEntity.state == 'active'
-                                        ? 'mdi:lightning-bolt'
-                                        : 'mdi:cancel'}"
-                                    class="${statusEntity.state == 'active'
-                                        ? chargingStatusEntity == 'charging'
-                                            ? 'charging'
-                                            : 'active'
-                                        : 'disabled'}"
-                                ></ha-icon>
-                            </div>
-                            <div
-                                class="status-icon clickable"
-                                @click=${() =>
-                                    this._showMoreInfo(
-                                        this.config.vehicle_connected_entity
-                                    )}
-                            >
-                                <ha-icon
-                                    icon="${vehicleConnectedEntity.state ==
-                                    'off'
-                                        ? 'mdi:car-off'
-                                        : 'mdi:car'}"
-                                    class="${vehicleConnectedEntity.state ==
-                                    'off'
-                                        ? 'disabled'
-                                        : 'active'}"
-                                ></ha-icon>
-                            </div>
-                        </div>
-                        <div class="status-heading">
-                            <div
-                                class="status-badge ${chargingStatusEntity.state ==
-                                'error'
-                                    ? 'badge-error'
-                                    : statusEntity.state == 'disabled'
-                                    ? 'badge-disabled'
-                                    : chargingStatusEntity.state == 'charging'
-                                    ? 'badge-charging'
-                                    : 'badge-active'}"
-                            >
-                                 ${this._t(chargingStatusEntity.state)}
-                            </div>
-                        </div>
+            ${this.config.header
+                ? html`<h1 class="card-header">
+                  ${this.config.name || 'OpenEVSE'}
+                  </h1>`
+                : ''}
+            <div class="card-content">
+                <div class="evse-states">
+                <div class="status-icons">
+                    <div
+                    class="status-icon clickable"
+                    @click=${() =>
+                        this._showMoreInfo(
+                        this.config.status_entity
+                        )}
+                    >
+                    <ha-icon
+                        icon="${statusEntity.state == 'active'
+                        ? 'mdi:lightning-bolt'
+                        : 'mdi:cancel'}"
+                        class="${statusEntity.state == 'active'
+                        ? chargingStatusEntity.state == 'charging'
+                            ? 'charging'
+                            : 'active'
+                        : 'disabled'}"
+                    ></ha-icon>
                     </div>
-                    <div class="grid-container">
-                        ${powerEntity
-                            ? html`
-                                  <div class="grid-item">
-                                      <div class="grid-item-label"> ${this._t("power")}</div>
-                                      <div
-                                          class="grid-item-value current-value clickable"
-                                          @click=${() =>
-                                              this._showMoreInfo(
-                                                  this.config.power_entity
-                                              )}
-                                      >
-                                          ${this.hass.formatEntityState(
-                                              powerEntity
-                                          )}
-                                      </div>
-                                  </div>
-                              `
-                            : ''}
-                        ${currentEntity
-                            ? html`
-                                  <div class="grid-item">
-                                      <div class="grid-item-label">${this._t("current")}</div>
-                                      <div
-                                          class="grid-item-value current-value clickable"
-                                          @click=${() =>
-                                              this._showMoreInfo(
-                                                  this.config.current_entity
-                                              )}
-                                      >
-                                          ${this.hass.formatEntityState(
-                                              currentEntity
-                                          )}
-                                      </div>
-                                  </div>
-                              `
-                            : ''}
-                        ${sessionEnergyEntity
-                            ? html`
-                                  <div class="grid-item">
-                                      <div class="grid-item-label">${this._t("session")}</div>
-                                      <div
-                                          class="grid-item-value current-value clickable"
-                                          @click=${() =>
-                                              this._showMoreInfo(
-                                                  this.config
-                                                      .session_energy_entity
-                                              )}
-                                      >
-                                          ${this.hass.formatEntityState(
-                                              sessionEnergyEntity
-                                          )}
-                                      </div>
-                                  </div>
-                              `
-                            : ''}
-                        ${timeElapsedEntity
-                            ? html`
-                                  <div class="grid-item">
-                                      <div class="grid-item-label">${this._t("elapsed")}</div>
-                                      <div
-                                          class="grid-item-value current-value"
-                                      >
-                                          ${this._convertSeconds(
-                                              timeElapsedEntity.state
-                                          )}
-                                      </div>
-                                  </div>
-                              `
-                            : ''}
+                    <div
+                    class="status-icon clickable"
+                    @click=${() =>
+                        this._showMoreInfo(
+                        this.config.vehicle_connected_entity
+                        )}
+                    >
+                    <ha-icon
+                        icon="${vehicleConnectedEntity.state ==
+                        'off'
+                        ? 'mdi:car-off'
+                        : 'mdi:car'}"
+                        class="${vehicleConnectedEntity.state ==
+                        'off'
+                        ? 'disabled'
+                        : 'active'}"
+                    ></ha-icon>
                     </div>
-                    <div class="override-controls">
-                        <div class="override-row">
-                            <div
-                                class="override-button ${overrideEntity.state ==
-                                'active'
-                                    ? 'active'
-                                    : ''}"
-                                data-option="active"
-                                @click=${() =>
-                                    this._callService(
-                                        this.config.override_entity,
-                                        'active'
-                                    )}
-                            >
-                                <ha-icon
-                                    icon="mdi:lightning-bolt"
-                                    class="${overrideEntity.state == 'active' &&
-                                    chargingStatusEntity.state == 'charging'
-                                        ? 'charging'
-                                        : ''}"
-                                ></ha-icon>
-                            </div>
-                            <div
-                                class="override-button ${overrideEntity.state ==
-                                'auto'
-                                    ? 'active'
-                                    : ''}"
-                                data-option="auto"
-                                @click=${() =>
-                                    this._callService(
-                                        this.config.override_entity,
-                                        'auto'
-                                    )}
-                            >
-                                <ha-icon
-                                    icon="mdi:robot"
-                                    class="${overrideEntity.state == 'auto' &&
-                                    chargingStatusEntity.state == 'charging'
-                                        ? 'charging'
-                                        : ''}"
-                                ></ha-icon>
-                            </div>
-                            <div
-                                class="override-button ${overrideEntity.state ==
-                                'disabled'
-                                    ? 'active'
-                                    : ''}"
-                                data-option="disabled"
-                                @click=${() =>
-                                    this._callService(
-                                        this.config.override_entity,
-                                        'disabled'
-                                    )}
-                            >
-                                <ha-icon icon="mdi:cancel"></ha-icon>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slider-container">
-                        <div class="slider-label">${this._t("charge rate")}</div>
-                        <div class="slider-badge">
-                            ${formatValue(value)}
-                            ${chargeRateEntity.attributes.unit_of_measurement ||
-                            ''}
-                        </div>
-                        <div class="slider-row">
-                            <div
-                                class="slider-wrapper"
-                                @mousedown=${this._handleSliderStart}
-                                @touchstart=${this._handleSliderStart}
-                            >
-                                <div
-                                    class="slider-track clickable"
-                                    style="width: ${percentage}%"
-                                ></div>
-                                <div
-                                    class="slider-knob"
-                                    style="left: calc(${percentage}% - 16px)"
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-                    ${optionalEntities.map(
-                        (entity) => html`
-                            <div class="other-entities-container">
-                                <div class="entity-row">
-                                    <div class="entity-title">
-                                        ${entity.icon != null
-                                            ? html`
-                                                  <div class="entity-icon">
-                                                      <ha-icon
-                                                          icon=${entity.icon}
-                                                      ></ha-icon>
-                                                  </div>
-                                              `
-                                            : html`
-                                                  <div
-                                                      class="entity-icon"
-                                                  ></div>
-                                              `}
-
-                                        <div class="entity-label">
-                                            ${entity.name}
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="entity-value clickable"
-                                        @click=${() =>
-                                            this._showMoreInfo(entity.id)}
-                                    >
-                                        ${entity.value}
-                                    </div>
-                                </div>
-                            </div>
-                        `
-                    )}
                 </div>
+                <div class="status-heading">
+                    <div
+                    class="status-badge ${chargingStatusEntity.state ==
+                    'error'
+                        ? 'badge-error'
+                        : statusEntity.state == 'disabled'
+                        ? 'badge-disabled'
+                        : chargingStatusEntity.state == 'charging'
+                        ? 'badge-charging'
+                        : 'badge-active'}"
+                    >
+                     ${this._t(chargingStatusEntity.state)}
+                    </div>
+                </div>
+                </div>
+                <div class="grid-container">
+                ${powerEntity
+                    ? html`
+                      <div class="grid-item">
+                          <div class="grid-item-label"> ${this._t("power")}</div>
+                          <div
+                          class="grid-item-value current-value clickable"
+                          @click=${() =>
+                              this._showMoreInfo(
+                              this.config.power_entity
+                              )}
+                          >
+                          ${this.hass.formatEntityState(
+                              powerEntity
+                          )}
+                          </div>
+                      </div>
+                      `
+                    : ''}
+                ${currentEntity
+                    ? html`
+                      <div class="grid-item">
+                          <div class="grid-item-label">${this._t("current")}</div>
+                          <div
+                          class="grid-item-value current-value clickable"
+                          @click=${() =>
+                              this._showMoreInfo(
+                              this.config.current_entity
+                              )}
+                          >
+                          ${this.hass.formatEntityState(
+                              currentEntity
+                          )}
+                          </div>
+                      </div>
+                      `
+                    : ''}
+                ${sessionEnergyEntity
+                    ? html`
+                      <div class="grid-item">
+                          <div class="grid-item-label">${this._t("session")}</div>
+                          <div
+                          class="grid-item-value current-value clickable"
+                          @click=${() =>
+                              this._showMoreInfo(
+                              this.config
+                                  .session_energy_entity
+                              )}
+                          >
+                          ${this.hass.formatEntityState(
+                              sessionEnergyEntity
+                          )}
+                          </div>
+                      </div>
+                      `
+                    : ''}
+                ${timeElapsedEntity
+                    ? html`
+                      <div class="grid-item">
+                          <div class="grid-item-label">${this._t("elapsed")}</div>
+                          <div
+                          class="grid-item-value current-value"
+                          >
+                          ${this._convertSeconds(
+                              timeElapsedEntity.state
+                          )}
+                          </div>
+                      </div>
+                      `
+                    : ''}
+                </div>
+                <div class="override-controls">
+                <div class="override-row">
+                    <div
+                    class="override-button ${overrideEntity.state ==
+                    'active'
+                        ? 'active'
+                        : ''}"
+                    data-option="active"
+                    @click=${() =>
+                        this._callService(
+                        this.config.override_entity,
+                        'active'
+                        )}
+                    >
+                    <ha-icon
+                        icon="mdi:lightning-bolt"
+                        class="${overrideEntity.state == 'active' &&
+                        chargingStatusEntity.state == 'charging'
+                        ? 'charging'
+                        : ''}"
+                    ></ha-icon>
+                    </div>
+                    <div
+                    class="override-button ${overrideEntity.state ==
+                    'auto'
+                        ? 'active'
+                        : ''}"
+                    data-option="auto"
+                    @click=${() =>
+                        this._callService(
+                        this.config.override_entity,
+                        'auto'
+                        )}
+                    >
+                    <ha-icon
+                        icon="mdi:robot"
+                        class="${overrideEntity.state == 'auto' &&
+                        chargingStatusEntity.state == 'charging'
+                        ? 'charging'
+                        : ''}"
+                    ></ha-icon>
+                    </div>
+                    <div
+                    class="override-button ${overrideEntity.state ==
+                    'disabled'
+                        ? 'active'
+                        : ''}"
+                    data-option="disabled"
+                    @click=${() =>
+                        this._callService(
+                        this.config.override_entity,
+                        'disabled'
+                        )}
+                    >
+                    <ha-icon icon="mdi:cancel"></ha-icon>
+                    </div>
+                </div>
+                </div>
+                
+
+                <div class="slider-container">
+                <div class="slider-label">${this._t("charge rate")}</div>
+                <div class="slider-badge">
+                    ${formatValue(value)}
+                    ${chargeRateEntity.attributes.unit_of_measurement ||
+                    ''}
+                </div>
+                <div class="slider-row">
+                    <div
+                    class="slider-wrapper"
+                    @mousedown=${this._handleSliderStart}
+                    @touchstart=${this._handleSliderStart}
+                    >
+                    <div
+                        class="slider-track clickable"
+                        style="width: ${percentage}%"
+                    ></div>
+                    <div
+                        class="slider-knob"
+                        style="left: calc(${percentage}% - 16px)"
+                    ></div>
+                    </div>
+                </div>
+                </div>
+                ${optionalEntities?.map(
+                (entity) => html`
+                    <div class="other-entities-container">
+                    <div class="entity-row">
+                        <div class="entity-title">
+                        ${entity.icon != null
+                            ? html`
+                              <div class="entity-icon">
+                                  <ha-icon
+                                  icon=${entity.icon}
+                                  ></ha-icon>
+                              </div>
+                              `
+                            : html`
+                              <div
+                                  class="entity-icon"
+                              ></div>
+                              `}
+
+                        <div class="entity-label">
+                            ${entity.name?entity.name:entity.id?entity.id:""}
+                        </div>
+                        </div>
+                        <div
+                        class="entity-value clickable"
+                        @click=${() =>
+                            this._showMoreInfo(entity.id?entity.id:"")}
+                        >
+                        ${entity.value?entity.value:""}
+                        </div>
+                    </div>
+                    </div>
+                `
+                )}
+            </div>
             </ha-card>
         `;
     }

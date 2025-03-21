@@ -8,6 +8,7 @@ import summary from 'rollup-plugin-summary';
 import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import css from 'rollup-plugin-import-css';
 
 export default {
     input: 'src/openevse-card.js',
@@ -23,6 +24,7 @@ export default {
     plugins: [
         replace({preventAssignment: false, 'Reflect.decorate': 'undefined'}),
         resolve(),
+        css(),
         /**
          * This minification setup serves the static site generation.
          * For bundling and minification, check the README.md file.
