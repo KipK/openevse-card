@@ -133,9 +133,9 @@ class CustomCard extends LitElement {
 
         const track = this.shadowRoot.querySelector('.slider-wrapper');
         const trackRect = track.getBoundingClientRect();
-        const min = chargeRateEntity.attributes.min || 6;
-        const max = chargeRateEntity.attributes.max || 32;
-        const step = chargeRateEntity.attributes.step || 1;
+        const min = chargeRateEntity?.attributes.min || 6;
+        const max = chargeRateEntity?.attributes.max || 32;
+        const step = chargeRateEntity?.attributes.step || 1;
 
         // Get cursor position
         let x;
@@ -216,16 +216,16 @@ class CustomCard extends LitElement {
 
 
         // Slider calculations
-        const min = chargeRateEntity.attributes.min || 0;
-        const max = chargeRateEntity.attributes.max || 100;
+        const min = chargeRateEntity?.attributes.min || 0;
+        const max = chargeRateEntity?.attributes.max || 100;
         const value = this._dragging
             ? this._sliderValue
-            : Number(chargeRateEntity.state);
+            : Number(chargeRateEntity?.state);
         const percentage = ((value - min) / (max - min)) * 100;
 
         // Format the slider value for display
         const formatValue = (val) => {
-            const step = chargeRateEntity.attributes.step || 1;
+            const step = chargeRateEntity?.attributes.step || 1;
             return step < 1 ? val.toFixed(1) : val.toFixed(0);
         };
 
@@ -247,11 +247,11 @@ class CustomCard extends LitElement {
                         )}
                     >
                     <ha-icon
-                        icon="${statusEntity.state == 'active'
+                        icon="${statusEntity?.state == 'active'
                         ? 'mdi:lightning-bolt'
                         : 'mdi:cancel'}"
-                        class="${statusEntity.state == 'active'
-                        ? chargingStatusEntity.state == 'charging'
+                        class="${statusEntity?.state == 'active'
+                        ? chargingStatusEntity?.state == 'charging'
                             ? 'charging'
                             : 'active'
                         : 'disabled'}"
@@ -265,11 +265,11 @@ class CustomCard extends LitElement {
                         )}
                     >
                     <ha-icon
-                        icon="${vehicleConnectedEntity.state ==
+                        icon="${vehicleConnectedEntity?.state ==
                         'off'
                         ? 'mdi:car-off'
                         : 'mdi:car'}"
-                        class="${vehicleConnectedEntity.state ==
+                        class="${vehicleConnectedEntity?.state ==
                         'off'
                         ? 'disabled'
                         : 'active'}"
@@ -278,16 +278,16 @@ class CustomCard extends LitElement {
                 </div>
                 <div class="status-heading">
                     <div
-                    class="status-badge ${chargingStatusEntity.state ==
+                    class="status-badge ${chargingStatusEntity?.state ==
                     'error'
                         ? 'badge-error'
-                        : statusEntity.state == 'disabled'
+                        : statusEntity?.state == 'disabled'
                         ? 'badge-disabled'
-                        : chargingStatusEntity.state == 'charging'
+                        : chargingStatusEntity?.state == 'charging'
                         ? 'badge-charging'
                         : 'badge-active'}"
                     >
-                     ${this._t(chargingStatusEntity.state)}
+                     ${this._t(chargingStatusEntity?.state)}
                     </div>
                 </div>
                 </div>
@@ -303,9 +303,9 @@ class CustomCard extends LitElement {
                               this.config.power_entity
                               )}
                           >
-                          ${this.hass.formatEntityState(
+                          ${powerEntity?this.hass.formatEntityState(
                               powerEntity
-                          )}
+                          ):null}
                           </div>
                       </div>
                       `
@@ -321,9 +321,9 @@ class CustomCard extends LitElement {
                               this.config.current_entity
                               )}
                           >
-                          ${this.hass.formatEntityState(
+                          ${currentEntity?this.hass.formatEntityState(
                               currentEntity
-                          )}
+                          ):null}
                           </div>
                       </div>
                       `
@@ -340,9 +340,9 @@ class CustomCard extends LitElement {
                                   .session_energy_entity
                               )}
                           >
-                          ${this.hass.formatEntityState(
+                          ${sessionEnergyEntity?this.hass.formatEntityState(
                               sessionEnergyEntity
-                          )}
+                          ):null}
                           </div>
                       </div>
                       `
@@ -354,9 +354,9 @@ class CustomCard extends LitElement {
                           <div
                           class="grid-item-value current-value"
                           >
-                          ${this._convertSeconds(
+                          ${timeElapsedEntity?this._convertSeconds(
                               timeElapsedEntity.state
-                          )}
+                          ):null}
                           </div>
                       </div>
                       `
@@ -365,7 +365,7 @@ class CustomCard extends LitElement {
                 <div class="override-controls">
                 <div class="override-row">
                     <div
-                    class="override-button ${overrideEntity.state ==
+                    class="override-button ${overrideEntity?.state ==
                     'active'
                         ? 'active'
                         : ''}"
@@ -378,14 +378,14 @@ class CustomCard extends LitElement {
                     >
                     <ha-icon
                         icon="mdi:lightning-bolt"
-                        class="${overrideEntity.state == 'active' &&
-                        chargingStatusEntity.state == 'charging'
+                        class="${overrideEntity?.state == 'active' &&
+                        chargingStatusEntity?.state == 'charging'
                         ? 'charging'
                         : ''}"
                     ></ha-icon>
                     </div>
                     <div
-                    class="override-button ${overrideEntity.state ==
+                    class="override-button ${overrideEntity?.state ==
                     'auto'
                         ? 'active'
                         : ''}"
@@ -398,14 +398,14 @@ class CustomCard extends LitElement {
                     >
                     <ha-icon
                         icon="mdi:robot"
-                        class="${overrideEntity.state == 'auto' &&
-                        chargingStatusEntity.state == 'charging'
+                        class="${overrideEntity?.state == 'auto' &&
+                        chargingStatusEntity?.state == 'charging'
                         ? 'charging'
                         : ''}"
                     ></ha-icon>
                     </div>
                     <div
-                    class="override-button ${overrideEntity.state ==
+                    class="override-button ${overrideEntity?.state ==
                     'disabled'
                         ? 'active'
                         : ''}"
@@ -426,7 +426,7 @@ class CustomCard extends LitElement {
                 <div class="slider-label">${this._t("charge rate")}</div>
                 <div class="slider-badge">
                     ${formatValue(value)}
-                    ${chargeRateEntity.attributes.unit_of_measurement ||
+                    ${chargeRateEntity?.attributes.unit_of_measurement ||
                     ''}
                 </div>
                 <div class="slider-row">

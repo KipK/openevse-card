@@ -302,7 +302,7 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
 			width: 100%;
 		}
 		
-	`;let at={en:{disabled:"disabled",sleeping:"disabled",active:"active",charging:"charging","not connected":"waiting",error:"error",power:"power",current:"current",session:"session",elapsed:"elapsed","charge rate":"charge rate"},fr:{disabled:"désactivé",sleeping:"désactivé",active:"activé",charging:"en charge","not connected":"en attente",error:"erreur",power:"puissance",current:"courant",session:"session",elapsed:"écoulé","charge rate":"ampérage"},de:{disabled:"deaktiviert",sleeping:"deaktiviert",active:"aktiv",charging:"lädt","not connected":"bereit",error:"fehler",power:"leistung",current:"stromstärke",session:"sitzung",elapsed:"verstrichene zeit","charge rate":"laderate"},es:{disabled:"desactivado",sleeping:"desactivado",active:"activo",charging:"cargando","not connected":"en espera",error:"error",power:"potencia",current:"corriente",session:"sesión",elapsed:"tiempo transcurrido","charge rate":"amperaje"}};var ct=Number.isNaN||function(t){return"number"==typeof t&&t!=t};function lt(t,e){if(t.length!==e.length)return!1;for(var i=0;i<t.length;i++)if(s=t[i],r=e[i],!(s===r||ct(s)&&ct(r)))return!1;var s,r;return!0}function ht(t,e){void 0===e&&(e=lt);var i=null;function s(){for(var s=[],r=0;r<arguments.length;r++)s[r]=arguments[r];if(i&&i.lastThis===this&&e(s,i.lastArgs))return i.lastResult;var o=t.apply(this,s);return i={lastResult:o,lastArgs:s,lastThis:this},o}return s.clear=function(){i=null},s}const dt=ht((()=>[{type:"grid",name:"",schema:[{name:"name",selector:{text:{}},required:!1,label:"Header Title"},{name:"header",selector:{boolean:{}},label:"Display header"}]},{name:"override_entity",selector:{entity:{domain:["input_select","select"]}},label:"Override State",helper_text:"Select openevse.override_state entity",required:!0},{name:"status_entity",selector:{entity:{domain:["sensor"]}},label:"Station Status",helper_text:"Select openevse.station_status entity",required:!0},{name:"power_entity",selector:{entity:{domain:["sensor"]}},label:"Current power usage",helper_text:"Select openevse.current_power_usage entity",required:!0},{name:"current_entity",selector:{entity:{domain:["sensor"]}},label:"Charging current",helper_text:"Select openevse.charging_current entity",required:!0},{name:"vehicle_connected_entity",selector:{entity:{domain:["binary_sensor"]}},label:"Vehicle Connected",helper_text:"Select openevse.vehicle_connected entity",required:!0},{name:"charging_status_entity",selector:{entity:{domain:["sensor"]}},label:"Charging status",helper_text:"Select openevse.charging_status entity",required:!0},{name:"charge_rate_entity",selector:{entity:{domain:["number"]}},label:"Charge Rate",helper_text:"Select openevse.charge_rate entity",required:!0},{name:"session_energy_entity",selector:{entity:{domain:["sensor"]}},label:"Session Energy",helper_text:"Select openevse.session_energy entity",required:!0},{name:"time_elapsed_entity",selector:{entity:{domain:["sensor"]}},label:"Time Elapsed Seconds",helper_text:"Select openevse.time_elapsed_seconds entity",required:!0}])),ut=ht((()=>[{name:"id",selector:{entity:{domain:["sensor, binary_sensor"]}},label:"Entity"},{name:"name",selector:{text:{}},label:"Name"},{name:"icon",selector:{icon:{}},label:"Icon"}]));customElements.define("openevse-card",class extends rt{static get properties(){return{hass:{type:Object},config:{type:Object},_sliderValue:{type:Number},_dragging:{type:Boolean},_lang:{type:String}}}constructor(){super(),this._sliderValue=void 0,this._dragging=!1,this._translations=at}firstUpdated(){this._lang=this.hass?.language||"en"}updated(t){t.has("hass")&&this.hass&&(this._lang=this.hass.language||"en")}static getConfigElement(){return document.createElement("openevse-card-editor")}static getStubConfig(){return{header:!0,name:"Custom Card",override_entity:"",status_entity:"",power_entity:"",current_entity:"",charge_rate_entity:"",vehicleConnectedEntity:"",charging_status_entity:"",session_energy_entity:"",time_elapsed_entity:"",optional_entities:[]}}static get styles(){return nt}setConfig(t){this.config=t}getCardSize(){return 3}_callService(t,e){this.hass.callService("select","select_option",{entity_id:t,option:e.toString()})}_showMoreInfo(t){const e=new Event("hass-more-info",{bubbles:!0,composed:!0});e.detail={entityId:t},this.dispatchEvent(e)}_handleSliderStart(t){this.hass.states[this.config.charge_rate_entity]&&(this._dragging=!0,this._updateSliderValue(t),this.addEventListener("mousemove",this._handleSliderMove),this.addEventListener("touchmove",this._handleSliderMove),this.addEventListener("mouseup",this._handleSliderEnd),this.addEventListener("mouseout",this._handleSliderEnd),this.addEventListener("touchend",this._handleSliderEnd))}_handleSliderMove=t=>{this._dragging&&this._updateSliderValue(t)};_handleSliderEnd=t=>{this._dragging&&(this.removeEventListener("mousemove",this._handleSliderMove),this.removeEventListener("touchmove",this._handleSliderMove),this.removeEventListener("mouseup",this._handleSliderEnd),this.removeEventListener("mouseout",this._handleSliderEnd),this.removeEventListener("touchend",this._handleSliderEnd),this.hass.callService("number","set_value",{entity_id:this.config.charge_rate_entity,value:this._sliderValue}),setTimeout((()=>this._dragging=!1),2e3))};_updateSliderValue(t){const e=this.hass.states[this.config.charge_rate_entity];if(!e)return;const i=this.shadowRoot.querySelector(".slider-wrapper").getBoundingClientRect(),s=e.attributes.min||6,r=e.attributes.max||32,o=e.attributes.step||1;let n;n=t.type.startsWith("touch")?t.touches[0].clientX:t.clientX;let a=(n-i.left)/i.width;a=Math.min(Math.max(a,0),1);let c=s+a*(r-s);c=Math.round(c/o)*o,c=Math.min(Math.max(c,s),r),this._sliderValue=Number(c.toFixed(2)),this.requestUpdate()}_convertSeconds=t=>("0"+Math.floor(t/3600)).slice(-2)+":"+("0"+Math.floor(t%3600/60)).slice(-2)+":"+("0"+t%60).slice(-2);_t(t){const e=this._lang||"en";return this._translations[e]?.[t]||this._translations.en?.[t]||t}render(){if(!this.hass||!this.config)return I``;const t=this.config.override_entity?this.hass.states[this.config.override_entity]:null,e=this.config.status_entity?this.hass.states[this.config.status_entity]:null,i=this.config.power_entity?this.hass.states[this.config.power_entity]:null,s=this.config.current_entity?this.hass.states[this.config.current_entity]:null,r=this.config.charge_rate_entity?this.hass.states[this.config.charge_rate_entity]:null,o=this.config.vehicle_connected_entity?this.hass.states[this.config.vehicle_connected_entity]:null,n=this.config.charging_status_entity?this.hass.states[this.config.charging_status_entity]:null,a=this.config.session_energy_entity?this.hass.states[this.config.session_energy_entity]:null,c=this.config.time_elapsed_entity?this.hass.states[this.config.time_elapsed_entity]:null,l=(()=>this.config.optional_entities?.map((t=>({name:t.name?t.name:this.hass.states[t.id]?.attributes.friendly_name,value:t.id?this.hass.formatEntityState(this.hass.states[t.id]):null,icon:t.icon,id:t.id?t.id:null})))??[])(),h=r.attributes.min||0,d=r.attributes.max||100,u=this._dragging?this._sliderValue:Number(r.state),p=(u-h)/(d-h)*100;return I`
+	`;let at={en:{disabled:"disabled",sleeping:"disabled",active:"active",charging:"charging","not connected":"waiting",error:"error",power:"power",current:"current",session:"session",elapsed:"elapsed","charge rate":"charge rate"},fr:{disabled:"désactivé",sleeping:"désactivé",active:"activé",charging:"en charge","not connected":"en attente",error:"erreur",power:"puissance",current:"courant",session:"session",elapsed:"écoulé","charge rate":"ampérage"},de:{disabled:"deaktiviert",sleeping:"deaktiviert",active:"aktiv",charging:"lädt","not connected":"bereit",error:"fehler",power:"leistung",current:"stromstärke",session:"sitzung",elapsed:"verstrichene zeit","charge rate":"laderate"},es:{disabled:"desactivado",sleeping:"desactivado",active:"activo",charging:"cargando","not connected":"en espera",error:"error",power:"potencia",current:"corriente",session:"sesión",elapsed:"tiempo transcurrido","charge rate":"amperaje"}};var ct=Number.isNaN||function(t){return"number"==typeof t&&t!=t};function lt(t,e){if(t.length!==e.length)return!1;for(var i=0;i<t.length;i++)if(s=t[i],r=e[i],!(s===r||ct(s)&&ct(r)))return!1;var s,r;return!0}function ht(t,e){void 0===e&&(e=lt);var i=null;function s(){for(var s=[],r=0;r<arguments.length;r++)s[r]=arguments[r];if(i&&i.lastThis===this&&e(s,i.lastArgs))return i.lastResult;var o=t.apply(this,s);return i={lastResult:o,lastArgs:s,lastThis:this},o}return s.clear=function(){i=null},s}const dt=ht((()=>[{type:"grid",name:"",schema:[{name:"name",selector:{text:{}},required:!1,label:"Header Title"},{name:"header",selector:{boolean:{}},label:"Display header"}]},{name:"override_entity",selector:{entity:{domain:["input_select","select"]}},label:"Override State",helper_text:"Select openevse.override_state entity",required:!0},{name:"status_entity",selector:{entity:{domain:["sensor"]}},label:"Station Status",helper_text:"Select openevse.station_status entity",required:!0},{name:"power_entity",selector:{entity:{domain:["sensor"]}},label:"Current power usage",helper_text:"Select openevse.current_power_usage entity",required:!0},{name:"current_entity",selector:{entity:{domain:["sensor"]}},label:"Charging current",helper_text:"Select openevse.charging_current entity",required:!0},{name:"vehicle_connected_entity",selector:{entity:{domain:["binary_sensor"]}},label:"Vehicle Connected",helper_text:"Select openevse.vehicle_connected entity",required:!0},{name:"charging_status_entity",selector:{entity:{domain:["sensor"]}},label:"Charging status",helper_text:"Select openevse.charging_status entity",required:!0},{name:"charge_rate_entity",selector:{entity:{domain:["number"]}},label:"Charge Rate",helper_text:"Select openevse.charge_rate entity",required:!0},{name:"session_energy_entity",selector:{entity:{domain:["sensor"]}},label:"Session Energy",helper_text:"Select openevse.session_energy entity",required:!0},{name:"time_elapsed_entity",selector:{entity:{domain:["sensor"]}},label:"Time Elapsed Seconds",helper_text:"Select openevse.time_elapsed_seconds entity",required:!0}])),ut=ht((()=>[{name:"id",selector:{entity:{domain:["sensor, binary_sensor"]}},label:"Entity"},{name:"name",selector:{text:{}},label:"Name"},{name:"icon",selector:{icon:{}},label:"Icon"}]));customElements.define("openevse-card",class extends rt{static get properties(){return{hass:{type:Object},config:{type:Object},_sliderValue:{type:Number},_dragging:{type:Boolean},_lang:{type:String}}}constructor(){super(),this._sliderValue=void 0,this._dragging=!1,this._translations=at}firstUpdated(){this._lang=this.hass?.language||"en"}updated(t){t.has("hass")&&this.hass&&(this._lang=this.hass.language||"en")}static getConfigElement(){return document.createElement("openevse-card-editor")}static getStubConfig(){return{header:!0,name:"Custom Card",override_entity:"",status_entity:"",power_entity:"",current_entity:"",charge_rate_entity:"",vehicleConnectedEntity:"",charging_status_entity:"",session_energy_entity:"",time_elapsed_entity:"",optional_entities:[]}}static get styles(){return nt}setConfig(t){this.config=t}getCardSize(){return 3}_callService(t,e){this.hass.callService("select","select_option",{entity_id:t,option:e.toString()})}_showMoreInfo(t){const e=new Event("hass-more-info",{bubbles:!0,composed:!0});e.detail={entityId:t},this.dispatchEvent(e)}_handleSliderStart(t){this.hass.states[this.config.charge_rate_entity]&&(this._dragging=!0,this._updateSliderValue(t),this.addEventListener("mousemove",this._handleSliderMove),this.addEventListener("touchmove",this._handleSliderMove),this.addEventListener("mouseup",this._handleSliderEnd),this.addEventListener("mouseout",this._handleSliderEnd),this.addEventListener("touchend",this._handleSliderEnd))}_handleSliderMove=t=>{this._dragging&&this._updateSliderValue(t)};_handleSliderEnd=t=>{this._dragging&&(this.removeEventListener("mousemove",this._handleSliderMove),this.removeEventListener("touchmove",this._handleSliderMove),this.removeEventListener("mouseup",this._handleSliderEnd),this.removeEventListener("mouseout",this._handleSliderEnd),this.removeEventListener("touchend",this._handleSliderEnd),this.hass.callService("number","set_value",{entity_id:this.config.charge_rate_entity,value:this._sliderValue}),setTimeout((()=>this._dragging=!1),2e3))};_updateSliderValue(t){const e=this.hass.states[this.config.charge_rate_entity];if(!e)return;const i=this.shadowRoot.querySelector(".slider-wrapper").getBoundingClientRect(),s=e?.attributes.min||6,r=e?.attributes.max||32,o=e?.attributes.step||1;let n;n=t.type.startsWith("touch")?t.touches[0].clientX:t.clientX;let a=(n-i.left)/i.width;a=Math.min(Math.max(a,0),1);let c=s+a*(r-s);c=Math.round(c/o)*o,c=Math.min(Math.max(c,s),r),this._sliderValue=Number(c.toFixed(2)),this.requestUpdate()}_convertSeconds=t=>("0"+Math.floor(t/3600)).slice(-2)+":"+("0"+Math.floor(t%3600/60)).slice(-2)+":"+("0"+t%60).slice(-2);_t(t){const e=this._lang||"en";return this._translations[e]?.[t]||this._translations.en?.[t]||t}render(){if(!this.hass||!this.config)return I``;const t=this.config.override_entity?this.hass.states[this.config.override_entity]:null,e=this.config.status_entity?this.hass.states[this.config.status_entity]:null,i=this.config.power_entity?this.hass.states[this.config.power_entity]:null,s=this.config.current_entity?this.hass.states[this.config.current_entity]:null,r=this.config.charge_rate_entity?this.hass.states[this.config.charge_rate_entity]:null,o=this.config.vehicle_connected_entity?this.hass.states[this.config.vehicle_connected_entity]:null,n=this.config.charging_status_entity?this.hass.states[this.config.charging_status_entity]:null,a=this.config.session_energy_entity?this.hass.states[this.config.session_energy_entity]:null,c=this.config.time_elapsed_entity?this.hass.states[this.config.time_elapsed_entity]:null,l=(()=>this.config.optional_entities?.map((t=>({name:t.name?t.name:this.hass.states[t.id]?.attributes.friendly_name,value:t.id?this.hass.formatEntityState(this.hass.states[t.id]):null,icon:t.icon,id:t.id?t.id:null})))??[])(),h=r?.attributes.min||0,d=r?.attributes.max||100,u=this._dragging?this._sliderValue:Number(r?.state),p=(u-h)/(d-h)*100;return I`
             <ha-card>
             ${this.config.header?I`<h1 class="card-header">
                   ${this.config.name||"OpenEVSE"}
@@ -315,8 +315,8 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                     @click=${()=>this._showMoreInfo(this.config.status_entity)}
                     >
                     <ha-icon
-                        icon="${"active"==e.state?"mdi:lightning-bolt":"mdi:cancel"}"
-                        class="${"active"==e.state?"charging"==n.state?"charging":"active":"disabled"}"
+                        icon="${"active"==e?.state?"mdi:lightning-bolt":"mdi:cancel"}"
+                        class="${"active"==e?.state?"charging"==n?.state?"charging":"active":"disabled"}"
                     ></ha-icon>
                     </div>
                     <div
@@ -324,16 +324,16 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                     @click=${()=>this._showMoreInfo(this.config.vehicle_connected_entity)}
                     >
                     <ha-icon
-                        icon="${"off"==o.state?"mdi:car-off":"mdi:car"}"
-                        class="${"off"==o.state?"disabled":"active"}"
+                        icon="${"off"==o?.state?"mdi:car-off":"mdi:car"}"
+                        class="${"off"==o?.state?"disabled":"active"}"
                     ></ha-icon>
                     </div>
                 </div>
                 <div class="status-heading">
                     <div
-                    class="status-badge ${"error"==n.state?"badge-error":"disabled"==e.state?"badge-disabled":"charging"==n.state?"badge-charging":"badge-active"}"
+                    class="status-badge ${"error"==n?.state?"badge-error":"disabled"==e?.state?"badge-disabled":"charging"==n?.state?"badge-charging":"badge-active"}"
                     >
-                     ${this._t(n.state)}
+                     ${this._t(n?.state)}
                     </div>
                 </div>
                 </div>
@@ -345,7 +345,7 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                           class="grid-item-value current-value clickable"
                           @click=${()=>this._showMoreInfo(this.config.power_entity)}
                           >
-                          ${this.hass.formatEntityState(i)}
+                          ${i?this.hass.formatEntityState(i):null}
                           </div>
                       </div>
                       `:""}
@@ -356,7 +356,7 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                           class="grid-item-value current-value clickable"
                           @click=${()=>this._showMoreInfo(this.config.current_entity)}
                           >
-                          ${this.hass.formatEntityState(s)}
+                          ${s?this.hass.formatEntityState(s):null}
                           </div>
                       </div>
                       `:""}
@@ -367,7 +367,7 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                           class="grid-item-value current-value clickable"
                           @click=${()=>this._showMoreInfo(this.config.session_energy_entity)}
                           >
-                          ${this.hass.formatEntityState(a)}
+                          ${a?this.hass.formatEntityState(a):null}
                           </div>
                       </div>
                       `:""}
@@ -377,7 +377,7 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                           <div
                           class="grid-item-value current-value"
                           >
-                          ${this._convertSeconds(c.state)}
+                          ${c?this._convertSeconds(c.state):null}
                           </div>
                       </div>
                       `:""}
@@ -385,27 +385,27 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                 <div class="override-controls">
                 <div class="override-row">
                     <div
-                    class="override-button ${"active"==t.state?"active":""}"
+                    class="override-button ${"active"==t?.state?"active":""}"
                     data-option="active"
                     @click=${()=>this._callService(this.config.override_entity,"active")}
                     >
                     <ha-icon
                         icon="mdi:lightning-bolt"
-                        class="${"active"==t.state&&"charging"==n.state?"charging":""}"
+                        class="${"active"==t?.state&&"charging"==n?.state?"charging":""}"
                     ></ha-icon>
                     </div>
                     <div
-                    class="override-button ${"auto"==t.state?"active":""}"
+                    class="override-button ${"auto"==t?.state?"active":""}"
                     data-option="auto"
                     @click=${()=>this._callService(this.config.override_entity,"auto")}
                     >
                     <ha-icon
                         icon="mdi:robot"
-                        class="${"auto"==t.state&&"charging"==n.state?"charging":""}"
+                        class="${"auto"==t?.state&&"charging"==n?.state?"charging":""}"
                     ></ha-icon>
                     </div>
                     <div
-                    class="override-button ${"disabled"==t.state?"active":""}"
+                    class="override-button ${"disabled"==t?.state?"active":""}"
                     data-option="disabled"
                     @click=${()=>this._callService(this.config.override_entity,"disabled")}
                     >
@@ -418,8 +418,8 @@ class rt extends w{constructor(){super(...arguments),this.renderOptions={host:th
                 <div class="slider-container">
                 <div class="slider-label">${this._t("charge rate")}</div>
                 <div class="slider-badge">
-                    ${v=u,(r.attributes.step||1)<1?v.toFixed(1):v.toFixed(0)}
-                    ${r.attributes.unit_of_measurement||""}
+                    ${v=u,(r?.attributes.step||1)<1?v.toFixed(1):v.toFixed(0)}
+                    ${r?.attributes.unit_of_measurement||""}
                 </div>
                 <div class="slider-row">
                     <div
