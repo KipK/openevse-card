@@ -33,7 +33,9 @@ Javascript module
 
 ## Configuration
 
-Configure it with the card configurator
+Configure it with the card configurator.
+Select your OpenEVSE device, it should fill-up automatically the required antities. 
+Additional entities can be added as needed.
 
 ![image](assets/config.png)
 
