@@ -1,8 +1,10 @@
 export const loadHaForm = async () => {
     if (
+        customElements.get('ha-form') &&
         customElements.get('ha-selector') &&
         customElements.get('ha-textfield') &&
         customElements.get('ha-icon-picker') &&
+        customElements.get('ha-icon-button') &&
         customElements.get('ha-entity-picker')
     )
         return;

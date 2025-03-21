@@ -59,24 +59,7 @@ class CustomCard extends LitElement {
     }
     // Validate configuration
     setConfig(config) {
-        if (!config.override_entity) {
-            throw new Error('Please define an override entity (select)');
-        }
-        if (!config.status_entity) {
-            throw new Error('Please define a status entity (sensor)');
-        }
-        if (!config.charge_rate_entity) {
-            throw new Error('Please define a charge_rate entity (number)');
-        }
-        if (!config.vehicle_connected_entity) {
-            throw new Error(
-                'Please define a vehicle_connected entity (binary_sensor)'
-            );
-        }
-        if (!config.current_entity) {
-            throw new Error('Please define a current entity (sensor)');
-        }
-
+    
         this.config = config;
     }
 
@@ -200,8 +183,8 @@ class CustomCard extends LitElement {
         }
 
         // Get entities from hass states
-        const overrideEntity = this.hass.states[this.config.override_entity];
-        const statusEntity = this.hass.states[this.config.status_entity];
+        const overrideEntity = this.config.override_entity?this.hass.states[this.config.override_entity]:null;
+        const statusEntity = this.config.status_entity?this.hass.states[this.config.status_entity]:null;
         const powerEntity = this.config.power_entity
             ? this.hass.states[this.config.power_entity]
             : null;
@@ -209,15 +192,15 @@ class CustomCard extends LitElement {
             ? this.hass.states[this.config.current_entity]
             : null;
         const chargeRateEntity =
-            this.hass.states[this.config.charge_rate_entity];
+            this.config.charge_rate_entity?this.hass.states[this.config.charge_rate_entity]:null;
         const vehicleConnectedEntity =
-            this.hass.states[this.config.vehicle_connected_entity];
+            this.config.vehicle_connected_entity?this.hass.states[this.config.vehicle_connected_entity]:null;
         const chargingStatusEntity =
-            this.hass.states[this.config.charging_status_entity];
+            this.config.charging_status_entity?this.hass.states[this.config.charging_status_entity]:null;
         const sessionEnergyEntity =
-            this.hass.states[this.config.session_energy_entity];
+            this.config.session_energy_entity?this.hass.states[this.config.session_energy_entity]:null;
         const timeElapsedEntity =
-            this.hass.states[this.config.time_elapsed_entity];
+            this.config.time_elapsed_entity?this.hass.states[this.config.time_elapsed_entity]:null;
         const getOptionalEntities = (foreach) =>
             this.config.optional_entities?.map((entity) => {
                 return {
@@ -234,30 +217,6 @@ class CustomCard extends LitElement {
 
         const optionalEntities = getOptionalEntities();
 
-        // Check if entities exist
-        if (
-            !overrideEntity ||
-            !statusEntity ||
-            !chargeRateEntity ||
-            !vehicleConnectedEntity
-        ) {
-            return html`
-                <ha-card>
-                    <div class="card-content">
-                        Entity not found:
-                        ${!overrideEntity ? this.config.override_entity : ''}
-                        ${!statusEntity ? this.config.status_entity : ''}
-                        ${!chargeRateEntity
-                            ? this.config.charge_rate_entity
-                            : ''}
-                        ${!vehicleConnectedEntity
-                            ? this.config.vehicle_connected_entity
-                            : ''}
-                        ${!currentEntity ? this.config.current_entity : ''}
-                    </div>
-                </ha-card>
-            `;
-        }
 
         // Slider calculations
         const min = chargeRateEntity.attributes.min || 0;

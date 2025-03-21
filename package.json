@@ -15,7 +15,7 @@
         "analyze": "cem analyze --litelement --globs \"**/*.js\" --exclude docs",
         "analyze:watch": "cem analyze --litelement --globs \"**/*.js\" --exclude docs --watch",
         "deploy": "npm run build && npm run copy",
-        "copy": "scp -P 2222 ./dist/openevse-card.js root@homeassistant.local:/homeassistant/www/community/openevse-card/"
+        "copy": "scp -P 2222 ./dist/* root@homeassistant.local:/homeassistant/www/community/openevse-card/"
     },
     "keywords": [
         "web-components",
@@ -27,7 +27,8 @@
     "license": "BSD-3",
     "dependencies": {
         "custom-card-helpers": "^1.9.0",
-        "lit": "^3.2.1"
+        "lit": "^3.2.1",
+        "memoize-one": "^6.0.0"
     },
     "devDependencies": {
         "@11ty/eleventy": "^1.0.1",
