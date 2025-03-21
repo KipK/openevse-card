@@ -40,7 +40,7 @@ class CustomCard extends LitElement {
     static getStubConfig() {
         return {
             header: true,
-            name: 'Custom Card',
+            name: 'OpenEVSE',
             override_entity: '',
             status_entity: '',
             power_entity: '',

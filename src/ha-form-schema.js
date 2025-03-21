@@ -11,6 +11,13 @@ export const mainSchema = memoizeOne(
 			]
 		},
 		{
+			name: "device_id",
+			selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
+			label: "OpenEVSE Device",
+			helper_text: "Select your OpenEVSE device to automatically populate all entities",
+			required: true
+		},
+		{
 			name: "override_entity",
 			selector: { entity: { domain: ["input_select", "select"] } },
 			label: "Override State",
@@ -63,7 +70,7 @@ export const mainSchema = memoizeOne(
 			name: "session_energy_entity",
 			selector: { entity: { domain: ["sensor"] } },
 			label: "Session Energy",
-			helper_text: "Select openevse.session_energy entity",
+			helper_text: "Select openevse.usage_this_session entity",
 			required: true
 		},
 		{
