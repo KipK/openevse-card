@@ -237,7 +237,7 @@ class CustomCardEditor extends LitElement {
         <!-- Statut de la détection automatique -->
                 ${this.config.device_id ? html`
                     <div class="entity-section">
-                        <h3>${this._t("entity_auto")}</h3>
+                        <h3>${this._t("required_entities")}</h3>
                         ${this.deviceEntitiesLoaded ? html`
                             <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
                                 ${missingEntities.length === 0
