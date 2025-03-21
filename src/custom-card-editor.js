@@ -9,7 +9,8 @@ class CustomCardEditor extends LitElement {
         return {
             hass: { type: Object },
             config: { type: Object },
-            _lang: { type: String }
+            _lang: { type: String },
+            _deviceIdChanged: { type: Boolean }
         };
     }
 
@@ -65,6 +66,7 @@ class CustomCardEditor extends LitElement {
         this.openEVSEEntities = {};
         this.deviceEntitiesLoaded = false;
         this._translations = translations;
+        this._deviceIdChanged = false;
     }
 
     async firstUpdated() {
@@ -80,48 +82,77 @@ class CustomCardEditor extends LitElement {
         this.config = config;
         this.optionalEntities = config.optional_entities || [];
 
-        // If device_id is already set, load its entities
-        if (config.device_id && this.hass) {
+        // If device_id is already defined and we haven't loaded the entities yet
+        if (config.device_id && this.hass && !this.deviceEntitiesLoaded) {
             this._loadDeviceEntities(config.device_id);
         }
     }
 
-    // Fonction pour charger les entités associées à un appareil OpenEVSE
+    // Function to check if an entity is already configured
+    _isEntityConfigured(configKey) {
+        return this.config[configKey] && this.config[configKey].length > 0;
+    }
+
+    // Function to load entities associated with an OpenEVSE device
     async _loadDeviceEntities(deviceId) {
         if (!deviceId || !this.hass) return;
 
-        // Obtenir toutes les entités pour ce dispositif
+        // Get all entities for this device
         const deviceEntities = {};
         const entityRegistry = Object.values(this.hass.entities || {});
 
-        // Filtrer les entités appartenant à ce dispositif
+        // Filter entities belonging to this device
         const deviceEntitiesList = entityRegistry.filter(
             entity => entity.device_id === deviceId
         );
 
-        // Tentative de correspondance des entités avec les champs requis
+        // Attempt to match entities with required fields
+        // Modified to include entity type in the mapping
         const entityMappings = {
-            override_entity: ["override_state", "select.openevse_override_state"],
-            status_entity: ["station_status", "sensor.openevse_station_status"],
-            power_entity: ["current_power_usage", "current_power_usage", "sensor.openevse_current_power_usage"],
-            current_entity: ["charging_current", "current", "sensor.openevse_charging_current"],
-            vehicle_connected_entity: ["vehicle_connected", "binary_sensor.openevse_vehicle_connected"],
-            charging_status_entity: ["charging_status", "sensor.openevse_charging_status"],
-            charge_rate_entity: ["charge_rate", "number.openevse_charge_rate"],
-            session_energy_entity: ["usage_this_session", "sensor.openevse_usage_this_session"],
-            time_elapsed_entity: ["time_elapsed", "seconds", "sensor.openevse_time_elapsed"]
+            override_entity: { names: ["override_state"], domains: ["select"], preferredPattern: "select.openevse_override_state" },
+            status_entity: { names: ["station_status"], domains: ["sensor"], preferredPattern: "sensor.openevse_station_status" },
+            power_entity: { names: ["current_power_usage", "power_usage"], domains: ["sensor"], preferredPattern: "sensor.openevse_current_power_usage" },
+            current_entity: { names: ["charging_current", "current"], domains: ["sensor"], preferredPattern: "sensor.openevse_charging_current" },
+            vehicle_connected_entity: { names: ["vehicle_connected"], domains: ["binary_sensor"], preferredPattern: "binary_sensor.openevse_vehicle_connected" },
+            charging_status_entity: { names: ["charging_status"], domains: ["sensor"], preferredPattern: "sensor.openevse_charging_status" },
+            charge_rate_entity: { names: ["charge_rate"], domains: ["number"], preferredPattern: "number.openevse_charge_rate" },
+            session_energy_entity: { names: ["usage_this_session"], domains: ["sensor"], preferredPattern: "sensor.openevse_usage_this_session" },
+            time_elapsed_entity: { names: ["time_elapsed", "seconds"], domains: ["sensor"], preferredPattern: "sensor.openevse_time_elapsed" }
         };
 
-        // Pour chaque type d'entité nécessaire, trouver la meilleure correspondance
-        for (const [configKey, possibleNames] of Object.entries(entityMappings)) {
-            // Chercher une entité qui correspond à l'un des noms possibles
-            const matchedEntity = deviceEntitiesList.find(entity => {
-                const entityId = entity.entity_id.toLowerCase();
-                return possibleNames.some(name =>
-                    entityId.includes(name.toLowerCase()) ||
-                    (entity.original_name && entity.original_name.toLowerCase().includes(name.toLowerCase()))
-                );
-            });
+        // For each required entity type, find the best match
+        // but only if this entity is not already configured
+        for (const [configKey, mapping] of Object.entries(entityMappings)) {
+            // Do not replace already configured entities, unless the device_id has just changed
+            if (this._isEntityConfigured(configKey) && !this._deviceIdChanged) {
+                continue;
+            }
+
+            const { names, domains, preferredPattern } = mapping;
+
+            // First look for the preferred pattern
+            let matchedEntity = deviceEntitiesList.find(entity =>
+                entity.entity_id.toLowerCase() === preferredPattern.toLowerCase()
+            );
+
+            // If not found, search using names and domains
+            if (!matchedEntity) {
+                matchedEntity = deviceEntitiesList.find(entity => {
+                    const entityId = entity.entity_id.toLowerCase();
+                    const domain = entityId.split('.')[0];
+
+                    // Check if the domain matches
+                    if (!domains.includes(domain)) {
+                        return false;
+                    }
+
+                    // Check if the name matches any of the possible names
+                    return names.some(name =>
+                        entityId.includes(name.toLowerCase()) ||
+                        (entity.original_name && entity.original_name.toLowerCase().includes(name.toLowerCase()))
+                    );
+                });
+            }
 
             if (matchedEntity) {
                 deviceEntities[configKey] = matchedEntity.entity_id;
@@ -131,23 +162,43 @@ class CustomCardEditor extends LitElement {
         this.openEVSEEntities = deviceEntities;
         this.deviceEntitiesLoaded = true;
 
-        // Mettre à jour la configuration avec les entités trouvées
-        const updatedConfig = { ...this.config, ...deviceEntities };
+        // Create an updated copy of the configuration
+        const updatedConfig = { ...this.config };
+
+        // Merge detected entities into the configuration
+        // whether the entity does not exist or the device_id has changed
+        for (const [key, value] of Object.entries(deviceEntities)) {
+            if (!this._isEntityConfigured(key) || this._deviceIdChanged) {
+                updatedConfig[key] = value;
+            }
+        }
+
+        // Reset the device_id change flag
+        this._deviceIdChanged = false;
+
+        // IMPORTANT: Update the local config object
+        this.config = updatedConfig;
+
+        // Trigger the config change event
         this._fireConfigChanged(updatedConfig);
 
+        // Force component update
         this.requestUpdate();
     }
 
-    // Gestion de la configuration principale
+    // Main configuration handling
     _handleConfigChange(ev) {
         const updatedConfig = ev.detail.value;
 
-        // Si le device_id a changé, charger les entités correspondantes
+        // If the device_id has changed, set the flag and load the corresponding entities
         if (updatedConfig.device_id !== this.config.device_id) {
+            this._deviceIdChanged = true;
+            this.deviceEntitiesLoaded = false; // Reset to force reloading
             this._loadDeviceEntities(updatedConfig.device_id);
+        } else {
+            // If other fields have changed, update the config normally
+            this._dispatchConfigChanged(updatedConfig);
         }
-
-        this._dispatchConfigChanged(updatedConfig);
     }
 
     _dispatchConfigChanged(updatedConfig) {
@@ -156,10 +207,13 @@ class CustomCardEditor extends LitElement {
             optional_entities: this.optionalEntities,
         };
 
+        // Update the local config object
+        this.config = newConfig;
+
         this._fireConfigChanged(newConfig);
     }
 
-    // Fonction unique pour déclencher l'événement de changement de config
+    // Single function to trigger the config change event
     _fireConfigChanged(newConfig) {
         this.dispatchEvent(
             new CustomEvent("config-changed", {
@@ -168,7 +222,7 @@ class CustomCardEditor extends LitElement {
         );
     }
 
-    // Gestion des entités optionnelles
+    // Handling optional entities
     _addOptionalEntity(ev) {
         const entityId = ev.target.value;
 
@@ -204,7 +258,7 @@ class CustomCardEditor extends LitElement {
         });
     }
 
-    // Vérifier si toutes les entités requises ont été trouvées
+    // Check if all required entities have been found
     _getMissingEntities() {
         const requiredEntities = [
             "override_entity", "status_entity", "power_entity", "current_entity",
@@ -212,9 +266,12 @@ class CustomCardEditor extends LitElement {
             "session_energy_entity", "time_elapsed_entity"
         ];
 
-        return requiredEntities.filter(
-            entity => !this.config[entity] && !this.openEVSEEntities[entity]
-        );
+        // Check both in the configuration and in the detected entities
+        return requiredEntities.filter(entity => {
+            const isInConfig = this.config[entity] && this.config[entity].length > 0;
+            const isInDetected = this.openEVSEEntities[entity] && this.openEVSEEntities[entity].length > 0;
+            return !isInConfig && !isInDetected;
+        });
     }
 
     _t(key) {
@@ -233,8 +290,12 @@ class CustomCardEditor extends LitElement {
         const optSchema = optionalEntitySchema();
         const missingEntities = this._getMissingEntities();
 
+        // Log the configuration for debugging
+        console.log("Current config:", this.config);
+        console.log("Detected entities:", this.openEVSEEntities);
+
         return html`
-        <!-- Statut de la détection automatique -->
+        <!-- Auto-detection status -->
                 ${this.config.device_id ? html`
                     <div class="entity-section">
                         <h3>${this._t("required_entities")}</h3>
@@ -242,7 +303,7 @@ class CustomCardEditor extends LitElement {
                             <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
                                 ${missingEntities.length === 0
                         ? this._t("entity_auto_success") + '!'
-                        : this._t("entity_auto_fail") + ":" + missingEntities.join(', ')
+                        : this._t("entity_auto_fail") + ": " + missingEntities.join(', ')
                     }
                             </div>
                         ` : html`
@@ -254,7 +315,7 @@ class CustomCardEditor extends LitElement {
                 ` : ''}
                 
             <div class="form-container">
-                <!-- Configuration principale -->
+                <!-- Main configuration -->
                 <ha-form
                     .hass=${this.hass}
                     .data=${this.config}
@@ -265,7 +326,7 @@ class CustomCardEditor extends LitElement {
                 ></ha-form>
                 
                 
-                <!-- Entités additionnelles -->
+                <!-- Additional entities -->
                 <div class="entities">
                     <h3> ${this._t("additional entities")}</h3>
                     
