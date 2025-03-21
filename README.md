@@ -31,6 +31,11 @@ Then add ressource from UI ( upper right pencil icon, then 3 dots menu ) :
 "/local/community/openevse-card/openevse-card.js"
 Javascript module
 
+## Configuration
+
+Configure it with the card configurator
+
+![image](assets/config.png)
 ## Build
 
 install requirements:
