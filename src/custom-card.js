@@ -278,8 +278,8 @@ class CustomCard extends LitElement {
                 </div>
                 <div class="status-heading">
                     <div
-                    class="status-badge ${chargingStatusEntity?.state ==
-                    'error'
+                        class="status-badge ${chargingStatusEntity?.state ==
+                        'error'
                         ? 'badge-error'
                         : statusEntity?.state == 'disabled'
                         ? 'badge-disabled'
