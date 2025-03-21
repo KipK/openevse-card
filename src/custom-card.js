@@ -174,6 +174,15 @@ class CustomCard extends LitElement {
             .join(':');
     }
 
+    _convertTime(t) {
+        if (isNaN(t) || t < 0) {
+            return "00:00:00";
+        }
+        let totalSeconds = Math.round(t * 60);
+        return this._convertSeconds(totalSeconds);
+    }
+
+
     _t(key) {
         const lang = this._lang || "en";
         return this._translations[lang]?.[key] ||
@@ -362,7 +371,7 @@ class CustomCard extends LitElement {
                           <div
                           class="grid-item-value current-value"
                           >
-                          ${timeElapsedEntity?this._convertSeconds(
+                          ${timeElapsedEntity?this._convertTime(
                               timeElapsedEntity.state
                           ):"00:00:00"}
                           </div>

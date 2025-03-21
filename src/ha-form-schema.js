@@ -76,8 +76,8 @@ export const mainSchema = memoizeOne(
 		{
 			name: "time_elapsed_entity",
 			selector: { entity: { domain: ["sensor"] } },
-			label: "Time Elapsed Seconds",
-			helper_text: "Select openevse.time_elapsed_seconds entity",
+			label: "Charge Time Elapsed",
+			helper_text: "Select openevse.charge_time_elapsed_seconds entity",
 			required: true
 		},
 	]

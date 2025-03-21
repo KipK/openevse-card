@@ -111,13 +111,13 @@ class CustomCardEditor extends LitElement {
         const entityMappings = {
             override_entity: { names: ["override_state"], domains: ["select"], preferredPattern: "select.openevse_override_state" },
             status_entity: { names: ["station_status"], domains: ["sensor"], preferredPattern: "sensor.openevse_station_status" },
-            power_entity: { names: ["current_power_usage", "power_usage"], domains: ["sensor"], preferredPattern: "sensor.openevse_current_power_usage" },
-            current_entity: { names: ["charging_current", "current"], domains: ["sensor"], preferredPattern: "sensor.openevse_charging_current" },
+            power_entity: { names: ["current_power_usage"], domains: ["sensor"], preferredPattern: "sensor.openevse_current_power_usage" },
+            current_entity: { names: ["charging_current"], domains: ["sensor"], preferredPattern: "sensor.openevse_charging_current" },
             vehicle_connected_entity: { names: ["vehicle_connected"], domains: ["binary_sensor"], preferredPattern: "binary_sensor.openevse_vehicle_connected" },
             charging_status_entity: { names: ["charging_status"], domains: ["sensor"], preferredPattern: "sensor.openevse_charging_status" },
             charge_rate_entity: { names: ["charge_rate"], domains: ["number"], preferredPattern: "number.openevse_charge_rate" },
             session_energy_entity: { names: ["usage_this_session"], domains: ["sensor"], preferredPattern: "sensor.openevse_usage_this_session" },
-            time_elapsed_entity: { names: ["time_elapsed", "seconds"], domains: ["sensor"], preferredPattern: "sensor.openevse_time_elapsed" }
+            time_elapsed_entity: { names: ["charge_time_elapsed"], domains: ["sensor"], preferredPattern: "sensor.openevse_charge_time_elapsed" }
         };
 
         // For each required entity type, find the best match
