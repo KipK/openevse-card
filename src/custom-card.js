@@ -160,12 +160,19 @@ class CustomCard extends LitElement {
         this.requestUpdate();
     }
 
-    _convertSeconds = (seconds) => {
-        const hours = ('0' + Math.floor(seconds / 3600)).slice(-2);
-        const minutes = ('0' + Math.floor((seconds % 3600) / 60)).slice(-2);
-        const remainingSeconds = ('0' + (seconds % 60)).slice(-2);
-        return hours + ':' + minutes + ':' + remainingSeconds;
-    };
+    _convertSeconds(sec) {
+        if (isNaN(sec) || sec < 0) {
+            return "00:00:00";
+        }
+
+        let hours = Math.floor(sec / 3600);
+        let minutes = Math.floor((sec % 3600) / 60);
+        let seconds = sec % 60;
+
+        return [hours, minutes, seconds]
+            .map(unit => String(unit).padStart(2, '0'))
+            .join(':');
+    }
 
     _t(key) {
         const lang = this._lang || "en";
@@ -357,7 +364,7 @@ class CustomCard extends LitElement {
                           >
                           ${timeElapsedEntity?this._convertSeconds(
                               timeElapsedEntity.state
-                          ):null}
+                          ):"00:00:00"}
                           </div>
                       </div>
                       `
