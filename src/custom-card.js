@@ -41,6 +41,7 @@ class CustomCard extends LitElement {
         return {
             header: true,
             name: 'OpenEVSE',
+            device_id: '',
             override_entity: '',
             status_entity: '',
             power_entity: '',

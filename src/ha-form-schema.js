@@ -85,7 +85,7 @@ export const mainSchema = memoizeOne(
 
 export const optionalEntitySchema = memoizeOne(
 	() => [
-		{ name: "id", selector: { entity: { domain: ["sensor, binary_sensor"] } }, label: "Entity" },
+		{ name: "id", selector: { entity: { domain: ["sensor", "binary_sensor"] } }, label: "Entity" },
 		{ name: "name", selector: { text: {} }, label: "Name" },
 		{ name: "icon", selector: { icon: {} }, label: "Icon" }
 	]

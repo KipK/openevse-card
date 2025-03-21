@@ -194,12 +194,17 @@ class CustomCardEditor extends LitElement {
         if (updatedConfig.device_id !== this.config.device_id) {
             this._deviceIdChanged = true;
             this.deviceEntitiesLoaded = false; // Reset to force reloading
+
+            // Update the entire config with all form values before loading entities
+            this.config = { ...this.config, ...updatedConfig };
+
             this._loadDeviceEntities(updatedConfig.device_id);
         } else {
             // If other fields have changed, update the config normally
             this._dispatchConfigChanged(updatedConfig);
         }
     }
+
 
     _dispatchConfigChanged(updatedConfig) {
         const newConfig = {
@@ -235,6 +240,9 @@ class CustomCardEditor extends LitElement {
                 ...this.config,
                 optional_entities: this.optionalEntities
             });
+
+            this._entityPickerKey++;
+            this.requestUpdate();
         }
     }
 
@@ -248,10 +256,25 @@ class CustomCardEditor extends LitElement {
     }
 
     _updateOptionalEntity(index, changedValues) {
-        this.optionalEntities = this.optionalEntities?.map((entity, i) =>
-            i === index ? { ...entity, ...changedValues } : entity
+        // Create a copy of the current entity
+        const updatedEntity = { ...this.optionalEntities[index] };
+
+        // Update each field, handling empty values specially
+        for (const key in changedValues) {
+            // If a field is explicitly set to "" or undefined, set it to null
+            if (changedValues[key] === "" || changedValues[key] === undefined) {
+                updatedEntity[key] = null;
+            } else {
+                updatedEntity[key] = changedValues[key];
+            }
+        }
+
+        // Update the entities array
+        this.optionalEntities = this.optionalEntities.map((entity, i) =>
+            i === index ? updatedEntity : entity
         );
 
+        // Update the configuration and fire the event
         this._fireConfigChanged({
             ...this.config,
             optional_entities: this.optionalEntities
