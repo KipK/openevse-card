@@ -232,9 +232,12 @@ class CustomCardEditor extends LitElement {
         const entityId = ev.target.value;
 
         if (entityId && !this.optionalEntities.some((e) => e.id === entityId)) {
+            // Récupérer l'icône par défaut de l'entité
+            const defaultIcon = this.hass.states[entityId]?.attributes?.icon || null;
+
             this.optionalEntities = [
                 ...this.optionalEntities,
-                { id: entityId, name: null, icon: null },
+                { id: entityId, name: null, icon: defaultIcon },
             ];
             this._fireConfigChanged({
                 ...this.config,
