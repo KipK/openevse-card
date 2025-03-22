@@ -1,4 +1,5 @@
-import { LitElement, html, PropertyValues } from 'lit';
+import { LitElement, html, PropertyValues } from 'lit-element';
+import { eventOptions } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict } from './types';
 import { cardStyles } from './styles';
 import translations from './translations';
@@ -46,6 +47,14 @@ class CustomCard extends LitElement {
             clearInterval(this._timeUpdateInterval);
             this._timeUpdateInterval = null;
         }
+    }
+
+    public getGridOptions() {
+        return {
+            columns: 12,
+            max_columns: 12,
+            min_columns: 9
+        };
     }
 
     _setupTimeInterval(): void {
@@ -203,7 +212,7 @@ class CustomCard extends LitElement {
         this._dragging = true;
         this._updateSliderValue(ev);
         this.addEventListener('mousemove', this._handleSliderMove);
-        this.addEventListener("touchmove", this._handleSliderMove);
+        this.addEventListener("touchmove", this._handleSliderMove, { passive: true });
         this.addEventListener('mouseup', this._handleSliderEnd);
         this.addEventListener('mouseout', this._handleSliderEnd);
         this.addEventListener('touchend', this._handleSliderEnd);
@@ -215,7 +224,7 @@ class CustomCard extends LitElement {
         }
     };
 
-    _handleSliderEnd = (ev: MouseEvent | TouchEvent): void => {
+    _handleSliderEnd = (): void => {
         if (this._dragging && this.hass && this.config?.charge_rate_entity) {
             this.removeEventListener('mousemove', this._handleSliderMove);
             this.removeEventListener('touchmove', this._handleSliderMove);
@@ -298,6 +307,7 @@ class CustomCard extends LitElement {
             key;
     }
 
+    @eventOptions({ passive: true })
     // Render the card
     override render() {
         if (!this.hass || !this.config) {

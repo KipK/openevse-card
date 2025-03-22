@@ -1,4 +1,4 @@
-import { LitElement, html, css, PropertyValues } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, SchemaItem } from './types';
 import { loadHaForm } from './load-ha-form/load-ha-form';
 import { mainSchema, optionalEntitySchema } from './ha-form-schema';

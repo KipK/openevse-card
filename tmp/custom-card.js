@@ -1,4 +1,11 @@
-import { LitElement, html } from 'lit';
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+import { LitElement, html } from 'lit-element';
+import { eventOptions } from 'lit/decorators.js';
 import { cardStyles } from './styles';
 import translations from './translations';
 class CustomCard extends LitElement {
@@ -28,7 +35,7 @@ class CustomCard extends LitElement {
                 this._updateSliderValue(ev);
             }
         };
-        this._handleSliderEnd = (ev) => {
+        this._handleSliderEnd = () => {
             if (this._dragging && this.hass && this.config?.charge_rate_entity) {
                 this.removeEventListener('mousemove', this._handleSliderMove);
                 this.removeEventListener('touchmove', this._handleSliderMove);
@@ -58,6 +65,13 @@ class CustomCard extends LitElement {
             clearInterval(this._timeUpdateInterval);
             this._timeUpdateInterval = null;
         }
+    }
+    getGridOptions() {
+        return {
+            columns: 12,
+            max_columns: 12,
+            min_columns: 9
+        };
     }
     _setupTimeInterval() {
         // Clear any existing interval
@@ -190,7 +204,7 @@ class CustomCard extends LitElement {
         this._dragging = true;
         this._updateSliderValue(ev);
         this.addEventListener('mousemove', this._handleSliderMove);
-        this.addEventListener("touchmove", this._handleSliderMove);
+        this.addEventListener("touchmove", this._handleSliderMove, { passive: true });
         this.addEventListener('mouseup', this._handleSliderEnd);
         this.addEventListener('mouseout', this._handleSliderEnd);
         this.addEventListener('touchend', this._handleSliderEnd);
@@ -251,7 +265,6 @@ class CustomCard extends LitElement {
             this._translations["en"]?.[key] ||
             key;
     }
-    // Render the card
     render() {
         if (!this.hass || !this.config) {
             return html ``;
@@ -510,5 +523,9 @@ class CustomCard extends LitElement {
     `;
     }
 }
+__decorate([
+    eventOptions({ passive: true })
+    // Render the card
+], CustomCard.prototype, "render", null);
 export { CustomCard };
 //# sourceMappingURL=custom-card.js.map

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2021",
-    "module": "es2020",
+    "module": "esnext",
     "lib": ["es2021", "DOM", "DOM.Iterable"],
     "declaration": true,
     "declarationMap": true,
@@ -20,6 +20,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "noImplicitOverride": true,
     "plugins": [
       {

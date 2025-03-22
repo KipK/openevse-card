@@ -18,16 +18,16 @@ export interface CardConfig {
     header?: boolean;
     name?: string;
     device_id?: string;
+    optional_entities?: OptionalEntity[];
     override_entity?: string;
     status_entity?: string;
     power_entity?: string;
     current_entity?: string;
-    charge_rate_entity?: string;
     vehicle_connected_entity?: string;
     charging_status_entity?: string;
+    charge_rate_entity?: string;
     session_energy_entity?: string;
     time_elapsed_entity?: string;
-    optional_entities?: OptionalEntity[];
 }
 export interface OptionalEntity {
     id?: string;

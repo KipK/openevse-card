@@ -9,7 +9,7 @@
     "scripts": {
         "deploy": "npm run build && npm run copy",
         "copy": "scp -P 2222 ./dist/*.js root@homeassistant.local:/homeassistant/www/community/openevse-card/",
-        "build": "tsc",
+        "build": "tsc && rollup -c",
         "build:watch": "tsc --watch",
         "clean": "rimraf my-element.{d.ts,d.ts.map,js,js.map} test/my-element.{d.ts,d.ts.map,js,js.map} test/my-element_test.{d.ts,d.ts.map,js,js.map}",
         "lint": "npm run lint:lit-analyzer && npm run lint:eslint",

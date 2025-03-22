@@ -13,6 +13,7 @@ window.customCards.push({
     description: 'A custom card for OpenEVSE',
 });
 
+
 // Add this to make TypeScript happy with the customCards property
 declare global {
     interface Window {
