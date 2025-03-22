@@ -203,6 +203,7 @@ class CustomCard extends LitElement {
     }
 
     // Custom slider handlers
+    @eventOptions({ passive: true })
     _handleSliderStart(ev: MouseEvent | TouchEvent): void {
         if (!this.hass || !this.config?.charge_rate_entity) return;
 

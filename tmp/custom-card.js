@@ -541,6 +541,9 @@ class CustomCard extends LitElement {
 }
 __decorate([
     eventOptions({ passive: true })
+], CustomCard.prototype, "_handleSliderStart", null);
+__decorate([
+    eventOptions({ passive: true })
     // Render the card
 ], CustomCard.prototype, "render", null);
 export { CustomCard };
