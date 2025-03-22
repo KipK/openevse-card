@@ -1,13 +1,13 @@
 export interface HomeAssistant {
     states: Record<string, EntityState>;
-    callService: (domain: string, service: string, data: any) => void;
+    callService: (domain: string, service: string, data: Record<string, unknown>) => void;
     formatEntityState: (entity: EntityState) => string;
     language: string;
     entities?: Record<string, RegistryEntity>;
 }
 export interface EntityState {
     state: string;
-    attributes: Record<string, any>;
+    attributes: Record<string, unknown>;
 }
 export interface RegistryEntity {
     entity_id: string;
@@ -31,9 +31,9 @@ export interface CardConfig {
 }
 export interface OptionalEntity {
     id?: string;
-    name?: string | null;
-    icon?: string | null;
-    value?: string | null;
+    name: string | null;
+    icon: string | null;
+    value: string | null;
 }
 export interface TranslationDict {
     [key: string]: {
@@ -43,10 +43,14 @@ export interface TranslationDict {
 export interface SchemaItem {
     name: string;
     type?: string;
-    selector?: any;
+    selector?: Record<string, unknown>;
     label?: string;
     helper_text?: string;
     required?: boolean;
     schema?: SchemaItem[];
+}
+export interface EntityState {
+    state: string;
+    attributes: Record<string, unknown>;
 }
 //# sourceMappingURL=types.d.ts.map

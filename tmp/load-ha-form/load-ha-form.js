@@ -15,7 +15,7 @@ export const loadHaForm = async () => {
         return;
     // Wait for the partial-panel-resolver to be defined
     await customElements.whenDefined('partial-panel-resolver');
-    // Create and configure the panel resolver
+    // Create and configure the panel resolver with proper typing
     const ppr = document.createElement('partial-panel-resolver');
     ppr.hass = {
         panels: [
@@ -30,7 +30,7 @@ export const loadHaForm = async () => {
     await ppr.routerOptions.routes.tmp.load();
     // Wait for the config panel to be defined
     await customElements.whenDefined('ha-panel-config');
-    // Create the config panel and load automation components
+    // Create the config panel and load automation components with proper typing
     const cpr = document.createElement('ha-panel-config');
     await cpr.routerOptions.routes.automation.load();
 };

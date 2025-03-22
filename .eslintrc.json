@@ -3,7 +3,8 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:lit/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -11,7 +12,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "lit"
     ],
     "env": {
         "browser": true
@@ -42,7 +44,7 @@
         },
         {
             "files": [
-                "*_test.ts",
+                "*_test.ts"
             ],
             "rules": {
                 "@typescript-eslint/no-explicit-any": "off"

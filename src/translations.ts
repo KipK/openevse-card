@@ -1,4 +1,4 @@
-let translations =  {
+const translations =  {
 	"en": {
 		"disabled": "disabled",
 		"sleeping": "disabled",

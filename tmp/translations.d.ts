@@ -1,4 +1,4 @@
-declare let translations: {
+declare const translations: {
     en: {
         disabled: string;
         sleeping: string;

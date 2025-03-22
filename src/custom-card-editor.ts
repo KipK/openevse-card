@@ -187,7 +187,7 @@ class CustomCardEditor extends LitElement {
         // whether the entity does not exist or the device_id has changed
         for (const [key, value] of Object.entries(deviceEntities)) {
             if (!this._isEntityConfigured(key) || this._deviceIdChanged) {
-                (updatedConfig as any)[key] = value;
+                (updatedConfig as Record<keyof CardConfig, unknown>)[key as keyof CardConfig] = value;
             }
         }
 
@@ -250,11 +250,11 @@ class CustomCardEditor extends LitElement {
 
         if (entityId && !this.optionalEntities.some((e) => e.id === entityId)) {
             // Get the default icon for the entity
-            const defaultIcon = this.hass?.states[entityId]?.attributes?.icon || null;
+            const defaultIcon = typeof this.hass?.states[entityId]?.attributes?.icon === 'string' ? this.hass.states[entityId].attributes.icon : null;
 
             this.optionalEntities = [
                 ...this.optionalEntities,
-                { id: entityId, name: null, icon: defaultIcon },
+                { id: entityId, name: null, icon: defaultIcon, value: null },
             ];
             this._fireConfigChanged({
                 ...this.config,
@@ -274,18 +274,39 @@ class CustomCardEditor extends LitElement {
             optional_entities: this.optionalEntities
         });
     }
-
-    _updateOptionalEntity(index: number, changedValues: Record<string, any>): void {
+    _updateOptionalEntity(index: number, changedValues: Partial<OptionalEntity>): void {
         // Create a copy of the current entity
         const updatedEntity = { ...this.optionalEntities[index] };
 
+        // Type the keys properly
+        const keys = Object.keys(changedValues) as Array<keyof OptionalEntity>;
+
         // Update each field, handling empty values specially
-        for (const key in changedValues) {
-            // If a field is explicitly set to "" or undefined, set it to null
-            if (changedValues[key] === "" || changedValues[key] === undefined) {
-                updatedEntity[key as keyof OptionalEntity] = undefined;
+        for (const key of keys) {
+            const value = changedValues[key];
+
+            if (value === "" || value === undefined) {
+                // Use specific property assignments instead of any
+                if (key === 'id') {
+                    updatedEntity.id = undefined;
+                } else if (key === 'name') {
+                    updatedEntity.name = null;
+                } else if (key === 'icon') {
+                    updatedEntity.icon = null;
+                } else if (key === 'value') {
+                    updatedEntity.value = null;
+                }
             } else {
-                updatedEntity[key as keyof OptionalEntity] = changedValues[key];
+                // Type safe assignment for each property
+                if (key === 'id') {
+                    updatedEntity.id = value as string | undefined;
+                } else if (key === 'name') {
+                    updatedEntity.name = value as string | null;
+                } else if (key === 'icon') {
+                    updatedEntity.icon = value as string | null;
+                } else if (key === 'value') {
+                    updatedEntity.value = value as string | null;
+                }
             }
         }
 
@@ -301,6 +322,7 @@ class CustomCardEditor extends LitElement {
         });
     }
 
+    
     // Check if all required entities have been found
     _getMissingEntities(): string[] {
         const requiredEntities = [
@@ -435,7 +457,7 @@ class CustomCardEditor extends LitElement {
                   <ha-entity-picker
                       .hass="${this.hass}"
                       .includeDomains=${['sensor', 'binary_sensor']}
-                      .entityFilter=${(stateObj: any) => {
+                      .entityFilter=${(stateObj: { entity_id: string }) => {
                     // If no device ID is selected, allow all entities
                     if (!this.config.device_id) return true;
 

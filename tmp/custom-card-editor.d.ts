@@ -35,7 +35,7 @@ declare class CustomCardEditor extends LitElement {
     _fireConfigChanged(newConfig: CardConfig): void;
     _addOptionalEntity(ev: CustomEvent): void;
     _removeEntity(index: number): void;
-    _updateOptionalEntity(index: number, changedValues: Record<string, any>): void;
+    _updateOptionalEntity(index: number, changedValues: Partial<OptionalEntity>): void;
     _getMissingEntities(): string[];
     _t(key: string): string;
     render(): import("lit-html").TemplateResult<1>;

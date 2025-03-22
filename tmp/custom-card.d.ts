@@ -24,7 +24,7 @@ declare class CustomCard extends LitElement {
             type: NumberConstructor;
         };
         _timeUpdateInterval: {
-            type: ObjectConstructor;
+            type: NumberConstructor;
         };
         _isCharging: {
             type: BooleanConstructor;
@@ -37,7 +37,7 @@ declare class CustomCard extends LitElement {
     _lang?: string;
     _localTimeElapsed: number;
     _lastEntityTime: number;
-    _timeUpdateInterval: any;
+    _timeUpdateInterval: number | null;
     _isCharging: boolean;
     _translations: TranslationDict;
     constructor();

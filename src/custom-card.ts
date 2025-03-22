@@ -4,6 +4,13 @@ import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict } from './ty
 import { cardStyles } from './styles';
 import translations from './translations';
 
+// Interface for detailed event type
+interface CustomDetailEvent extends Event {
+    detail: {
+        entityId: string;
+    };
+}
+
 class CustomCard extends LitElement {
     static override get properties() {
         return {
@@ -14,7 +21,7 @@ class CustomCard extends LitElement {
             _lang: { type: String },
             _localTimeElapsed: { type: Number },
             _lastEntityTime: { type: Number },
-            _timeUpdateInterval: { type: Object },
+            _timeUpdateInterval: { type: Number },
             _isCharging: { type: Boolean }
         };
     }
@@ -26,7 +33,7 @@ class CustomCard extends LitElement {
     _lang?: string;
     _localTimeElapsed: number = 0;
     _lastEntityTime: number = 0;
-    _timeUpdateInterval: any = null;
+    _timeUpdateInterval: number | null = null;
     _isCharging: boolean = false;
     _translations: TranslationDict = translations;
 
@@ -67,7 +74,7 @@ class CustomCard extends LitElement {
         // Only set up interval if charging
         if (this._isCharging) {
             // Set up new interval that runs every second
-            this._timeUpdateInterval = setInterval(() => {
+            this._timeUpdateInterval = window.setInterval(() => {
                 // Increment local time by 1 second in minutes (1/60)
                 this._localTimeElapsed += (1 / 60);
                 this.requestUpdate();
@@ -197,8 +204,9 @@ class CustomCard extends LitElement {
         const event = new Event('hass-more-info', {
             bubbles: true,
             composed: true,
-        });
-        (event as any).detail = { entityId: entity_id };
+        }) as CustomDetailEvent;
+
+        event.detail = { entityId: entity_id };
         this.dispatchEvent(event);
     }
 
@@ -253,9 +261,9 @@ class CustomCard extends LitElement {
         if (!track) return;
 
         const trackRect = track.getBoundingClientRect();
-        const min = chargeRateEntity?.attributes.min || 6;
-        const max = chargeRateEntity?.attributes.max || 32;
-        const step = chargeRateEntity?.attributes.step || 1;
+        const min = typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 6;
+        const max = typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32;
+        const step = typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1;
 
         // Get cursor position
         let x;
@@ -271,7 +279,7 @@ class CustomCard extends LitElement {
 
         // Calculate value respecting min, max, and step
         let value = min + percentage * (max - min);
-        value = Math.round(value / step) * step;
+        value = Math.round(value / (step as number)) * (step as number);
         value = Math.min(Math.max(value, min), max);
 
         // Update slider value
@@ -284,9 +292,9 @@ class CustomCard extends LitElement {
             return "00:00:00";
         }
 
-        let hours = Math.floor(sec / 3600);
-        let minutes = Math.floor((sec % 3600) / 60);
-        let seconds = Math.floor(sec % 60);
+        const hours = Math.floor(sec / 3600);
+        const minutes = Math.floor((sec % 3600) / 60);
+        const seconds = Math.floor(sec % 60);
 
         return [hours, minutes, seconds]
             .map(unit => String(unit).padStart(2, '0'))
@@ -297,7 +305,7 @@ class CustomCard extends LitElement {
         if (isNaN(t) || t < 0) {
             return "00:00:00";
         }
-        let totalSeconds = Math.round(t * 60);
+        const totalSeconds = Math.round(t * 60);
         return this._convertSeconds(totalSeconds);
     }
 
@@ -338,12 +346,12 @@ class CustomCard extends LitElement {
         const getOptionalEntities = (): OptionalEntity[] =>
             this.config?.optional_entities?.map((entity) => {
                 return {
-                    name: entity.name
-                        ? entity.name
-                        : entity.id ? this.hass?.states[entity.id]?.attributes.friendly_name : undefined,
+                    name: entity.name as string | null
+                        ? entity.name as string | null
+                        : entity.id ? this.hass?.states[entity.id]?.attributes.friendly_name as string | null : null,
                     value: entity.id ? this.hass?.formatEntityState(
                         this.hass.states[entity.id]
-                    ) : null,
+                    ) ?? null : null,
                     icon: entity.icon,
                     id: entity.id ? entity.id : undefined,
                 };
@@ -356,13 +364,13 @@ class CustomCard extends LitElement {
         const max = chargeRateEntity?.attributes.max || 32;
         const value = this._dragging
             ? this._sliderValue ?? min
-            : Number(chargeRateEntity?.state || 0);
-        const percentage = ((value - min) / (max - min)) * 100;
+            : chargeRateEntity?.state ? parseFloat(chargeRateEntity.state) : min;
+        const percentage = ((Number(value) - Number(min)) / (Number(max) - Number(min))) * 100;
 
         // Format the slider value for display
         const formatValue = (val: number): string => {
             const step = chargeRateEntity?.attributes.step || 1;
-            return step < 1 ? val.toFixed(1) : val.toFixed(0);
+            return typeof step === 'number' && step < 1 ? val.toFixed(1) : val.toFixed(0);
         };
 
         return html`
@@ -445,7 +453,7 @@ class CustomCard extends LitElement {
                     </div>
                 </div>
                 `
-            : html`
+                : html`
                 <div class="grid-item">
                     <div class="grid-item-label">${this._t("power")}</div>
                     <div class="grid-item-value current-value">0 W</div>
@@ -468,7 +476,7 @@ class CustomCard extends LitElement {
                     </div>
                 </div>
                 `
-            : html`
+                : html`
                 <div class="grid-item">
                     <div class="grid-item-label">${this._t("current")}</div>
                     <div class="grid-item-value current-value">0 A</div>
@@ -578,7 +586,7 @@ class CustomCard extends LitElement {
           <div class="slider-container">
           <div class="slider-label">${this._t("charge rate")}</div>
           <div class="slider-badge">
-              ${formatValue(value)}
+              ${formatValue(Number(value))}
               ${chargeRateEntity?.attributes.unit_of_measurement ||
             'A'}
           </div>

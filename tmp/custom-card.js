@@ -18,7 +18,7 @@ class CustomCard extends LitElement {
             _lang: { type: String },
             _localTimeElapsed: { type: Number },
             _lastEntityTime: { type: Number },
-            _timeUpdateInterval: { type: Object },
+            _timeUpdateInterval: { type: Number },
             _isCharging: { type: Boolean }
         };
     }
@@ -82,7 +82,7 @@ class CustomCard extends LitElement {
         // Only set up interval if charging
         if (this._isCharging) {
             // Set up new interval that runs every second
-            this._timeUpdateInterval = setInterval(() => {
+            this._timeUpdateInterval = window.setInterval(() => {
                 // Increment local time by 1 second in minutes (1/60)
                 this._localTimeElapsed += (1 / 60);
                 this.requestUpdate();
@@ -219,9 +219,9 @@ class CustomCard extends LitElement {
         if (!track)
             return;
         const trackRect = track.getBoundingClientRect();
-        const min = chargeRateEntity?.attributes.min || 6;
-        const max = chargeRateEntity?.attributes.max || 32;
-        const step = chargeRateEntity?.attributes.step || 1;
+        const min = typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 6;
+        const max = typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32;
+        const step = typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1;
         // Get cursor position
         let x;
         if (ev.type.startsWith('touch')) {
@@ -245,9 +245,9 @@ class CustomCard extends LitElement {
         if (isNaN(sec) || sec < 0) {
             return "00:00:00";
         }
-        let hours = Math.floor(sec / 3600);
-        let minutes = Math.floor((sec % 3600) / 60);
-        let seconds = Math.floor(sec % 60);
+        const hours = Math.floor(sec / 3600);
+        const minutes = Math.floor((sec % 3600) / 60);
+        const seconds = Math.floor(sec % 60);
         return [hours, minutes, seconds]
             .map(unit => String(unit).padStart(2, '0'))
             .join(':');
@@ -256,7 +256,7 @@ class CustomCard extends LitElement {
         if (isNaN(t) || t < 0) {
             return "00:00:00";
         }
-        let totalSeconds = Math.round(t * 60);
+        const totalSeconds = Math.round(t * 60);
         return this._convertSeconds(totalSeconds);
     }
     _t(key) {
@@ -287,8 +287,8 @@ class CustomCard extends LitElement {
             return {
                 name: entity.name
                     ? entity.name
-                    : entity.id ? this.hass?.states[entity.id]?.attributes.friendly_name : undefined,
-                value: entity.id ? this.hass?.formatEntityState(this.hass.states[entity.id]) : null,
+                    : entity.id ? this.hass?.states[entity.id]?.attributes.friendly_name : null,
+                value: entity.id ? this.hass?.formatEntityState(this.hass.states[entity.id]) ?? null : null,
                 icon: entity.icon,
                 id: entity.id ? entity.id : undefined,
             };
@@ -299,12 +299,12 @@ class CustomCard extends LitElement {
         const max = chargeRateEntity?.attributes.max || 32;
         const value = this._dragging
             ? this._sliderValue ?? min
-            : Number(chargeRateEntity?.state || 0);
-        const percentage = ((value - min) / (max - min)) * 100;
+            : chargeRateEntity?.state ? parseFloat(chargeRateEntity.state) : min;
+        const percentage = ((Number(value) - Number(min)) / (Number(max) - Number(min))) * 100;
         // Format the slider value for display
         const formatValue = (val) => {
             const step = chargeRateEntity?.attributes.step || 1;
-            return step < 1 ? val.toFixed(1) : val.toFixed(0);
+            return typeof step === 'number' && step < 1 ? val.toFixed(1) : val.toFixed(0);
         };
         return html `
       <ha-card>
@@ -482,7 +482,7 @@ class CustomCard extends LitElement {
           <div class="slider-container">
           <div class="slider-label">${this._t("charge rate")}</div>
           <div class="slider-badge">
-              ${formatValue(value)}
+              ${formatValue(Number(value))}
               ${chargeRateEntity?.attributes.unit_of_measurement ||
             'A'}
           </div>

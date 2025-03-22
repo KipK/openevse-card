@@ -198,10 +198,10 @@ class CustomCardEditor extends LitElement {
         const entityId = ev.target?.value;
         if (entityId && !this.optionalEntities.some((e) => e.id === entityId)) {
             // Get the default icon for the entity
-            const defaultIcon = this.hass?.states[entityId]?.attributes?.icon || null;
+            const defaultIcon = typeof this.hass?.states[entityId]?.attributes?.icon === 'string' ? this.hass.states[entityId].attributes.icon : null;
             this.optionalEntities = [
                 ...this.optionalEntities,
-                { id: entityId, name: null, icon: defaultIcon },
+                { id: entityId, name: null, icon: defaultIcon, value: null },
             ];
             this._fireConfigChanged({
                 ...this.config,
@@ -221,14 +221,40 @@ class CustomCardEditor extends LitElement {
     _updateOptionalEntity(index, changedValues) {
         // Create a copy of the current entity
         const updatedEntity = { ...this.optionalEntities[index] };
+        // Type the keys properly
+        const keys = Object.keys(changedValues);
         // Update each field, handling empty values specially
-        for (const key in changedValues) {
-            // If a field is explicitly set to "" or undefined, set it to null
-            if (changedValues[key] === "" || changedValues[key] === undefined) {
-                updatedEntity[key] = undefined;
+        for (const key of keys) {
+            const value = changedValues[key];
+            if (value === "" || value === undefined) {
+                // Use specific property assignments instead of any
+                if (key === 'id') {
+                    updatedEntity.id = undefined;
+                }
+                else if (key === 'name') {
+                    updatedEntity.name = null;
+                }
+                else if (key === 'icon') {
+                    updatedEntity.icon = null;
+                }
+                else if (key === 'value') {
+                    updatedEntity.value = null;
+                }
             }
             else {
-                updatedEntity[key] = changedValues[key];
+                // Type safe assignment for each property
+                if (key === 'id') {
+                    updatedEntity.id = value;
+                }
+                else if (key === 'name') {
+                    updatedEntity.name = value;
+                }
+                else if (key === 'icon') {
+                    updatedEntity.icon = value;
+                }
+                else if (key === 'value') {
+                    updatedEntity.value = value;
+                }
             }
         }
         // Update the entities array
