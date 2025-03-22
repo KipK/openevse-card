@@ -352,10 +352,10 @@ class CustomCard extends LitElement {
 
         // Slider calculations
         const min = chargeRateEntity?.attributes.min || 0;
-        const max = chargeRateEntity?.attributes.max || 100;
+        const max = chargeRateEntity?.attributes.max || 32;
         const value = this._dragging
             ? this._sliderValue ?? min
-            : Number(chargeRateEntity?.state);
+            : Number(chargeRateEntity?.state || 0);
         const percentage = ((value - min) / (max - min)) * 100;
 
         // Format the slider value for display
@@ -440,11 +440,16 @@ class CustomCard extends LitElement {
                     >
                     ${powerEntity ? this.hass.formatEntityState(
                             powerEntity
-                        ) : null}
+                        ) : "0 W"}
                     </div>
                 </div>
                 `
-                : ''}
+            : html`
+                <div class="grid-item">
+                    <div class="grid-item-label">${this._t("power")}</div>
+                    <div class="grid-item-value current-value">0 W</div>
+                </div>`
+            }
           ${currentEntity
                 ? html`
                 <div class="grid-item">
@@ -458,11 +463,16 @@ class CustomCard extends LitElement {
                     >
                     ${currentEntity ? this.hass.formatEntityState(
                             currentEntity
-                        ) : null}
+                        ) : "0 A"}
                     </div>
                 </div>
                 `
-                : ''}
+            : html`
+                <div class="grid-item">
+                    <div class="grid-item-label">${this._t("current")}</div>
+                    <div class="grid-item-value current-value">0 A</div>
+                </div>`
+            }
           ${sessionEnergyEntity
                 ? html`
                 <div class="grid-item">
@@ -476,11 +486,17 @@ class CustomCard extends LitElement {
                     >
                     ${sessionEnergyEntity ? this.hass.formatEntityState(
                             sessionEnergyEntity
-                        ) : null}
+                        ) : "0 kWh"}
                     </div>
                 </div>
                 `
-                : ''}
+                : html`
+                <div class="grid-item">
+                    <div class="grid-item-label">${this._t("session")}</div>
+                    <div class="grid-item-value current-value">0 kWh</div>
+                </div>`
+            }
+
           ${timeElapsedEntity
                 ? html`
           <div class="grid-item">
@@ -491,8 +507,12 @@ class CustomCard extends LitElement {
               ${this._convertTime(this._localTimeElapsed || 0)}
               </div>
           </div>
-          `
-                : ''}
+          `: html`
+                <div class="grid-item">
+                    <div class="grid-item-label">${this._t("elapsed")}</div>
+                    <div class="grid-item-value current-value">00:00:00</div>
+                </div>`
+            }
           </div>
           <div class="override-controls">
           <div class="override-row">
@@ -559,7 +579,7 @@ class CustomCard extends LitElement {
           <div class="slider-badge">
               ${formatValue(value)}
               ${chargeRateEntity?.attributes.unit_of_measurement ||
-            ''}
+            'A'}
           </div>
           <div class="slider-row">
               <div
