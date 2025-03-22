@@ -1,27 +1,51 @@
 {
     "root": true,
-    "extends": ["eslint:recommended"],
-    "parser": "@babel/eslint-parser",
-    "globals": {
-        "chai": "readonly"
-    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "requireConfigFile": false,
+        "ecmaVersion": 2020,
         "sourceType": "module"
     },
+    "plugins": [
+        "@typescript-eslint"
+    ],
     "env": {
-        "browser": true,
-        "mocha": true
+        "browser": true
     },
     "rules": {
-        "no-unexpected-multiline": "off",
-        "no-unused-vars": "off"
+        "no-prototype-builtins": "off",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ]
     },
     "overrides": [
         {
-            "files": ["rollup.config.js"],
+            "files": [
+                "rollup.config.js"
+            ],
             "env": {
                 "node": true
+            }
+        },
+        {
+            "files": [
+                "*_test.ts",
+            ],
+            "rules": {
+                "@typescript-eslint/no-explicit-any": "off"
             }
         }
     ]

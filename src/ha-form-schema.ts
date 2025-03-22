@@ -1,9 +1,10 @@
 import memoizeOne from "memoize-one";
+import { SchemaItem } from "./types";
 
 export const mainSchema = memoizeOne(
-	(deviceEntities = {}) => {
+	(deviceEntities: Record<string, string[]> = {}): SchemaItem[] => {
 		// Base schema
-		const schema = [
+		const schema: SchemaItem[] = [
 			{
 				type: "grid",
 				name: "",
@@ -23,7 +24,7 @@ export const mainSchema = memoizeOne(
 
 		// Add entity selectors with filtering
 		// We use the device entity lists that were passed in
-		const entitySelectors = [
+		const entitySelectors: SchemaItem[] = [
 			{
 				name: "override_entity",
 				selector: {
@@ -139,7 +140,7 @@ export const mainSchema = memoizeOne(
 );
 
 export const optionalEntitySchema = memoizeOne(
-	(allEntities = []) => [
+	(allEntities: string[] = []): SchemaItem[] => [
 		{
 			name: "id",
 			selector: {

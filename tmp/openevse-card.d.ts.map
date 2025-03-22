@@ -1,0 +1,1 @@
+{"version":3,"file":"openevse-card.d.ts","sourceRoot":"","sources":["../src/openevse-card.ts"],"names":[],"mappings":"AAgBA,OAAO,CAAC,MAAM,CAAC;IACX,UAAU,MAAM;QACZ,WAAW,EAAE,KAAK,CAAC;YACf,IAAI,EAAE,MAAM,CAAC;YACb,IAAI,EAAE,MAAM,CAAC;YACb,WAAW,EAAE,MAAM,CAAC;SACvB,CAAC,CAAC;KACN;CACJ"}
