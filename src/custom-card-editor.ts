@@ -353,7 +353,6 @@ class CustomCardEditor extends LitElement {
 
         // Get entities for the selected device
         const deviceEntities: Record<string, string[]> = {};
-        const allDeviceEntities: string[] = [];
 
         if (this.config.device_id && this.hass.entities) {
             const entityRegistry = Object.values(this.hass.entities);
@@ -372,13 +371,12 @@ class CustomCardEditor extends LitElement {
                 }
 
                 deviceEntities[domain].push(entity.entity_id);
-                allDeviceEntities.push(entity.entity_id);
             });
         }
 
         // Create schema with entity lists
         const schema = mainSchema(deviceEntities);
-        const optSchema = optionalEntitySchema(allDeviceEntities);
+        const optSchema = optionalEntitySchema(deviceEntities);
         const missingEntities = this._getMissingEntities();
 
         return html`
@@ -455,24 +453,10 @@ class CustomCardEditor extends LitElement {
                   <ha-entity-picker
                       .hass="${this.hass}"
                       .includeDomains=${['sensor', 'binary_sensor']}
-                      .entityFilter=${(stateObj: { entity_id: string }) => {
-                    // If no device ID is selected, allow all entities
-                    if (!this.config.device_id) return true;
-
-                    // Find the entity in the entity registry
-                    const entityId = stateObj.entity_id;
-                    const entityRegistry = this.hass?.entities || {};
-
-                    // Check if the entity belongs to the selected device
-                    for (const regEntityId in entityRegistry) {
-                        const entity = entityRegistry[regEntityId];
-                        if (entity.entity_id === entityId && entity.device_id === this.config.device_id) {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }}
+                       .includeEntities=${[
+                            ...(deviceEntities.sensor || []),
+                            ...(deviceEntities.binary_sensor || [])
+                        ]}
                       @value-changed="${this._addOptionalEntity}"
                   ></ha-entity-picker>
               </div>

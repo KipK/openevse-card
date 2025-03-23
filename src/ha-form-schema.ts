@@ -140,18 +140,21 @@ export const mainSchema = memoizeOne(
 );
 
 export const optionalEntitySchema = memoizeOne(
-	(allEntities: string[] = []): SchemaItem[] => [
-		{
-			name: "id",
-			selector: {
-				entity: {
-					domain: ["sensor", "binary_sensor"],
-					include_entities: allEntities
-				}
+	(deviceEntities: Record<string, string[]> = {}): SchemaItem[] => {
+		const schema: SchemaItem[] = [
+			{
+				name: "id",
+				selector: {
+					entity: {
+						domain: ["sensor", "binary_sensor"],
+						include_entities: [...deviceEntities.sensor || [], ...deviceEntities.binary_sensor || []]  // Now correctly passing an array
+					}
+				},
+				label: "Entity"
 			},
-			label: "Entity"
-		},
-		{ name: "name", selector: { text: {} }, label: "Name" },
-		{ name: "icon", selector: { icon: {} }, label: "Icon" }
-	]
+			{ name: "name", selector: { text: {} }, label: "Name" },
+			{ name: "icon", selector: { icon: {} }, label: "Icon" }
+		];
+		return schema;  
+	}
 );

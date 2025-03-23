@@ -132,18 +132,21 @@ export const mainSchema = memoizeOne((deviceEntities = {}) => {
     ];
     return [...schema, ...entitySelectors];
 });
-export const optionalEntitySchema = memoizeOne((allEntities = []) => [
-    {
-        name: "id",
-        selector: {
-            entity: {
-                domain: ["sensor", "binary_sensor"],
-                include_entities: allEntities
-            }
+export const optionalEntitySchema = memoizeOne((deviceEntities = {}) => {
+    const schema = [
+        {
+            name: "id",
+            selector: {
+                entity: {
+                    domain: ["sensor", "binary_sensor"],
+                    include_entities: [...deviceEntities.sensor || [], ...deviceEntities.binary_sensor || []] // Now correctly passing an array
+                }
+            },
+            label: "Entity"
         },
-        label: "Entity"
-    },
-    { name: "name", selector: { text: {} }, label: "Name" },
-    { name: "icon", selector: { icon: {} }, label: "Icon" }
-]);
+        { name: "name", selector: { text: {} }, label: "Name" },
+        { name: "icon", selector: { icon: {} }, label: "Icon" }
+    ];
+    return schema;
+});
 //# sourceMappingURL=ha-form-schema.js.map
