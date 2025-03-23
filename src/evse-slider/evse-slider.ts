@@ -159,7 +159,7 @@ export class EVSESlider extends LitElement {
       border-radius: 6px;
       display: flex;
       align-items: center;
-      background: var(--divider-color, #e0e0e0);
+      background: color-mix(in srgb, var(--primary-color) 20%, transparent);
       box-shadow: var(--control-button-background, none);
       touch-action: none; /* Prevent scrolling on touch */
     }

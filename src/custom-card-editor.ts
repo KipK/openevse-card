@@ -3,6 +3,7 @@ import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, SchemaItem 
 import { loadHaForm } from './load-ha-form/load-ha-form';
 import { mainSchema, optionalEntitySchema } from './ha-form-schema';
 import translations from './translations';
+import '@home-assistant/frontend/src/components/ha-entity-picker';
 
 // Editor for the card configuration
 class CustomCardEditor extends LitElement {
@@ -383,7 +384,6 @@ class CustomCardEditor extends LitElement {
       <!-- Auto-detection status -->
       ${this.config.device_id ? html`
           <div class="entity-section">
-              <h3>${this._t("required_entities")}</h3>
               ${this.deviceEntitiesLoaded ? html`
                   <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
                       ${missingEntities.length === 0
