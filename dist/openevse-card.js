@@ -125,7 +125,7 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			background-color: var(--card-background-color);
+			background-color: transparent;
 			padding: 8px;
 			cursor: pointer;
 			transition: all 0.2s;
@@ -287,8 +287,9 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
       padding: 8px;
       padding-bottom: 15px;
       padding-top: 15px;
-      background: var(--card-background-color, #fff);
-      border: 1px solid var(--divider-color, #e0e0e0);
+      background-color: transparent;
+	  border: 1px solid var(--divider-color, #e0e0e0);
+
     }
     
     .slider-row {

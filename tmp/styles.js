@@ -104,7 +104,7 @@ const cardStyles = css `
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			background-color: var(--card-background-color);
+			background-color: transparent;
 			padding: 8px;
 			cursor: pointer;
 			transition: all 0.2s;

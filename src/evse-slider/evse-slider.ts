@@ -132,8 +132,9 @@ export class EVSESlider extends LitElement {
       padding: 8px;
       padding-bottom: 15px;
       padding-top: 15px;
-      background: var(--card-background-color, #fff);
-      border: 1px solid var(--divider-color, #e0e0e0);
+      background-color: transparent;
+	  border: 1px solid var(--divider-color, #e0e0e0);
+
     }
     
     .slider-row {
