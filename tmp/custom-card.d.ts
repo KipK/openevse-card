@@ -1,5 +1,6 @@
 import { LitElement, PropertyValues } from 'lit-element';
 import { HomeAssistant, CardConfig, TranslationDict } from './types';
+import './evse-slider/evse-slider';
 declare class CustomCard extends LitElement {
     static get properties(): {
         hass: {
@@ -7,12 +8,6 @@ declare class CustomCard extends LitElement {
         };
         config: {
             type: ObjectConstructor;
-        };
-        _sliderValue: {
-            type: NumberConstructor;
-        };
-        _dragging: {
-            type: BooleanConstructor;
         };
         _lang: {
             type: StringConstructor;
@@ -32,8 +27,6 @@ declare class CustomCard extends LitElement {
     };
     hass?: HomeAssistant;
     config?: CardConfig;
-    _sliderValue?: number;
-    _dragging: boolean;
     _lang?: string;
     _localTimeElapsed: number;
     _lastEntityTime: number;
@@ -57,13 +50,10 @@ declare class CustomCard extends LitElement {
     getCardSize(): number;
     _callService(entity_id: string, option: string | number): void;
     _showMoreInfo(entity_id: string): void;
-    _handleSliderStart(ev: MouseEvent | TouchEvent): void;
-    _handleSliderMove: (ev: MouseEvent | TouchEvent) => void;
-    _handleSliderEnd: () => void;
-    _updateSliderValue(ev: MouseEvent | TouchEvent): void;
     _convertSeconds(sec: number): string;
     _convertTime(t: number): string;
     _t(key: string): string;
+    _updateSlider(e: CustomEvent): void;
     render(): import("lit-html").TemplateResult<1>;
 }
 export { CustomCard };

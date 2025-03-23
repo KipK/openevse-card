@@ -190,66 +190,6 @@ const cardStyles = css `
 			cursor: pointer;
 			text-decoration: none;
 		}
-		/* Mushroom-like slider styles */
-		.slider-container {
-			border-radius: 10px;
-			padding: 8px;
-			padding-bottom: 15px;
-			padding-top: 15px;
-			margin-bottom: 20px;
-			background: var(--card-background-color);
-			border: 1px solid var(--divider-color);
-		}
-		.slider-row {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin-bottom: 8px;
-		}
-		.slider-label {
-			display: flex;
-			justify-content: center;
-			color: var(--primary-text-color);
-			font-weight: bold;
-			text-transform: capitalize;
-		}
-		.slider-wrapper {
-			position: relative;
-			height: 22px;
-			width: 70%;
-			border-radius: 6px;
-			display: flex;
-			align-items: center;
-			background: var(--divider-color, white);
-			box-shadow: var(--control-button-background);
-		}
-		.slider-knob {
-			position: absolute;
-			height: 32px;
-			width: 32px;
-			border-radius: 50%;
-			background: transparent;
-			z-index: 1;
-			cursor: pointer;
-		}
-		.slider-track {
-			position: absolute;
-			height: 100%;
-			border-radius: 6px;
-			background: var(--primary-color);
-			opacity: 1;
-		}
-		.slider-badge {
-			display: flex;
-			justify-content: center;
-			margin-left: 8px;
-			color: var(--primary-color);
-			font-size: 1.2rem;
-			padding: 4px 8px;
-			border-radius: 4px;
-			margin-left: 8px;
-			font-weight: bold;
-		}
 		.grid-container {
 			display: grid;
 			grid-template-columns: 1fr 1fr;

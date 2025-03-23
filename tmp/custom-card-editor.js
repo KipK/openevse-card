@@ -227,7 +227,6 @@ class CustomCardEditor extends LitElement {
         for (const key of keys) {
             const value = changedValues[key];
             if (value === "" || value === undefined) {
-                // Use specific property assignments instead of any
                 if (key === 'id') {
                     updatedEntity.id = undefined;
                 }
@@ -242,7 +241,6 @@ class CustomCardEditor extends LitElement {
                 }
             }
             else {
-                // Type safe assignment for each property
                 if (key === 'id') {
                     updatedEntity.id = value;
                 }

@@ -1,6 +1,5 @@
 export interface HomeAssistant {
 	states: Record<string, EntityState>;
-	// Replace any with Record<string, unknown> for service data
 	callService: (domain: string, service: string, data: Record<string, unknown>) => void;
 	formatEntityState: (entity: EntityState) => string;
 	language: string;
@@ -9,7 +8,6 @@ export interface HomeAssistant {
 
 export interface EntityState {
 	state: string;
-	// Replace any with unknown for attributes - more type-safe
 	attributes: Record<string, unknown>;
 }
 
@@ -36,10 +34,10 @@ export interface CardConfig {
 }
 
 export interface OptionalEntity {
-	id?: string;                   // Uses undefined for optional
-	name: string | null;           // Uses null for optional
-	icon: string | null;           // Uses null for optional
-	value: string | null;          // Uses null for optional
+	id?: string;
+	name: string | null;
+	icon: string | null;
+	value: string | null;
 }
 
 export interface TranslationDict {
@@ -51,7 +49,6 @@ export interface TranslationDict {
 export interface SchemaItem {
 	name: string;
 	type?: string;
-	// Replace any with a more specific selector type
 	selector?: Record<string, unknown>;
 	label?: string;
 	helper_text?: string;
@@ -62,4 +59,10 @@ export interface SchemaItem {
 export interface EntityState {
 	state: string;
 	attributes: Record<string, unknown>;
+}
+
+export interface CustomDetailEvent extends Event {
+	detail: {
+		entityId: string;
+	};
 }

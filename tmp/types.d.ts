@@ -53,4 +53,9 @@ export interface EntityState {
     state: string;
     attributes: Record<string, unknown>;
 }
+export interface CustomDetailEvent extends Event {
+    detail: {
+        entityId: string;
+    };
+}
 //# sourceMappingURL=types.d.ts.map

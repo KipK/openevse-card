@@ -1,23 +1,14 @@
 import { LitElement, html, PropertyValues } from 'lit-element';
-import { eventOptions } from 'lit/decorators.js';
-import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict } from './types';
+import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetailEvent } from './types';
 import { cardStyles } from './styles';
 import translations from './translations';
-
-// Interface for detailed event type
-interface CustomDetailEvent extends Event {
-    detail: {
-        entityId: string;
-    };
-}
+import './evse-slider/evse-slider';
 
 class CustomCard extends LitElement {
     static override get properties() {
         return {
             hass: { type: Object },
             config: { type: Object },
-            _sliderValue: { type: Number },
-            _dragging: { type: Boolean },
             _lang: { type: String },
             _localTimeElapsed: { type: Number },
             _lastEntityTime: { type: Number },
@@ -28,8 +19,6 @@ class CustomCard extends LitElement {
 
     hass?: HomeAssistant;
     config?: CardConfig;
-    _sliderValue?: number;
-    _dragging: boolean = false;
     _lang?: string;
     _localTimeElapsed: number = 0;
     _lastEntityTime: number = 0;
@@ -39,8 +28,6 @@ class CustomCard extends LitElement {
 
     constructor() {
         super();
-        this._sliderValue = undefined;
-        this._dragging = false;
         this._translations = translations;
         this._localTimeElapsed = 0;
         this._lastEntityTime = 0;
@@ -210,83 +197,6 @@ class CustomCard extends LitElement {
         this.dispatchEvent(event);
     }
 
-    // Custom slider handlers
-    @eventOptions({ passive: true })
-    _handleSliderStart(ev: MouseEvent | TouchEvent): void {
-        if (!this.hass || !this.config?.charge_rate_entity) return;
-
-        const chargeRateEntity = this.hass.states[this.config.charge_rate_entity];
-        if (!chargeRateEntity) return;
-
-        this._dragging = true;
-        this._updateSliderValue(ev);
-        this.addEventListener('mousemove', this._handleSliderMove);
-        this.addEventListener("touchmove", this._handleSliderMove, { passive: true });
-        this.addEventListener('mouseup', this._handleSliderEnd);
-        this.addEventListener('mouseout', this._handleSliderEnd);
-        this.addEventListener('touchend', this._handleSliderEnd);
-    }
-
-    _handleSliderMove = (ev: MouseEvent | TouchEvent): void => {
-        if (this._dragging) {
-            this._updateSliderValue(ev);
-        }
-    };
-
-    _handleSliderEnd = (): void => {
-        if (this._dragging && this.hass && this.config?.charge_rate_entity) {
-            this.removeEventListener('mousemove', this._handleSliderMove);
-            this.removeEventListener('touchmove', this._handleSliderMove);
-            this.removeEventListener('mouseup', this._handleSliderEnd);
-            this.removeEventListener('mouseout', this._handleSliderEnd);
-            this.removeEventListener('touchend', this._handleSliderEnd);
-
-            // Call service to update the actual entity value
-            this.hass.callService('number', 'set_value', {
-                entity_id: this.config.charge_rate_entity,
-                value: this._sliderValue,
-            });
-            // wait for service call to have finished before stopping dragging state
-            setTimeout(() => (this._dragging = false), 2000);
-        }
-    };
-
-    _updateSliderValue(ev: MouseEvent | TouchEvent): void {
-        if (!this.hass || !this.config?.charge_rate_entity) return;
-
-        const chargeRateEntity = this.hass.states[this.config.charge_rate_entity];
-        if (!chargeRateEntity) return;
-
-        const track = this.shadowRoot?.querySelector('.slider-wrapper') as HTMLElement;
-        if (!track) return;
-
-        const trackRect = track.getBoundingClientRect();
-        const min = typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 6;
-        const max = typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32;
-        const step = typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1;
-
-        // Get cursor position
-        let x;
-        if (ev.type.startsWith('touch')) {
-            x = (ev as TouchEvent).touches[0].clientX;
-        } else {
-            x = (ev as MouseEvent).clientX;
-        }
-
-        // Calculate value based on position
-        let percentage = (x - trackRect.left) / trackRect.width;
-        percentage = Math.min(Math.max(percentage, 0), 1);
-
-        // Calculate value respecting min, max, and step
-        let value = min + percentage * (max - min);
-        value = Math.round(value / (step as number)) * (step as number);
-        value = Math.min(Math.max(value, min), max);
-
-        // Update slider value
-        this._sliderValue = Number(value.toFixed(2));
-        this.requestUpdate();
-    }
-
     _convertSeconds(sec: number): string {
         if (isNaN(sec) || sec < 0) {
             return "00:00:00";
@@ -316,7 +226,15 @@ class CustomCard extends LitElement {
             key;
     }
 
-    @eventOptions({ passive: true })
+    _updateSlider(e: CustomEvent) {
+        if (this.hass && this.config?.charge_rate_entity) {
+            this.hass.callService('number', 'set_value', {
+                entity_id: this.config.charge_rate_entity,
+                value: e.detail.value
+            })
+        }
+    }
+
     // Render the card
     override render() {
         if (!this.hass || !this.config) {
@@ -358,20 +276,6 @@ class CustomCard extends LitElement {
             }) ?? [];
 
         const optionalEntities = getOptionalEntities();
-
-        // Slider calculations
-        const min = chargeRateEntity?.attributes.min || 0;
-        const max = chargeRateEntity?.attributes.max || 32;
-        const value = this._dragging
-            ? this._sliderValue ?? min
-            : chargeRateEntity?.state ? parseFloat(chargeRateEntity.state) : min;
-        const percentage = ((Number(value) - Number(min)) / (Number(max) - Number(min))) * 100;
-
-        // Format the slider value for display
-        const formatValue = (val: number): string => {
-            const step = chargeRateEntity?.attributes.step || 1;
-            return typeof step === 'number' && step < 1 ? val.toFixed(1) : val.toFixed(0);
-        };
 
         return html`
       <ha-card>
@@ -582,31 +486,16 @@ class CustomCard extends LitElement {
           </div>
           </div>
           
-
-          <div class="slider-container">
-          <div class="slider-label">${this._t("charge rate")}</div>
-          <div class="slider-badge">
-              ${formatValue(Number(value))}
-              ${chargeRateEntity?.attributes.unit_of_measurement ||
-            'A'}
-          </div>
-          <div class="slider-row">
-              <div
-              class="slider-wrapper"
-              @mousedown=${this._handleSliderStart}
-              @touchstart=${this._handleSliderStart}
-              >
-              <div
-                  class="slider-track clickable"
-                  style="width: ${percentage}%"
-              ></div>
-              <div
-                  class="slider-knob"
-                  style="left: calc(${percentage}% - 16px)"
-              ></div>
-              </div>
-          </div>
-          </div>
+            <evse-slider
+                .min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
+                .max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
+                .step=${typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1}
+                .value=${Number(chargeRateEntity?.state || 0)}
+                .unit=${typeof chargeRateEntity?.attributes.unit_of_measurement === 'string' ? chargeRateEntity.attributes.unit_of_measurement : 'A'}
+                .label=${this._t("charge rate")}
+                .disabled=${!chargeRateEntity}
+                @value-changed=${this._updateSlider}
+            ></evse-slider>
           ${optionalEntities?.map(
                 (entity) => html`
               <div class="other-entities-container">
