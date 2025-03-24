@@ -294,16 +294,16 @@ class CustomCard extends LitElement {
                     this.config?.status_entity || ''
                 )}
               >
-              <ha-icon
-                  icon="${statusEntity?.state == 'active'
-                ? 'mdi:lightning-bolt'
-                : 'mdi:cancel'}"
-                  class="${statusEntity?.state == 'active'
-                ? chargingStatusEntity?.state == 'charging'
-                    ? 'charging'
-                    : 'active'
-                : 'disabled'}"
-              ></ha-icon>
+                <ha-icon
+                    icon="${statusEntity?.state == 'active'
+                ? vehicleConnectedEntity?.state == 'off' ? 'mdi:timer-sand' : 'mdi:lightning-bolt'
+                    : 'mdi:cancel'}"
+                    class="${statusEntity?.state == 'active'
+                    ? chargingStatusEntity?.state == 'charging'
+                        ? 'charging'
+                        : 'active bg-active'
+                    : 'disabled bg-disabled'}"
+                ></ha-icon>
               </div>
               <div
               class="status-icon clickable"
@@ -312,16 +312,16 @@ class CustomCard extends LitElement {
                     this.config?.vehicle_connected_entity || ''
                 )}
               >
-              <ha-icon
-                  icon="${vehicleConnectedEntity?.state ==
+                <ha-icon
+                    icon="${vehicleConnectedEntity?.state ==
                 'off'
                 ? 'mdi:car-off'
                 : 'mdi:car'}"
-                  class="${vehicleConnectedEntity?.state ==
+                    class="${vehicleConnectedEntity?.state ==
                 'off'
-                ? 'disabled'
-                : 'active'}"
-              ></ha-icon>
+                ? 'disabled bg-disabled'
+                : 'active bg-active'}"
+                ></ha-icon>
               </div>
           </div>
           <div class="status-heading">

@@ -182,8 +182,11 @@ const cardStyles = css`
 			text-align: right;
 		}
 		.entity-icon {
-			width: 40px;
+			padding: 6px;
+			margin-right: 20px;
 			color: var(--state-icon-color);
+			background-color: color-mix(in srgb, var(--state-icon-color) 20%, transparent);
+			border-radius: 50%;
 			display: flex;
 			justify-content: left;
 		}
