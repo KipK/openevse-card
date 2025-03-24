@@ -132,7 +132,20 @@ export const mainSchema = memoizeOne(
 				label: "Charge Time Elapsed",
 				helper_text: "Select openevse.charge_time_elapsed entity",
 				required: true
+			},
+			{
+				name: "wifi_signal_strength_entity",
+				selector: {
+					entity: {
+						domain: ["sensor"],
+						include_entities: deviceEntities.sensor || []
+					}
+				},
+				label: "Wifi Signal",
+				helper_text: "Select openevse_wifi_signal_strength entity",
+				required: false
 			}
+
 		];
 
 		return [...schema, ...entitySelectors];

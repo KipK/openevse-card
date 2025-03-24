@@ -31,6 +31,7 @@ export interface CardConfig {
 	charge_rate_entity?: string;
 	session_energy_entity?: string;
 	time_elapsed_entity?: string;
+	wifi_signal_strength_entity?: string;
 }
 
 export interface OptionalEntity {

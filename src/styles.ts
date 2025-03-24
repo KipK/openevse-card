@@ -37,6 +37,9 @@ const cardStyles = css`
 			padding: 8px 4px;
 			border-radius: 16px;
 		}
+		.wifi-icon {
+			color: var(--info-color)
+		}
 		.status-heading {
 			padding: 8px 8px 0;
 			font-size: var(--ha-card-header-font-size, 18px);

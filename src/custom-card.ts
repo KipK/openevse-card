@@ -157,6 +157,7 @@ class CustomCard extends LitElement {
             charging_status_entity: '',
             session_energy_entity: '',
             time_elapsed_entity: '',
+            wifi_signal_strength_entity: '',
             optional_entities: [],
         };
     }
@@ -260,7 +261,8 @@ class CustomCard extends LitElement {
             this.config.session_energy_entity ? this.hass.states[this.config.session_energy_entity] : null;
         const timeElapsedEntity =
             this.config.time_elapsed_entity ? this.hass.states[this.config.time_elapsed_entity] : null;
-
+        const wifiSignalEntity = 
+            this.config.wifi_signal_strength_entity ? this.hass.states[this.config.wifi_signal_strength_entity] : null;
         const getOptionalEntities = (): OptionalEntity[] =>
             this.config?.optional_entities?.map((entity) => {
                 return {
@@ -274,6 +276,18 @@ class CustomCard extends LitElement {
                     id: entity.id ? entity.id : undefined,
                 };
             }) ?? [];
+        
+        const wifiIcon = (dbi: number): string => {
+            if (dbi >= -65 )
+                return "mdi:wifi-strength-4"
+            else if (-65 > dbi && dbi >= -70)
+                return "mdi:wifi-strength-3"
+            else if (-70 > dbi && dbi >= -75)
+                return "mdi:wifi-strength-2"
+            else if (-75 > dbi && dbi >= -80)
+                return "mdi:wifi-strength-1"
+            else return "mdi:wifi-strength-alert-outline"
+        }
 
         const optionalEntities = getOptionalEntities();
 
@@ -287,13 +301,28 @@ class CustomCard extends LitElement {
       <div class="card-content">
           <div class="evse-states">
           <div class="status-icons">
-              <div
-              class="status-icon clickable"
-              @click=${() =>
+                ${wifiSignalEntity ? html`
+                <div
+                    class="status-icon clickable"
+                    @click=${() =>
+                        this._showMoreInfo(
+                            this.config?.wifi_signal_strength_entity || ''
+                        )}
+                    >
+                        <ha-icon
+                            icon="${wifiIcon(Number(wifiSignalEntity?.state))}"
+                            class="wifi-icon"
+                        ></ha-icon>
+                    </div>
+                `: ''}
+              
+                <div
+                class="status-icon clickable"
+                @click=${() =>
                 this._showMoreInfo(
                     this.config?.status_entity || ''
                 )}
-              >
+                >
                 <ha-icon
                     icon="${statusEntity?.state == 'active'
                 ? vehicleConnectedEntity?.state == 'off' ? 'mdi:timer-sand' : 'mdi:lightning-bolt'
@@ -304,14 +333,14 @@ class CustomCard extends LitElement {
                         : 'active bg-active'
                     : 'disabled bg-disabled'}"
                 ></ha-icon>
-              </div>
-              <div
-              class="status-icon clickable"
-              @click=${() =>
+                </div>
+                <div
+                class="status-icon clickable"
+                @click=${() =>
                 this._showMoreInfo(
                     this.config?.vehicle_connected_entity || ''
                 )}
-              >
+                >
                 <ha-icon
                     icon="${vehicleConnectedEntity?.state ==
                 'off'
@@ -322,7 +351,7 @@ class CustomCard extends LitElement {
                 ? 'disabled bg-disabled'
                 : 'active bg-active'}"
                 ></ha-icon>
-              </div>
+                </div>
           </div>
           <div class="status-heading">
               <div
