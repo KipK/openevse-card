@@ -3,7 +3,6 @@ import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, SchemaItem 
 import { loadHaForm } from './load-ha-form/load-ha-form';
 import { mainSchema, optionalEntitySchema } from './ha-form-schema';
 import translations from './translations';
-import '@home-assistant/frontend/src/components/ha-entity-picker';
 
 // Editor for the card configuration
 class CustomCardEditor extends LitElement {
