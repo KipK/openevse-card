@@ -382,19 +382,19 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
               class="status-icon clickable"
               @click=${()=>this._showMoreInfo(this.config?.status_entity||"")}
               >
-              <ha-icon
-                  icon="${"active"==e?.state?"off"==n?.state?"mdi:timer-sand":"mdi:lightning-bolt":"mdi:cancel"}"
-                  class="${"active"==e?.state?"charging"==o?.state?"charging":"active bg-active":"disabled bg-disabled"}"
-              ></ha-icon>
+                <ha-icon
+                    icon="${"active"==e?.state?"off"==n?.state?"mdi:timer-sand":"mdi:lightning-bolt":"mdi:cancel"}"
+                    class="${"active"==e?.state?"charging"==o?.state?"charging":"active bg-active":"disabled bg-disabled"}"
+                ></ha-icon>
               </div>
               <div
               class="status-icon clickable"
               @click=${()=>this._showMoreInfo(this.config?.vehicle_connected_entity||"")}
               >
-              <ha-icon
-                  icon="${"off"==n?.state?"mdi:car-off":"mdi:car"}"
-                  class="${"off"==n?.state?"disabled bg-disabled":"active bg-active"}"
-              ></ha-icon>
+                <ha-icon
+                    icon="${"off"==n?.state?"mdi:car-off":"mdi:car"}"
+                    class="${"off"==n?.state?"disabled bg-disabled":"active bg-active"}"
+                ></ha-icon>
               </div>
           </div>
           <div class="status-heading">
