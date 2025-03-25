@@ -9,6 +9,7 @@ const cardStyles = css`
 			--evse-shadow: var(--ha-card-box-shadow, 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px - 2px rgba(0,0,0,0.2));
 			--evse-border-radius: var(--ha-card-border-radius, 10px);
 			--evse-selector-bg-color: var(--primary-background-color);
+			--evse-secondary-bg-color: color-mix(in srgb, var(--divider-color) 60%, transparent);
 		.card-header {
 			padding: 8px 16px 0;
 			font-size: var(--ha-card-header-font-size, 24px);
@@ -166,9 +167,13 @@ const cardStyles = css`
 		.entity-row {
 			display: flex;
 			justify-content: space-between;
-			margin-bottom: 8px;
+			margin: 8px;
 			color: var(--primary-text-color);
+			background-color: var(--evse-secondary-bg-color);
 			align-items: center;
+			border-radius: 10px;
+			align-items: center;
+			padding: 8px 16px;
 		}
 		.entity-title {
 			display: flex;
@@ -183,6 +188,9 @@ const cardStyles = css`
 		}
 		.entity-value {
 			text-align: right;
+			color: var(--primary-color);
+			font-size: 1.1rem;
+			font-weight: 500;
 		}
 		.entity-icon {
 			padding: 6px;
@@ -207,7 +215,7 @@ const cardStyles = css`
 			align-items: center;
 			justify-content: center;
 			margin-bottom: 10px;
-			background-color: var(--divider-color);
+			background-color: var(--evse-secondary-bg-color);
 			border-radius: 10px;
 			padding: 4px;
 			margin: 8px;
@@ -226,6 +234,15 @@ const cardStyles = css`
 		}
 		.other-entities-container {
 			width: 100%;
+		}
+		.container {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+
 		}
 		
 	`;

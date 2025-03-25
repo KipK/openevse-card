@@ -261,7 +261,7 @@ class CustomCard extends LitElement {
             this.config.session_energy_entity ? this.hass.states[this.config.session_energy_entity] : null;
         const timeElapsedEntity =
             this.config.time_elapsed_entity ? this.hass.states[this.config.time_elapsed_entity] : null;
-        const wifiSignalEntity = 
+        const wifiSignalEntity =
             this.config.wifi_signal_strength_entity ? this.hass.states[this.config.wifi_signal_strength_entity] : null;
         const getOptionalEntities = (): OptionalEntity[] =>
             this.config?.optional_entities?.map((entity) => {
@@ -276,9 +276,9 @@ class CustomCard extends LitElement {
                     id: entity.id ? entity.id : undefined,
                 };
             }) ?? [];
-        
+
         const wifiIcon = (dbi: number): string => {
-            if (dbi >= -65 )
+            if (dbi >= -65)
                 return "mdi:wifi-strength-4"
             else if (-65 > dbi && dbi >= -70)
                 return "mdi:wifi-strength-3"
@@ -305,9 +305,9 @@ class CustomCard extends LitElement {
                 <div
                     class="status-icon clickable"
                     @click=${() =>
-                        this._showMoreInfo(
-                            this.config?.wifi_signal_strength_entity || ''
-                        )}
+                    this._showMoreInfo(
+                        this.config?.wifi_signal_strength_entity || ''
+                    )}
                     >
                         <ha-icon
                             icon="${wifiIcon(Number(wifiSignalEntity?.state))}"
@@ -326,12 +326,12 @@ class CustomCard extends LitElement {
                 <ha-icon
                     icon="${statusEntity?.state == 'active'
                 ? vehicleConnectedEntity?.state == 'off' ? 'mdi:timer-sand' : 'mdi:lightning-bolt'
-                    : 'mdi:cancel'}"
+                : 'mdi:cancel'}"
                     class="${statusEntity?.state == 'active'
-                    ? chargingStatusEntity?.state == 'charging'
-                        ? 'charging'
-                        : 'active bg-active'
-                    : 'disabled bg-disabled'}"
+                ? chargingStatusEntity?.state == 'charging'
+                    ? 'charging'
+                    : 'active bg-active'
+                : 'disabled bg-disabled'}"
                 ></ha-icon>
                 </div>
                 <div
@@ -368,64 +368,64 @@ class CustomCard extends LitElement {
               </div>
           </div>
           </div>
-          <div class="grid-container">
-          ${powerEntity
+            <div class="grid-container">
+                    ${powerEntity
                 ? html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("power")}</div>
-                    <div
-                    class="grid-item-value current-value clickable"
-                    @click=${() =>
+                            <div class="grid-item">
+                                <div class="grid-item-label">${this._t("power")}</div>
+                                <div
+                                class="grid-item-value current-value clickable"
+                                @click=${() =>
                         this._showMoreInfo(
                             this.config?.power_entity || ''
                         )}
-                    >
-                    ${powerEntity ? this.hass.formatEntityState(
+                                >
+                                ${powerEntity ? this.hass.formatEntityState(
                             powerEntity
                         ) : "0 W"}
-                    </div>
-                </div>
-                `
+                                </div>
+                            </div>
+                            `
                 : html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("power")}</div>
-                    <div class="grid-item-value current-value">0 W</div>
-                </div>`
+                            <div class="grid-item">
+                                <div class="grid-item-label">${this._t("power")}</div>
+                                <div class="grid-item-value current-value">0 W</div>
+                            </div>`
             }
-          ${currentEntity
+                ${currentEntity
                 ? html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("current")}</div>
-                    <div
-                    class="grid-item-value current-value clickable"
-                    @click=${() =>
+                        <div class="grid-item">
+                            <div class="grid-item-label">${this._t("current")}</div>
+                            <div
+                            class="grid-item-value current-value clickable"
+                            @click=${() =>
                         this._showMoreInfo(
                             this.config?.current_entity || ''
                         )}
-                    >
-                    ${currentEntity ? this.hass.formatEntityState(
+                            >
+                            ${currentEntity ? this.hass.formatEntityState(
                             currentEntity
                         ) : "0 A"}
-                    </div>
-                </div>
-                `
+                            </div>
+                        </div>
+                        `
                 : html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("current")}</div>
-                    <div class="grid-item-value current-value">0 A</div>
-                </div>`
+                        <div class="grid-item">
+                            <div class="grid-item-label">${this._t("current")}</div>
+                            <div class="grid-item-value current-value">0 A</div>
+                        </div>`
             }
-          ${sessionEnergyEntity
+                    ${sessionEnergyEntity
                 ? html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("session")}</div>
-                    <div
-                    class="grid-item-value current-value clickable"
-                    @click=${() =>
+                    <div class="grid-item">
+                        <div class="grid-item-label">${this._t("session")}</div>
+                        <div
+                        class="grid-item-value current-value clickable"
+                        @click=${() =>
                         this._showMoreInfo(
                             this.config?.session_energy_entity || ''
                         )}
-                    >
+                        >
                     ${sessionEnergyEntity ? this.hass.formatEntityState(
                             sessionEnergyEntity
                         ) : "0 kWh"}
@@ -439,82 +439,82 @@ class CustomCard extends LitElement {
                 </div>`
             }
 
-          ${timeElapsedEntity
+            ${timeElapsedEntity
                 ? html`
-          <div class="grid-item">
-              <div class="grid-item-label">${this._t("elapsed")}</div>
-              <div
-              class="grid-item-value current-value"
-              >
-              ${this._convertTime(this._localTimeElapsed || 0)}
-              </div>
-          </div>
-          `: html`
+                <div class="grid-item">
+                    <div class="grid-item-label">${this._t("elapsed")}</div>
+                    <div
+                    class="grid-item-value current-value"
+                    >
+                    ${this._convertTime(this._localTimeElapsed || 0)}
+                    </div>
+                </div>
+            `: html`
                 <div class="grid-item">
                     <div class="grid-item-label">${this._t("elapsed")}</div>
                     <div class="grid-item-value current-value">00:00:00</div>
                 </div>`
             }
-          </div>
-          <div class="override-controls">
-          <div class="override-row">
-              <div
-              class="override-button ${overrideEntity?.state ==
+            </div>
+            <div class="override-controls">
+                <div class="override-row">
+                    <div
+                    class="override-button ${overrideEntity?.state ==
                 'active'
                 ? 'active'
                 : ''}"
-              data-option="active"
-              @click=${() =>
+                    data-option="active"
+                    @click=${() =>
                 this._callService(
                     this.config?.override_entity || '',
                     'active'
                 )}
-              >
-              <ha-icon
-                  icon="mdi:lightning-bolt"
-                  class="${overrideEntity?.state == 'active' &&
+                    >
+                    <ha-icon
+                        icon="mdi:lightning-bolt"
+                        class="${overrideEntity?.state == 'active' &&
                 chargingStatusEntity?.state == 'charging'
                 ? 'charging'
                 : ''}"
-              ></ha-icon>
-              </div>
-              <div
-              class="override-button ${overrideEntity?.state ==
+                    ></ha-icon>
+                    </div>
+                    <div
+                    class="override-button ${overrideEntity?.state ==
                 'auto'
                 ? 'active'
                 : ''}"
-              data-option="auto"
-              @click=${() =>
+                    data-option="auto"
+                    @click=${() =>
                 this._callService(
                     this.config?.override_entity || '',
                     'auto'
                 )}
-              >
-              <ha-icon
-                  icon="mdi:robot"
-                  class="${overrideEntity?.state == 'auto' &&
+                    >
+                    <ha-icon
+                        icon="mdi:robot"
+                        class="${overrideEntity?.state == 'auto' &&
                 chargingStatusEntity?.state == 'charging'
                 ? 'charging'
                 : ''}"
-              ></ha-icon>
-              </div>
-              <div
-              class="override-button ${overrideEntity?.state ==
+                    ></ha-icon>
+                    </div>
+                    <div
+                    class="override-button ${overrideEntity?.state ==
                 'disabled'
                 ? 'active'
                 : ''}"
-              data-option="disabled"
-              @click=${() =>
+                    data-option="disabled"
+                    @click=${() =>
                 this._callService(
                     this.config?.override_entity || '',
                     'disabled'
                 )}
-              >
-              <ha-icon icon="mdi:cancel"></ha-icon>
-              </div>
-          </div>
-          </div>
-          
+                    >
+                    <ha-icon icon="mdi:cancel"></ha-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
             <evse-slider
                 .min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
                 .max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
@@ -525,20 +525,21 @@ class CustomCard extends LitElement {
                 .disabled=${!chargeRateEntity}
                 @value-changed=${this._updateSlider}
             ></evse-slider>
+            </div>
           ${optionalEntities?.map(
-                (entity) => html`
+                    (entity) => html`
               <div class="other-entities-container">
               <div class="entity-row">
                   <div class="entity-title">
                   ${entity.icon != null
-                        ? html`
+                            ? html`
                         <div class="entity-icon">
                             <ha-icon
                             icon=${entity.icon}
                             ></ha-icon>
                         </div>
                         `
-                        : html`
+                            : html`
                         <div
                             class="entity-icon"
                         ></div>
@@ -551,14 +552,14 @@ class CustomCard extends LitElement {
                   <div
                   class="entity-value clickable"
                   @click=${() =>
-                        this._showMoreInfo(entity.id ? entity.id : "")}
+                            this._showMoreInfo(entity.id ? entity.id : "")}
                   >
                   ${entity.value ? entity.value : ""}
                   </div>
               </div>
               </div>
           `
-            )}
+                )}
       </div>
       </ha-card>
     `;

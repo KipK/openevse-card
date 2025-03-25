@@ -124,7 +124,11 @@ export class EVSESlider extends LitElement {
     :host {
       display: block;
       --evse-slider-color: var(--primary-color, #03a9f4);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
+	  width: 100%;
+	  margin-left: 8px;
+	  margin-right: 8px;
+	  
     }
     
     .slider-container {
@@ -134,6 +138,9 @@ export class EVSESlider extends LitElement {
       padding-top: 15px;
       background-color: transparent;
 	  border: 1px solid var(--divider-color, #e0e0e0);
+	  max-width: 300px;
+	  margin: 0 auto;
+	 
 
     }
     
