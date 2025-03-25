@@ -10,6 +10,7 @@ const cardStyles = css`
 			--evse-border-radius: var(--ha-card-border-radius, 10px);
 			--evse-selector-bg-color: var(--primary-background-color);
 			--evse-secondary-bg-color: color-mix(in srgb, var(--divider-color) 60%, transparent);
+		}
 		.card-header {
 			padding: 8px 16px 0;
 			font-size: var(--ha-card-header-font-size, 24px);
