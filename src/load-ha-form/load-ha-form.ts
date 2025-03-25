@@ -36,39 +36,139 @@ interface HaPanelConfig extends HTMLElement {
  * @returns Promise that resolves when all required components are loaded
  */
 export const loadHaForm = async (): Promise<void> => {
-    // Check if all required custom elements are already defined
-    if (
-        customElements.get('ha-form') &&
-        customElements.get('ha-selector') &&
-        customElements.get('ha-textfield') &&
-        customElements.get('ha-icon-picker') &&
-        customElements.get('ha-icon-button') &&
-        customElements.get('ha-entity-picker')
-    )
-        return;
+    try {
+        // Check if all required custom elements are already defined
+        if (
+            customElements.get('ha-form') &&
+            customElements.get('ha-selector') &&
+            customElements.get('ha-textfield') &&
+            customElements.get('ha-icon-picker') &&
+            customElements.get('ha-icon-button') &&
+            customElements.get('ha-entity-picker')
+        ) {
+            return;
+        }
 
-    // Wait for the partial-panel-resolver to be defined
-    await customElements.whenDefined('partial-panel-resolver');
+        // Wait for the partial-panel-resolver to be defined with timeout
+        await Promise.race([
+            customElements.whenDefined('partial-panel-resolver'),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout waiting for partial-panel-resolver')), 10000)
+            )
+        ]);
 
-    // Create and configure the panel resolver with proper typing
-    const ppr = document.createElement('partial-panel-resolver') as PartialPanelResolver;
-    ppr.hass = {
-        panels: [
-            {
-                url_path: 'tmp',
-                component_name: 'config',
-            },
-        ],
-    };
-    ppr._updateRoutes();
+        // Create and configure the panel resolver with proper typing
+        const ppr = document.createElement('partial-panel-resolver') as PartialPanelResolver;
 
-    // Load the temporary route
-    await ppr.routerOptions.routes.tmp.load();
+        // Check if the element was created successfully
+        if (!ppr) {
+            throw new Error('Failed to create partial-panel-resolver element');
+        }
 
-    // Wait for the config panel to be defined
-    await customElements.whenDefined('ha-panel-config');
+        ppr.hass = {
+            panels: [
+                {
+                    url_path: 'tmp',
+                    component_name: 'config',
+                },
+            ],
+        };
 
-    // Create the config panel and load automation components with proper typing
-    const cpr = document.createElement('ha-panel-config') as HaPanelConfig;
-    await cpr.routerOptions.routes.automation.load();
+        // Check if _updateRoutes method exists
+        if (typeof ppr._updateRoutes !== 'function') {
+            throw new Error('partial-panel-resolver does not have _updateRoutes method');
+        }
+
+        ppr._updateRoutes();
+
+        // Check if routes were created
+        if (!ppr.routerOptions?.routes?.tmp?.load) {
+            throw new Error('Failed to create tmp route in partial-panel-resolver');
+        }
+
+        // Load the temporary route with timeout
+        await Promise.race([
+            ppr.routerOptions.routes.tmp.load(),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout loading tmp route')), 10000)
+            )
+        ]);
+
+        // Wait for the config panel to be defined with timeout
+        await Promise.race([
+            customElements.whenDefined('ha-panel-config'),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout waiting for ha-panel-config')), 10000)
+            )
+        ]);
+
+        // Create the config panel and load automation components with proper typing
+        const cpr = document.createElement('ha-panel-config') as HaPanelConfig;
+
+        // Check if the element was created successfully
+        if (!cpr) {
+            throw new Error('Failed to create ha-panel-config element');
+        }
+
+        // Check if automation route exists
+        if (!cpr.routerOptions?.routes?.automation?.load) {
+            throw new Error('ha-panel-config does not have automation route');
+        }
+
+        // Load automation components with timeout
+        await Promise.race([
+            cpr.routerOptions.routes.automation.load(),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timeout loading automation components')), 10000)
+            )
+        ]);
+
+        // Final verification that components were loaded
+        const requiredComponents = [
+            'ha-form',
+            'ha-selector',
+            'ha-textfield',
+            'ha-icon-picker',
+            'ha-icon-button',
+            'ha-entity-picker'
+        ];
+
+        const missingComponents = requiredComponents.filter(
+            component => !customElements.get(component)
+        );
+
+        if (missingComponents.length > 0) {
+            throw new Error(`Failed to load components: ${missingComponents.join(', ')}`);
+        }
+
+    } catch (error) {
+        // Log the error but don't throw to prevent breaking the card
+        console.error('Error loading Home Assistant form components:', error);
+
+        // Attempt to use a fallback approach if available
+        try {
+            // Try to load components directly from Home Assistant frontend if available
+            if (window.customElements && window.customElements.get('home-assistant')) {
+                console.log('Attempting fallback loading method for HA components');
+                // This is a fallback approach that might work in some environments
+                const event = new CustomEvent('ha-request-load-components', {
+                    detail: {
+                        components: [
+                            'ha-form',
+                            'ha-selector',
+                            'ha-textfield',
+                            'ha-icon-picker',
+                            'ha-icon-button',
+                            'ha-entity-picker'
+                        ]
+                    },
+                    bubbles: true,
+                    composed: true
+                });
+                document.dispatchEvent(event);
+            }
+        } catch (fallbackError) {
+            console.error('Fallback loading method failed:', fallbackError);
+        }
+    }
 };
