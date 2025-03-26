@@ -62,14 +62,27 @@ class LimitComponent extends LitElement {
       .new-limit-btn:hover {
         background-color: var(--dark-primary-color);
       }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
       .limit-form {
         background-color: var(--card-background-color);
         border-radius: var(--evse-border-radius);
         box-shadow: var(--evse-shadow);
         padding: 16px;
-        width: 100%;
+        width: 90%;
         max-width: 350px;
         margin: 0 auto;
+        z-index: 1000;
       }
       .form-header {
         font-size: 18px;
@@ -229,6 +242,43 @@ class LimitComponent extends LitElement {
     this.requestUpdate();
   }
 
+  // Enhanced slider functionality
+  _sliderMouseDown(e: MouseEvent): void {
+    // Get slider element
+    const slider = e.currentTarget as HTMLInputElement;
+    const sliderRect = slider.getBoundingClientRect();
+    
+    // Calculate value based on mouse position
+    this._updateSliderValue(e.clientX, sliderRect);
+    
+    // Setup mouse move and mouse up handlers
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      this._updateSliderValue(moveEvent.clientX, sliderRect);
+      moveEvent.preventDefault(); // Prevent text selection during drag
+    };
+    
+    const handleMouseUp = () => {
+      // Remove event listeners when mouse is released
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+    
+    // Add event listeners for tracking mouse movement
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  }
+  
+  _updateSliderValue(clientX: number, sliderRect: DOMRect): void {
+    // Calculate position relative to slider
+    const sliderWidth = sliderRect.width;
+    const offsetX = clientX - sliderRect.left;
+    
+    // Calculate percentage and value
+    let percentage = Math.min(Math.max(offsetX / sliderWidth, 0), 1);
+    this._energyValue = Math.round(percentage * 100);
+    this.requestUpdate();
+  }
+
   _addLimit(): void {
     if (this._selectedLimitType === 'time') {
       const totalMinutes = (this._hours * 60) + this._minutes;
@@ -292,9 +342,14 @@ class LimitComponent extends LitElement {
     }
 
     if (this._showLimitForm) {
-      // Display limit form
+      // Display limit form in modal overlay
       return html`
-        <div class="limit-form">
+        <div class="modal-overlay" @click=${(e: Event) => {
+          if ((e.target as HTMLElement).classList.contains('modal-overlay')) {
+            this._toggleLimitForm();
+          }
+        }}>
+          <div class="limit-form">
           <div class="form-header">Add Charging Limit</div>
           
           <div class="form-row">
@@ -342,6 +397,7 @@ class LimitComponent extends LitElement {
                   class="energy-slider"
                   .value=${String(this._energyValue)}
                   @input=${this._handleEnergyChange}
+                  @mousedown=${this._sliderMouseDown}
                 >
               </div>
             </div>
@@ -357,6 +413,7 @@ class LimitComponent extends LitElement {
               Add Limit
             </button>
           </div>
+        </div>
         </div>
       `;
     }
