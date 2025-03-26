@@ -14,7 +14,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const w=globalThis,$=w.trustedTypes,k=$?$.createPolicy("lit-html",{createHTML:t=>t}):void 0,E="$lit$",S=`lit$${Math.random().toFixed(9).slice(2)}$`,C="?"+S,A=`<${C}>`,j=document,O=()=>j.createComment(""),T=t=>null===t||"object"!=typeof t&&"function"!=typeof t,M=Array.isArray,P="[ \t\n\f\r]",z=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,N=/-->/g,L=/>/g,q=RegExp(`>|${P}(?:([^\\s"'>=/]+)(${P}*=${P}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),V=/'/g,U=/"/g,I=/^(?:script|style|textarea|title)$/i,R=(t=>(e,...i)=>({_$litType$:t,strings:e,values:i}))(1),H=Symbol.for("lit-noChange"),D=Symbol.for("lit-nothing"),B=new WeakMap,W=j.createTreeWalker(j,129);function F(t,e){if(!M(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==k?k.createHTML(e):e}const Z=(t,e)=>{const i=t.length-1,s=[];let r,n=2===e?"<svg>":3===e?"<math>":"",o=z;for(let e=0;e<i;e++){const i=t[e];let a,c,l=-1,d=0;for(;d<i.length&&(o.lastIndex=d,c=o.exec(i),null!==c);)d=o.lastIndex,o===z?"!--"===c[1]?o=N:void 0!==c[1]?o=L:void 0!==c[2]?(I.test(c[2])&&(r=RegExp("</"+c[2],"g")),o=q):void 0!==c[3]&&(o=q):o===q?">"===c[0]?(o=r??z,l=-1):void 0===c[1]?l=-2:(l=o.lastIndex-c[2].length,a=c[1],o=void 0===c[3]?q:'"'===c[3]?U:V):o===U||o===V?o=q:o===N||o===L?o=z:(o=q,r=void 0);const h=o===q&&t[e+1].startsWith("/>")?" ":"";n+=o===z?i+A:l>=0?(s.push(a),i.slice(0,l)+E+i.slice(l)+S+h):i+S+(-2===l?e:h)}return[F(t,n+(t[i]||"<?>")+(2===e?"</svg>":3===e?"</math>":"")),s]};class G{constructor({strings:t,_$litType$:e},i){let s;this.parts=[];let r=0,n=0;const o=t.length-1,a=this.parts,[c,l]=Z(t,e);if(this.el=G.createElement(c,i),W.currentNode=this.el.content,2===e||3===e){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes)}for(;null!==(s=W.nextNode())&&a.length<o;){if(1===s.nodeType){if(s.hasAttributes())for(const t of s.getAttributeNames())if(t.endsWith(E)){const e=l[n++],i=s.getAttribute(t).split(S),o=/([.?@])?(.*)/.exec(e);a.push({type:1,index:r,name:o[2],strings:i,ctor:"."===o[1]?Y:"?"===o[1]?tt:"@"===o[1]?et:X}),s.removeAttribute(t)}else t.startsWith(S)&&(a.push({type:6,index:r}),s.removeAttribute(t));if(I.test(s.tagName)){const t=s.textContent.split(S),e=t.length-1;if(e>0){s.textContent=$?$.emptyScript:"";for(let i=0;i<e;i++)s.append(t[i],O()),W.nextNode(),a.push({type:2,index:++r});s.append(t[e],O())}}}else if(8===s.nodeType)if(s.data===C)a.push({type:2,index:r});else{let t=-1;for(;-1!==(t=s.data.indexOf(S,t+1));)a.push({type:7,index:r}),t+=S.length-1}r++}}static createElement(t,e){const i=j.createElement("template");return i.innerHTML=t,i}}function J(t,e,i=t,s){if(e===H)return e;let r=void 0!==s?i._$Co?.[s]:i._$Cl;const n=T(e)?void 0:e._$litDirective$;return r?.constructor!==n&&(r?._$AO?.(!1),void 0===n?r=void 0:(r=new n(t),r._$AT(t,i,s)),void 0!==s?(i._$Co??=[])[s]=r:i._$Cl=r),void 0!==r&&(e=J(t,r._$AS(t,e.values),r,s)),e}class K{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:i}=this._$AD,s=(t?.creationScope??j).importNode(e,!0);W.currentNode=s;let r=W.nextNode(),n=0,o=0,a=i[0];for(;void 0!==a;){if(n===a.index){let e;2===a.type?e=new Q(r,r.nextSibling,this,t):1===a.type?e=new a.ctor(r,a.name,a.strings,this,t):6===a.type&&(e=new it(r,this,t)),this._$AV.push(e),a=i[++o]}n!==a?.index&&(r=W.nextNode(),n++)}return W.currentNode=j,s}p(t){let e=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(t,i,e),e+=i.strings.length-2):i._$AI(t[e])),e++}}class Q{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,i,s){this.type=2,this._$AH=D,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=i,this.options=s,this._$Cv=s?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t?.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=J(this,t,e),T(t)?t===D||null==t||""===t?(this._$AH!==D&&this._$AR(),this._$AH=D):t!==this._$AH&&t!==H&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):(t=>M(t)||"function"==typeof t?.[Symbol.iterator])(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==D&&T(this._$AH)?this._$AA.nextSibling.data=t:this.T(j.createTextNode(t)),this._$AH=t}$(t){const{values:e,_$litType$:i}=t,s="number"==typeof i?this._$AC(t):(void 0===i.el&&(i.el=G.createElement(F(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===s)this._$AH.p(e);else{const t=new K(s,this),i=t.u(this.options);t.p(e),this.T(i),this._$AH=t}}_$AC(t){let e=B.get(t.strings);return void 0===e&&B.set(t.strings,e=new G(t)),e}k(t){M(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let i,s=0;for(const r of t)s===e.length?e.push(i=new Q(this.O(O()),this.O(O()),this,this.options)):i=e[s],i._$AI(r),s++;s<e.length&&(this._$AR(i&&i._$AB.nextSibling,s),e.length=s)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t&&t!==this._$AB;){const e=t.nextSibling;t.remove(),t=e}}setConnected(t){void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t))}}class X{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,i,s,r){this.type=1,this._$AH=D,this._$AN=void 0,this.element=t,this.name=e,this._$AM=s,this.options=r,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=D}_$AI(t,e=this,i,s){const r=this.strings;let n=!1;if(void 0===r)t=J(this,t,e,0),n=!T(t)||t!==this._$AH&&t!==H,n&&(this._$AH=t);else{const s=t;let o,a;for(t=r[0],o=0;o<r.length-1;o++)a=J(this,s[i+o],e,o),a===H&&(a=this._$AH[o]),n||=!T(a)||a!==this._$AH[o],a===D?t=D:t!==D&&(t+=(a??"")+r[o+1]),this._$AH[o]=a}n&&!s&&this.j(t)}j(t){t===D?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class Y extends X{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===D?void 0:t}}class tt extends X{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==D)}}class et extends X{constructor(t,e,i,s,r){super(t,e,i,s,r),this.type=5}_$AI(t,e=this){if((t=J(this,t,e,0)??D)===H)return;const i=this._$AH,s=t===D&&i!==D||t.capture!==i.capture||t.once!==i.once||t.passive!==i.passive,r=t!==D&&(i===D||s);s&&this.element.removeEventListener(this.name,this,i),r&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class it{constructor(t,e,i){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(t){J(this,t)}}const st=w.litHtmlPolyfillSupport;st?.(G,Q),(w.litHtmlVersions??=[]).push("3.2.1");
+const w=globalThis,$=w.trustedTypes,k=$?$.createPolicy("lit-html",{createHTML:t=>t}):void 0,E="$lit$",S=`lit$${Math.random().toFixed(9).slice(2)}$`,C="?"+S,j=`<${C}>`,A=document,O=()=>A.createComment(""),z=t=>null===t||"object"!=typeof t&&"function"!=typeof t,M=Array.isArray,T="[ \t\n\f\r]",P=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,N=/-->/g,L=/>/g,q=RegExp(`>|${T}(?:([^\\s"'>=/]+)(${T}*=${T}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),V=/'/g,U=/"/g,I=/^(?:script|style|textarea|title)$/i,R=(t=>(e,...i)=>({_$litType$:t,strings:e,values:i}))(1),H=Symbol.for("lit-noChange"),D=Symbol.for("lit-nothing"),B=new WeakMap,F=A.createTreeWalker(A,129);function W(t,e){if(!M(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==k?k.createHTML(e):e}const Z=(t,e)=>{const i=t.length-1,s=[];let r,n=2===e?"<svg>":3===e?"<math>":"",o=P;for(let e=0;e<i;e++){const i=t[e];let a,c,l=-1,d=0;for(;d<i.length&&(o.lastIndex=d,c=o.exec(i),null!==c);)d=o.lastIndex,o===P?"!--"===c[1]?o=N:void 0!==c[1]?o=L:void 0!==c[2]?(I.test(c[2])&&(r=RegExp("</"+c[2],"g")),o=q):void 0!==c[3]&&(o=q):o===q?">"===c[0]?(o=r??P,l=-1):void 0===c[1]?l=-2:(l=o.lastIndex-c[2].length,a=c[1],o=void 0===c[3]?q:'"'===c[3]?U:V):o===U||o===V?o=q:o===N||o===L?o=P:(o=q,r=void 0);const h=o===q&&t[e+1].startsWith("/>")?" ":"";n+=o===P?i+j:l>=0?(s.push(a),i.slice(0,l)+E+i.slice(l)+S+h):i+S+(-2===l?e:h)}return[W(t,n+(t[i]||"<?>")+(2===e?"</svg>":3===e?"</math>":"")),s]};class G{constructor({strings:t,_$litType$:e},i){let s;this.parts=[];let r=0,n=0;const o=t.length-1,a=this.parts,[c,l]=Z(t,e);if(this.el=G.createElement(c,i),F.currentNode=this.el.content,2===e||3===e){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes)}for(;null!==(s=F.nextNode())&&a.length<o;){if(1===s.nodeType){if(s.hasAttributes())for(const t of s.getAttributeNames())if(t.endsWith(E)){const e=l[n++],i=s.getAttribute(t).split(S),o=/([.?@])?(.*)/.exec(e);a.push({type:1,index:r,name:o[2],strings:i,ctor:"."===o[1]?Y:"?"===o[1]?tt:"@"===o[1]?et:X}),s.removeAttribute(t)}else t.startsWith(S)&&(a.push({type:6,index:r}),s.removeAttribute(t));if(I.test(s.tagName)){const t=s.textContent.split(S),e=t.length-1;if(e>0){s.textContent=$?$.emptyScript:"";for(let i=0;i<e;i++)s.append(t[i],O()),F.nextNode(),a.push({type:2,index:++r});s.append(t[e],O())}}}else if(8===s.nodeType)if(s.data===C)a.push({type:2,index:r});else{let t=-1;for(;-1!==(t=s.data.indexOf(S,t+1));)a.push({type:7,index:r}),t+=S.length-1}r++}}static createElement(t,e){const i=A.createElement("template");return i.innerHTML=t,i}}function J(t,e,i=t,s){if(e===H)return e;let r=void 0!==s?i._$Co?.[s]:i._$Cl;const n=z(e)?void 0:e._$litDirective$;return r?.constructor!==n&&(r?._$AO?.(!1),void 0===n?r=void 0:(r=new n(t),r._$AT(t,i,s)),void 0!==s?(i._$Co??=[])[s]=r:i._$Cl=r),void 0!==r&&(e=J(t,r._$AS(t,e.values),r,s)),e}class K{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:i}=this._$AD,s=(t?.creationScope??A).importNode(e,!0);F.currentNode=s;let r=F.nextNode(),n=0,o=0,a=i[0];for(;void 0!==a;){if(n===a.index){let e;2===a.type?e=new Q(r,r.nextSibling,this,t):1===a.type?e=new a.ctor(r,a.name,a.strings,this,t):6===a.type&&(e=new it(r,this,t)),this._$AV.push(e),a=i[++o]}n!==a?.index&&(r=F.nextNode(),n++)}return F.currentNode=A,s}p(t){let e=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(t,i,e),e+=i.strings.length-2):i._$AI(t[e])),e++}}class Q{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,i,s){this.type=2,this._$AH=D,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=i,this.options=s,this._$Cv=s?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t?.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=J(this,t,e),z(t)?t===D||null==t||""===t?(this._$AH!==D&&this._$AR(),this._$AH=D):t!==this._$AH&&t!==H&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):(t=>M(t)||"function"==typeof t?.[Symbol.iterator])(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==D&&z(this._$AH)?this._$AA.nextSibling.data=t:this.T(A.createTextNode(t)),this._$AH=t}$(t){const{values:e,_$litType$:i}=t,s="number"==typeof i?this._$AC(t):(void 0===i.el&&(i.el=G.createElement(W(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===s)this._$AH.p(e);else{const t=new K(s,this),i=t.u(this.options);t.p(e),this.T(i),this._$AH=t}}_$AC(t){let e=B.get(t.strings);return void 0===e&&B.set(t.strings,e=new G(t)),e}k(t){M(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let i,s=0;for(const r of t)s===e.length?e.push(i=new Q(this.O(O()),this.O(O()),this,this.options)):i=e[s],i._$AI(r),s++;s<e.length&&(this._$AR(i&&i._$AB.nextSibling,s),e.length=s)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t&&t!==this._$AB;){const e=t.nextSibling;t.remove(),t=e}}setConnected(t){void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t))}}class X{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,i,s,r){this.type=1,this._$AH=D,this._$AN=void 0,this.element=t,this.name=e,this._$AM=s,this.options=r,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=D}_$AI(t,e=this,i,s){const r=this.strings;let n=!1;if(void 0===r)t=J(this,t,e,0),n=!z(t)||t!==this._$AH&&t!==H,n&&(this._$AH=t);else{const s=t;let o,a;for(t=r[0],o=0;o<r.length-1;o++)a=J(this,s[i+o],e,o),a===H&&(a=this._$AH[o]),n||=!z(a)||a!==this._$AH[o],a===D?t=D:t!==D&&(t+=(a??"")+r[o+1]),this._$AH[o]=a}n&&!s&&this.j(t)}j(t){t===D?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class Y extends X{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===D?void 0:t}}class tt extends X{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==D)}}class et extends X{constructor(t,e,i,s,r){super(t,e,i,s,r),this.type=5}_$AI(t,e=this){if((t=J(this,t,e,0)??D)===H)return;const i=this._$AH,s=t===D&&i!==D||t.capture!==i.capture||t.once!==i.once||t.passive!==i.passive,r=t!==D&&(i===D||s);s&&this.element.removeEventListener(this.name,this,i),r&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class it{constructor(t,e,i){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(t){J(this,t)}}const st=w.litHtmlPolyfillSupport;st?.(G,Q),(w.litHtmlVersions??=[]).push("3.2.1");
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -119,8 +119,8 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
 			width: auto;
 			display: flex;
 			justify-content: space-between;
-			margin-bottom: 20px;
-			margin-top: 14px;
+			margin-bottom: 16px;
+			margin-top: 10px;
 			align-items: center;
 		}
 		.override-button {
@@ -303,7 +303,7 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
     :host {
       display: block;
       --evse-slider-color: var(--primary-color, #03a9f4);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
 	  width: 100%;
 	  margin-left: 8px;
 	  margin-right: 8px;
@@ -421,6 +421,7 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
         align-items: center;
         justify-content: center;
         transition: background-color 0.3s;
+        height: 36px;
       }
       .new-limit-btn:hover {
         background-color: var(--dark-primary-color);
@@ -450,45 +451,72 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
       .form-header {
         font-size: 18px;
         font-weight: 500;
-        margin-bottom: 16px;
+        margin-bottom: 26px;
         text-align: center;
       }
       .form-row {
         display: flex;
         flex-direction: column;
-        margin-bottom: 16px;
+        margin-bottom: 25px;  
+
       }
       .form-row label {
+        flex: 1;
+        text-align: center;
         margin-bottom: 8px;
         font-size: 14px;
       }
+      .form-row .select {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+      }
+      .form-row select {
+        width: 50%;
+        display: inline-block;
+        text-align: center; 
+        font-size: 16px;
+        font-weight: 500;
+        padding: 8px;
+        border: 1px solid var(--divider-color);
+        border-radius: 4px;
+        background-color: var(--primary-background-color);
+      }
+      option {
+        font-size: 16px;
+        font-weight: 500;
+      }
       .time-inputs {
         display: flex;
+        flex-direction: row;
+        align-self: center;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         gap: 8px;
+        width: 60%;
       }
       .time-input {
         flex: 1;
+        justify-content: center;
+			  align-items: center;
+        text-align: center;
       }
       .time-input input {
-        width: 100%;
+        width: 70%;
         padding: 8px;
         border: 1px solid var(--divider-color);
         border-radius: 4px;
         background-color: var(--primary-background-color);
         color: var(--primary-text-color);
+        text-align: center; 
       }
       .time-input label {
         display: block;
-        font-size: 12px;
         margin-top: 4px;
         text-align: center;
-      }
-      select {
-        padding: 8px;
-        border: 1px solid var(--divider-color);
-        border-radius: 4px;
-        background-color: var(--primary-background-color);
-        color: var(--primary-text-color);
+        font-size: 16px;
+        font-weight: 500
       }
       .slider-container {
         padding: 8px 0;
@@ -497,7 +525,7 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
         text-align: center;
         font-size: 16px;
         font-weight: 500;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
       }
       .energy-slider {
         width: 100%;
@@ -539,9 +567,15 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
         background-color: var(--primary-color);
         color: var(--text-primary-color);
       }
+      .btn-primary:hover {
+         background-color: var(--dark-primary-color);
+      }
       .btn-secondary {
         background-color: var(--secondary-background-color);
         color: var(--primary-text-color);
+      }
+      .btn-secondary:hover {
+        background-color: var(--dark-secondary-background-color);
       }
       .btn:disabled {
         opacity: 0.5;
@@ -552,30 +586,46 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
         align-items: center;
         background-color: var(--primary-color);
         color: var(--text-primary-color);
-        border-radius: 16px;
-        padding: 4px 12px;
+        border-radius: 8px;
+        padding-left: 8px;
+        padding-right: 4px;
         font-size: 14px;
         max-width: fit-content;
         margin: 0 auto;
+        height: 36px;
       }
       .limit-badge ha-icon {
+        flex: 1;
+        align-items: center;
+        justify-content: center;
         margin-right: 8px;
+        --mdc-icon-size: 20px;
       }
       .limit-badge .close-icon {
+        flex: 1;
+        align-items: center;
         margin-left: 8px;
+        margin-right: 4px;
         cursor: pointer;
+        --mdc-icon-size: 20px;
       }
+      .close-icon:hover {
+        background-color: var(--dark-primary-color);
+      }
+      
       .limit-value {
         font-weight: 500;
         margin-left: 8px;
+        white-space: nowrap;
+        font-size: 1.1rem;
       }
-    `}_toggleLimitForm(){this._showLimitForm=!this._showLimitForm,this._selectedLimitType="time",this._hours=0,this._minutes=0,this._energyValue=0,this.requestUpdate()}_handleTypeChange(t){const e=t.target;this._selectedLimitType=e.value,this.requestUpdate()}_handleHoursChange(t){const e=t.target;this._hours=parseInt(e.value)||0,this.requestUpdate()}_handleMinutesChange(t){const e=t.target;this._minutes=parseInt(e.value)||0,this.requestUpdate()}_handleEnergyChange(t){const e=t.target;this._energyValue=parseInt(e.value)||0,this.requestUpdate()}_sliderMouseDown(t){const e=t.currentTarget.getBoundingClientRect();this._updateSliderValue(t.clientX,e);const i=t=>{this._updateSliderValue(t.clientX,e),t.preventDefault()},s=()=>{window.removeEventListener("mousemove",i),window.removeEventListener("mouseup",s)};window.addEventListener("mousemove",i),window.addEventListener("mouseup",s)}_updateSliderValue(t,e){const i=e.width,s=t-e.left;let r=Math.min(Math.max(s/i,0),1);this._energyValue=Math.round(100*r),this.requestUpdate()}_addLimit(){if("time"===this._selectedLimitType){const t=60*this._hours+this._minutes;t>0&&this.setLimit&&this.setLimit("time",t)}else"energy"===this._selectedLimitType&&this._energyValue>0&&this.setLimit&&this.setLimit("energy",this._energyValue);this._showLimitForm=!1}_removeLimit(){this.delLimit&&this.delLimit()}_isAddButtonDisabled(){return"time"===this._selectedLimitType?0===this._hours&&0===this._minutes:"energy"!==this._selectedLimitType||0===this._energyValue}_formatTimeValue(t){return[Math.floor(t/60),t%60,0].map((t=>String(t).padStart(2,"0"))).join(":")}render(){return this.limit&&this.limit.type?R`
+    `}_toggleLimitForm(){this._showLimitForm=!this._showLimitForm,this._selectedLimitType="time",this._hours=0,this._minutes=0,this._energyValue=0,this.requestUpdate()}_handleTypeChange(t){const e=t.target;this._selectedLimitType=e.value,this.requestUpdate()}_handleHoursChange(t){const e=t.target;this._hours=parseInt(e.value)||0,this.requestUpdate()}_handleMinutesChange(t){const e=t.target;this._minutes=parseInt(e.value)||0,this.requestUpdate()}_handleEnergyChange(t){const e=t.target,i=parseInt(e.value)||0;this._energyValue=1e3*i,this.requestUpdate()}_sliderMouseDown(t){const e=t.currentTarget.getBoundingClientRect();this._updateSliderValue(t.clientX,e);const i=t=>{this._updateSliderValue(t.clientX,e),t.preventDefault()},s=()=>{window.removeEventListener("mousemove",i),window.removeEventListener("mouseup",s)};window.addEventListener("mousemove",i),window.addEventListener("mouseup",s)}_updateSliderValue(t,e){const i=e.width,s=t-e.left,r=Math.min(Math.max(s/i,0),1),n=Math.round(100*r);this._energyValue=1e3*n,this.requestUpdate()}_formatEnergyValue(t){return`${Math.round(t/1e3)} kWh`}_addLimit(){if("time"===this._selectedLimitType){const t=60*this._hours+this._minutes;t>0&&this.setLimit&&this.setLimit("time",t)}else"energy"===this._selectedLimitType&&this._energyValue>0&&this.setLimit&&this.setLimit("energy",this._energyValue);this._showLimitForm=!1}_removeLimit(){this.delLimit&&this.delLimit()}_isAddButtonDisabled(){return"time"===this._selectedLimitType?0===this._hours&&0===this._minutes:"energy"!==this._selectedLimitType||0===this._energyValue}_formatTimeValue(t){return[Math.floor(t/60),t%60,0].map((t=>String(t).padStart(2,"0"))).join(":")}render(){return this.limit&&this.limit.type?R`
         <div class="limit-container">
           <div class="limit-badge">
             <ha-icon icon="${"time"===this.limit.type?"mdi:clock":"mdi:lightning-bolt"}"></ha-icon>
-            <span>${"time"===this.limit.type?"Time":"Energy"}</span>
+            <span class="limit-type">${"time"===this.limit.type?"Time: ":"Energy: "}</span>
             <span class="limit-value">
-              ${"time"===this.limit.type?this._formatTimeValue(this.limit.value):`${this.limit.value} kWh`}
+              ${"time"===this.limit.type?this._formatTimeValue(this.limit.value):this._formatEnergyValue(this.limit.value)}
             </span>
             <ha-icon 
               class="close-icon" 
@@ -585,16 +635,23 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
           </div>
         </div>
       `:this._showLimitForm?R`
-        <div class="modal-overlay" @click=${t=>{t.target.classList.contains("modal-overlay")&&this._toggleLimitForm()}}>
+      <div class="limit-container">
+        <button class="new-limit-btn" @click=${this._toggleLimitForm}>
+          <ha-icon icon="mdi:plus"></ha-icon>
+          New Limit
+        </button>
+      </div>
+        <div class="modal-overlay">
           <div class="limit-form">
           <div class="form-header">Add Charging Limit</div>
           
           <div class="form-row">
-            <label for="limit-type">Limit Type</label>
-            <select id="limit-type" @change=${this._handleTypeChange}>
-              <option value="time" ?selected=${"time"===this._selectedLimitType}>Time</option>
-              <option value="energy" ?selected=${"energy"===this._selectedLimitType}>Energy</option>
-            </select>
+            <div class="select">
+              <select id="limit-type" @change=${this._handleTypeChange}>
+                  <option value="time" ?selected=${"time"===this._selectedLimitType}>Time</option>
+                  <option value="energy" ?selected=${"energy"===this._selectedLimitType}>Energy</option>
+              </select>
+            </div>
           </div>
           
           ${"time"===this._selectedLimitType?R`
@@ -624,19 +681,19 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
             </div>
           `:R`
             <div class="form-row">
-              <div class="slider-value">${this._energyValue} kWh</div>
-              <div class="slider-container">
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="100" 
-                  step="1" 
-                  class="energy-slider"
-                  .value=${String(this._energyValue)}
-                  @input=${this._handleEnergyChange}
-                  @mousedown=${this._sliderMouseDown}
-                >
-              </div>
+            <div class="slider-value">${this._formatEnergyValue(this._energyValue)}</div>
+            <div class="slider-container">
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                step="1" 
+                class="energy-slider"
+                .value=${String(Math.round(this._energyValue/1e3))}
+                @input=${this._handleEnergyChange}
+                @mousedown=${this._sliderMouseDown}
+              >
+            </div>
             </div>
           `}
           
