@@ -70,7 +70,7 @@ export interface CustomDetailEvent extends Event {
 	};
 }
 
-export interface Limits {
+export interface Limit {
 	type: string;
 	value: number;
 	auto_release: boolean;

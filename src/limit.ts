@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { Limits } from './types';
+import { Limit } from './types';
 
 class LimitComponent extends LitElement {
   static override get properties() {
@@ -15,7 +15,7 @@ class LimitComponent extends LitElement {
     };
   }
 
-  limit?: Limits | null;
+  limit?: Limit | null;
   setLimit?: (type: string, value: number) => void;
   delLimit?: () => void;
   _showLimitForm: boolean = false;

@@ -1,5 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit-element';
-import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetailEvent, Limits } from './types';
+import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetailEvent, Limit } from './types';
 import { cardStyles } from './styles';
 import translations from './translations';
 import './evse-slider/evse-slider';
@@ -15,7 +15,7 @@ class CustomCard extends LitElement {
             _lastEntityTime: { type: Number },
             _timeUpdateInterval: { type: Number },
             _isCharging: { type: Boolean },
-            _limits: { type: Object },
+            _limit: { type: Object },
             _hasLimit: { type: Boolean }
         };
     }
@@ -28,7 +28,7 @@ class CustomCard extends LitElement {
     _timeUpdateInterval: number | null = null;
     _isCharging: boolean = false;
     _translations: TranslationDict = translations;
-    _limits?: Limits | null = null;
+    _limit?: Limit | null = null;
     _hasLimit?: boolean = false;
 
     constructor() {
@@ -38,7 +38,7 @@ class CustomCard extends LitElement {
         this._lastEntityTime = 0;
         this._timeUpdateInterval = null;
         this._isCharging = false;
-        this._limits = null;
+        this._limit = null;
         this._hasLimit = false;
     }
 
@@ -118,9 +118,8 @@ class CustomCard extends LitElement {
                 if (newLimitActive != this._hasLimit) {
                     this._hasLimit = newLimitActive;
                     if (this.config.device_id) {
-                        this._getLimits(this.config.device_id).then(limits => {
-                            this._limits = limits;
-                            console.log(limits);
+                        this._getLimit().then(limit => {
+                            this._limit = limit;
                         });
                     }
                 }
@@ -207,37 +206,55 @@ class CustomCard extends LitElement {
             });
         }
     }
+    // Call service to get limit
+    async _getLimit(): Promise<Limit | null> {
+        if (!this.hass) return null;
+
+        try {
+            const response = await this.hass.callService('openevse', 'get_limit', {
+                device_id: this.config?.device_id,
+            }, undefined, false, true);
+
+            const limit: Limit | null = response?.response ?
+                response.response as unknown as Limit
+                : null;
+            return limit;
+        } catch (error) {
+            console.error('Error while getting limit', error);
+            return null;
+        }
+    }
 
     // Set limit function
     _setLimit(type: string, value: number): void {
-        // Empty function to be implemented later
-        console.log("type: " + type + " value: " + value)
+        if (!this.hass) return;
+        try {
+            this.hass.callService('openevse', 'set_limit', {
+                device_id: this.config?.device_id,
+                type: type,
+                value: value,
+                auto_release: true
+            }, undefined, false, false);
+            return;
+        } catch (error) {
+            console.error('Error while setting limit', error);
+            return;
+        }
     }
 
     // Delete limit function
     _delLimit(): void {
-        // Empty function to be implemented later
-    }
-
-    // Call service for limits
-    async _getLimits(device_id: string): Promise<Limits | null> {
-        if (!this.hass) return null;
-
+        if (!this.hass) return;
         try {
-            // Remove the boolean parameter (true) that's causing the error
-            const response = await this.hass.callService('openevse', 'get_limit', {
-                device_id: device_id,
-            }, undefined, false, true);
-            
-            // Check if response.response is already an object or a string that needs parsing
-            const limit: Limits | null = response?.response ? 
-                (typeof response.response === 'string' ? JSON.parse(response.response) : response.response as unknown as Limits) 
-                : null;
-            return limit;
+            this.hass.callService('openevse', 'clear_limit', {
+                device_id: this.config?.device_id,
+            }, undefined, false, false);
+            return;
         } catch (error) {
-            console.error('Error while getting limits', error);
-            return null;
+            console.error('Error while removing limit', error);
+            return;
         }
+
     }
 
     // Show entity more-info dialog
@@ -583,15 +600,15 @@ class CustomCard extends LitElement {
                             @value-changed=${this._updateSlider}
                         ></evse-slider>
                     </div>
-                    <!-- Limits -->
+                    <!-- Limit -->
                     <div class="container">
                         <limit-component
-                            .limit=${this._limits as Limits}
+                            .limit=${this._limit as Limit}
                             .setLimit=${this._setLimit.bind(this)}
                             .delLimit=${this._delLimit.bind(this)}
                         ></limit-component>
                     </div>
-                    <!-- End of Limits -->
+                    <!-- End of Limit -->
                     ${optionalEntities?.map((entity) =>
                     html`
                     <div class="other-entities-container">
