@@ -1,6 +1,6 @@
 export interface HomeAssistant {
 	states: Record<string, EntityState>;
-	callService: (domain: string, service: string, data: Record<string, unknown>) => void;
+	callService: (domain: string, service: string, data: Record<string, unknown>, target?: ServiceCallRequest["target"], notifyOnError?: boolean, returnResponse?: boolean) => Promise<ServiceCallResponse | void>;
 	formatEntityState: (entity: EntityState) => string;
 	language: string;
 	entities?: Record<string, RegistryEntity>;
@@ -32,6 +32,7 @@ export interface CardConfig {
 	session_energy_entity?: string;
 	time_elapsed_entity?: string;
 	wifi_signal_strength_entity?: string;
+	limit_active_entity?: string;
 }
 
 export interface OptionalEntity {
@@ -67,3 +68,35 @@ export interface CustomDetailEvent extends Event {
 		entityId: string;
 	};
 }
+
+export interface Limits {
+	type: string;
+	value: number;
+	auto_release: boolean;
+}
+
+export interface Context {
+	id: string;
+	parent_id?: string;
+	user_id?: string | null;
+}
+
+export interface ServiceCallResponse {
+	context: Context;
+	response?: string;
+}
+
+export interface ServiceCallRequest {
+	domain: string;
+	service: string;
+	serviceData?: Record<string, any>;
+	target?: HassServiceTarget;
+}
+
+export type HassServiceTarget = {
+	entity_id?: string | string[];
+	device_id?: string | string[];
+	area_id?: string | string[];
+	floor_id?: string | string[];
+	label_id?: string | string[];
+};

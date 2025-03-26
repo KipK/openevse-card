@@ -144,6 +144,18 @@ export const mainSchema = memoizeOne(
 				label: "Wifi Signal",
 				helper_text: "Select openevse_wifi_signal_strength entity",
 				required: false
+			},
+			{
+				name: "limit_active_entity",
+				selector: {
+					entity: {
+						domain: ["binary_sensor"],
+						include_entities: deviceEntities.binary_sensor || []
+					}
+				},
+				label: "Limit Active",
+				helper_text: "Select openevse_limit_active entity",
+				required: false
 			}
 
 		];

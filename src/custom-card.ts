@@ -1,5 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit-element';
-import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetailEvent } from './types';
+import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetailEvent, Limits } from './types';
 import { cardStyles } from './styles';
 import translations from './translations';
 import './evse-slider/evse-slider';
@@ -13,7 +13,9 @@ class CustomCard extends LitElement {
             _localTimeElapsed: { type: Number },
             _lastEntityTime: { type: Number },
             _timeUpdateInterval: { type: Number },
-            _isCharging: { type: Boolean }
+            _isCharging: { type: Boolean },
+            _limits: { type: Object },
+            _hasLimit: { type: Boolean }
         };
     }
 
@@ -25,6 +27,8 @@ class CustomCard extends LitElement {
     _timeUpdateInterval: number | null = null;
     _isCharging: boolean = false;
     _translations: TranslationDict = translations;
+    _limits?: Limits | null = null;
+    _hasLimit?: boolean = false;
 
     constructor() {
         super();
@@ -33,6 +37,8 @@ class CustomCard extends LitElement {
         this._lastEntityTime = 0;
         this._timeUpdateInterval = null;
         this._isCharging = false;
+        this._limits = null;
+        this._hasLimit = false;
     }
 
     override disconnectedCallback(): void {
@@ -69,9 +75,6 @@ class CustomCard extends LitElement {
         }
     }
 
-    override firstUpdated(): void {
-        this._lang = this.hass?.language || "en";
-    }
 
     override updated(changedProperties: PropertyValues): void {
         if (changedProperties.has("hass") && this.hass) {
@@ -81,17 +84,17 @@ class CustomCard extends LitElement {
             if (this.config && this.config.charging_status_entity &&
                 this.hass.states[this.config.charging_status_entity]) {
 
-                const chargingEntity = this.hass.states[this.config.charging_status_entity];
-                const isNowCharging = chargingEntity.state === "charging";
+                    const chargingEntity = this.hass.states[this.config.charging_status_entity];
+                    const isNowCharging = chargingEntity.state === "charging";
 
-                // If charging status changed
-                if (isNowCharging !== this._isCharging) {
-                    this._isCharging = isNowCharging;
+                    // If charging status changed
+                    if (isNowCharging !== this._isCharging) {
+                        this._isCharging = isNowCharging;
 
-                    // Update interval based on new status
-                    this._setupTimeInterval();
+                        // Update interval based on new status
+                        this._setupTimeInterval();
+                    }
                 }
-            }
 
             // Check if time_elapsed_entity exists and has changed
             if (this.config && this.config.time_elapsed_entity &&
@@ -104,6 +107,21 @@ class CustomCard extends LitElement {
                 if (!isNaN(newTime) && newTime !== this._lastEntityTime) {
                     this._lastEntityTime = newTime;
                     this._localTimeElapsed = newTime;
+                }
+            }
+
+            // check if limit status has changed
+            if (this.config && this.config.limit_active_entity &&
+                this.hass.states[this.config.limit_active_entity]) {
+                const newLimitActive = this.hass.states[this.config.limit_active_entity].state === "on";
+                if (newLimitActive != this._hasLimit) {
+                    this._hasLimit = newLimitActive;
+                    if (this.config.device_id) {
+                        this._getLimits(this.config.device_id).then(limits => {
+                            this._limits = limits;
+                            console.log(limits);
+                        });
+                    }
                 }
             }
         }
@@ -158,6 +176,7 @@ class CustomCard extends LitElement {
             session_energy_entity: '',
             time_elapsed_entity: '',
             wifi_signal_strength_entity: '',
+            limit_active_entity: '',
             optional_entities: [],
         };
     }
@@ -178,12 +197,33 @@ class CustomCard extends LitElement {
     }
 
     // Call service for the buttons
-    _callService(entity_id: string, option: string | number): void {
+    _selectOverrideState(entity_id: string, option: string | number): void {
         if (this.hass) {
             this.hass.callService('select', 'select_option', {
                 entity_id: entity_id,
                 option: option.toString(),
             });
+        }
+    }
+
+    // Call service for limits
+    async _getLimits(device_id: string): Promise<Limits | null> {
+        if (!this.hass) return null;
+
+        try {
+            // Remove the boolean parameter (true) that's causing the error
+            const response = await this.hass.callService('openevse', 'get_limit', {
+                device_id: device_id,
+            }, undefined, false, true);
+            
+            // Check if response.response is already an object or a string that needs parsing
+            const limit: Limits | null = response?.response ? 
+                (typeof response.response === 'string' ? JSON.parse(response.response) : response.response as unknown as Limits) 
+                : null;
+            return limit;
+        } catch (error) {
+            console.error('Error while getting limits', error);
+            return null;
         }
     }
 
@@ -263,6 +303,8 @@ class CustomCard extends LitElement {
             this.config.time_elapsed_entity ? this.hass.states[this.config.time_elapsed_entity] : null;
         const wifiSignalEntity =
             this.config.wifi_signal_strength_entity ? this.hass.states[this.config.wifi_signal_strength_entity] : null;
+        // We don't need to declare limitActiveEntity here since it's not used in the render method
+        
         const getOptionalEntities = (): OptionalEntity[] =>
             this.config?.optional_entities?.map((entity) => {
                 return {
@@ -290,6 +332,9 @@ class CustomCard extends LitElement {
         }
 
         const optionalEntities = getOptionalEntities();
+        
+
+        // HTML output
 
         return html`
       <ha-card>
@@ -465,7 +510,7 @@ class CustomCard extends LitElement {
                 : ''}"
                     data-option="active"
                     @click=${() =>
-                this._callService(
+                this._selectOverrideState(
                     this.config?.override_entity || '',
                     'active'
                 )}
@@ -485,7 +530,7 @@ class CustomCard extends LitElement {
                 : ''}"
                     data-option="auto"
                     @click=${() =>
-                this._callService(
+                this._selectOverrideState(
                     this.config?.override_entity || '',
                     'auto'
                 )}
@@ -505,7 +550,7 @@ class CustomCard extends LitElement {
                 : ''}"
                     data-option="disabled"
                     @click=${() =>
-                this._callService(
+                this._selectOverrideState(
                     this.config?.override_entity || '',
                     'disabled'
                 )}
