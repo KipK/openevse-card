@@ -33,6 +33,7 @@ export interface CardConfig {
 	time_elapsed_entity?: string;
 	wifi_signal_strength_entity?: string;
 	limit_active_entity?: string;
+	vehicle_range_entity?: string;
 }
 
 export interface OptionalEntity {
@@ -89,7 +90,7 @@ export interface ServiceCallResponse {
 export interface ServiceCallRequest {
 	domain: string;
 	service: string;
-	serviceData?: Record<string, any>;
+	serviceData?: Record<string, unknown>;
 	target?: HassServiceTarget;
 }
 

@@ -3,6 +3,7 @@ import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetai
 import { cardStyles } from './styles';
 import translations from './translations';
 import './evse-slider/evse-slider';
+import './limit';
 
 class CustomCard extends LitElement {
     static override get properties() {
@@ -177,6 +178,7 @@ class CustomCard extends LitElement {
             time_elapsed_entity: '',
             wifi_signal_strength_entity: '',
             limit_active_entity: '',
+            vehicle_range_entity: '',
             optional_entities: [],
         };
     }
@@ -204,6 +206,17 @@ class CustomCard extends LitElement {
                 option: option.toString(),
             });
         }
+    }
+
+    // Set limit function
+    _setLimit(type: string, value: number): void {
+        // Empty function to be implemented later
+        console.log("type: " + type + " value: " + value)
+    }
+
+    // Delete limit function
+    _delLimit(): void {
+        // Empty function to be implemented later
     }
 
     // Call service for limits
@@ -303,7 +316,6 @@ class CustomCard extends LitElement {
             this.config.time_elapsed_entity ? this.hass.states[this.config.time_elapsed_entity] : null;
         const wifiSignalEntity =
             this.config.wifi_signal_strength_entity ? this.hass.states[this.config.wifi_signal_strength_entity] : null;
-        // We don't need to declare limitActiveEntity here since it's not used in the render method
         
         const getOptionalEntities = (): OptionalEntity[] =>
             this.config?.optional_entities?.map((entity) => {
@@ -337,276 +349,283 @@ class CustomCard extends LitElement {
         // HTML output
 
         return html`
-      <ha-card>
-      ${this.config.header
-                ? html`<h1 class="card-header">
-            ${this.config.name || 'OpenEVSE'}
-            </h1>`
-                : ''}
-      <div class="card-content">
-          <div class="evse-states">
-          <div class="status-icons">
-                ${wifiSignalEntity ? html`
-                <div
-                    class="status-icon clickable"
-                    @click=${() =>
-                    this._showMoreInfo(
-                        this.config?.wifi_signal_strength_entity || ''
-                    )}
-                    >
-                        <ha-icon
-                            icon="${wifiIcon(Number(wifiSignalEntity?.state))}"
-                            class="wifi-icon"
-                        ></ha-icon>
+        <ha-card>
+            ${this.config.header
+                        ? html`<h1 class="card-header">
+                    ${this.config.name || 'OpenEVSE'}
+                    </h1>`
+                        : ''}
+            <div class="card-content">
+                <div class="evse-states">
+                    <div class="status-icons">
+                            ${wifiSignalEntity ? html`
+                            <div
+                                class="status-icon clickable"
+                                @click=${() =>
+                                this._showMoreInfo(
+                                    this.config?.wifi_signal_strength_entity || ''
+                                )}
+                                >
+                                    <ha-icon
+                                        icon="${wifiIcon(Number(wifiSignalEntity?.state))}"
+                                        class="wifi-icon"
+                                    ></ha-icon>
+                                </div>
+                            `: ''}
+                        
+                            <div
+                            class="status-icon clickable"
+                            @click=${() =>
+                            this._showMoreInfo(
+                                this.config?.status_entity || ''
+                            )}
+                            >
+                            <ha-icon
+                                icon="${statusEntity?.state == 'active'
+                            ? vehicleConnectedEntity?.state == 'off' ? 'mdi:timer-sand' : 'mdi:lightning-bolt'
+                            : 'mdi:cancel'}"
+                                class="${statusEntity?.state == 'active'
+                            ? chargingStatusEntity?.state == 'charging'
+                                ? 'charging'
+                                : 'active bg-active'
+                            : 'disabled bg-disabled'}"
+                            ></ha-icon>
+                            </div>
+                            <div
+                            class="status-icon clickable"
+                            @click=${() =>
+                            this._showMoreInfo(
+                                this.config?.vehicle_connected_entity || ''
+                            )}
+                            >
+                            <ha-icon
+                                icon="${vehicleConnectedEntity?.state ==
+                            'off'
+                            ? 'mdi:car-off'
+                            : 'mdi:car'}"
+                                class="${vehicleConnectedEntity?.state ==
+                            'off'
+                            ? 'disabled bg-disabled'
+                            : 'active bg-active'}"
+                            ></ha-icon>
+                            </div>
                     </div>
-                `: ''}
-              
-                <div
-                class="status-icon clickable"
-                @click=${() =>
-                this._showMoreInfo(
-                    this.config?.status_entity || ''
-                )}
-                >
-                <ha-icon
-                    icon="${statusEntity?.state == 'active'
-                ? vehicleConnectedEntity?.state == 'off' ? 'mdi:timer-sand' : 'mdi:lightning-bolt'
-                : 'mdi:cancel'}"
-                    class="${statusEntity?.state == 'active'
-                ? chargingStatusEntity?.state == 'charging'
-                    ? 'charging'
-                    : 'active bg-active'
-                : 'disabled bg-disabled'}"
-                ></ha-icon>
+                    <div class="status-heading">
+                        <div
+                        class="status-badge ${chargingStatusEntity?.state ==
+                        'error'
+                        ? 'badge-error'
+                        : statusEntity?.state == 'disabled'
+                            ? 'badge-disabled'
+                            : chargingStatusEntity?.state == 'charging'
+                                ? 'badge-charging'
+                                : 'badge-active'}"
+                        >
+                        ${this._t(chargingStatusEntity?.state || '')}
+                        </div>
+                    </div>
                 </div>
-                <div
-                class="status-icon clickable"
-                @click=${() =>
-                this._showMoreInfo(
-                    this.config?.vehicle_connected_entity || ''
-                )}
-                >
-                <ha-icon
-                    icon="${vehicleConnectedEntity?.state ==
-                'off'
-                ? 'mdi:car-off'
-                : 'mdi:car'}"
-                    class="${vehicleConnectedEntity?.state ==
-                'off'
-                ? 'disabled bg-disabled'
-                : 'active bg-active'}"
-                ></ha-icon>
-                </div>
-          </div>
-          <div class="status-heading">
-              <div
-                  class="status-badge ${chargingStatusEntity?.state ==
-                'error'
-                ? 'badge-error'
-                : statusEntity?.state == 'disabled'
-                    ? 'badge-disabled'
-                    : chargingStatusEntity?.state == 'charging'
-                        ? 'badge-charging'
-                        : 'badge-active'}"
-              >
-               ${this._t(chargingStatusEntity?.state || '')}
-              </div>
-          </div>
-          </div>
-            <div class="grid-container">
-                    ${powerEntity
-                ? html`
+                    <div class="grid-container">
+                            ${powerEntity
+                        ? html`
+                                    <div class="grid-item">
+                                        <div class="grid-item-label">${this._t("power")}</div>
+                                        <div
+                                        class="grid-item-value current-value clickable"
+                                        @click=${() =>
+                                this._showMoreInfo(
+                                    this.config?.power_entity || ''
+                                )}
+                                        >
+                                        ${powerEntity ? this.hass.formatEntityState(
+                                    powerEntity
+                                ) : "0 W"}
+                                        </div>
+                                    </div>
+                                    `
+                        : html`
+                                    <div class="grid-item">
+                                        <div class="grid-item-label">${this._t("power")}</div>
+                                        <div class="grid-item-value current-value">0 W</div>
+                                    </div>`
+                    }
+                        ${currentEntity
+                        ? html`
+                                <div class="grid-item">
+                                    <div class="grid-item-label">${this._t("current")}</div>
+                                    <div
+                                    class="grid-item-value current-value clickable"
+                                    @click=${() =>
+                                this._showMoreInfo(
+                                    this.config?.current_entity || ''
+                                )}
+                                    >
+                                    ${currentEntity ? this.hass.formatEntityState(
+                                    currentEntity
+                                ) : "0 A"}
+                                    </div>
+                                </div>
+                                `
+                        : html`
+                                <div class="grid-item">
+                                    <div class="grid-item-label">${this._t("current")}</div>
+                                    <div class="grid-item-value current-value">0 A</div>
+                                </div>`
+                    }
+                            ${sessionEnergyEntity
+                        ? html`
                             <div class="grid-item">
-                                <div class="grid-item-label">${this._t("power")}</div>
+                                <div class="grid-item-label">${this._t("session")}</div>
                                 <div
                                 class="grid-item-value current-value clickable"
                                 @click=${() =>
-                        this._showMoreInfo(
-                            this.config?.power_entity || ''
-                        )}
+                                this._showMoreInfo(
+                                    this.config?.session_energy_entity || ''
+                                )}
                                 >
-                                ${powerEntity ? this.hass.formatEntityState(
-                            powerEntity
-                        ) : "0 W"}
-                                </div>
+                            ${sessionEnergyEntity ? this.hass.formatEntityState(
+                                    sessionEnergyEntity
+                                ) : "0 kWh"}
                             </div>
-                            `
-                : html`
-                            <div class="grid-item">
-                                <div class="grid-item-label">${this._t("power")}</div>
-                                <div class="grid-item-value current-value">0 W</div>
-                            </div>`
-            }
-                ${currentEntity
-                ? html`
+                        </div>
+                        `
+                        : html`
                         <div class="grid-item">
-                            <div class="grid-item-label">${this._t("current")}</div>
+                            <div class="grid-item-label">${this._t("session")}</div>
+                            <div class="grid-item-value current-value">0 kWh</div>
+                        </div>`
+                    }
+
+                    ${timeElapsedEntity
+                        ? html`
+                        <div class="grid-item">
+                            <div class="grid-item-label">${this._t("elapsed")}</div>
                             <div
-                            class="grid-item-value current-value clickable"
+                            class="grid-item-value current-value"
+                            >
+                            ${this._convertTime(this._localTimeElapsed || 0)}
+                            </div>
+                        </div>
+                    `: html`
+                        <div class="grid-item">
+                            <div class="grid-item-label">${this._t("elapsed")}</div>
+                            <div class="grid-item-value current-value">00:00:00</div>
+                        </div>`
+                    }
+                    </div>
+                    <div class="override-controls">
+                        <div class="override-row">
+                            <div
+                            class="override-button ${overrideEntity?.state ==
+                        'active'
+                        ? 'active'
+                        : ''}"
+                            data-option="active"
                             @click=${() =>
-                        this._showMoreInfo(
-                            this.config?.current_entity || ''
+                        this._selectOverrideState(
+                            this.config?.override_entity || '',
+                            'active'
                         )}
                             >
-                            ${currentEntity ? this.hass.formatEntityState(
-                            currentEntity
-                        ) : "0 A"}
+                            <ha-icon
+                                icon="mdi:lightning-bolt"
+                                class="${overrideEntity?.state == 'active' &&
+                        chargingStatusEntity?.state == 'charging'
+                        ? 'charging'
+                        : ''}"
+                            ></ha-icon>
+                            </div>
+                            <div
+                            class="override-button ${overrideEntity?.state ==
+                        'auto'
+                        ? 'active'
+                        : ''}"
+                            data-option="auto"
+                            @click=${() =>
+                        this._selectOverrideState(
+                            this.config?.override_entity || '',
+                            'auto'
+                        )}
+                            >
+                            <ha-icon
+                                icon="mdi:robot"
+                                class="${overrideEntity?.state == 'auto' &&
+                        chargingStatusEntity?.state == 'charging'
+                        ? 'charging'
+                        : ''}"
+                            ></ha-icon>
+                            </div>
+                            <div
+                            class="override-button ${overrideEntity?.state ==
+                        'disabled'
+                        ? 'active'
+                        : ''}"
+                            data-option="disabled"
+                            @click=${() =>
+                        this._selectOverrideState(
+                            this.config?.override_entity || '',
+                            'disabled'
+                        )}
+                            >
+                            <ha-icon icon="mdi:cancel"></ha-icon>
                             </div>
                         </div>
-                        `
-                : html`
-                        <div class="grid-item">
-                            <div class="grid-item-label">${this._t("current")}</div>
-                            <div class="grid-item-value current-value">0 A</div>
-                        </div>`
-            }
-                    ${sessionEnergyEntity
-                ? html`
-                    <div class="grid-item">
-                        <div class="grid-item-label">${this._t("session")}</div>
-                        <div
-                        class="grid-item-value current-value clickable"
-                        @click=${() =>
-                        this._showMoreInfo(
-                            this.config?.session_energy_entity || ''
-                        )}
-                        >
-                    ${sessionEnergyEntity ? this.hass.formatEntityState(
-                            sessionEnergyEntity
-                        ) : "0 kWh"}
                     </div>
-                </div>
-                `
-                : html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("session")}</div>
-                    <div class="grid-item-value current-value">0 kWh</div>
-                </div>`
-            }
-
-            ${timeElapsedEntity
-                ? html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("elapsed")}</div>
-                    <div
-                    class="grid-item-value current-value"
-                    >
-                    ${this._convertTime(this._localTimeElapsed || 0)}
+                    <div class="container">
+                        <evse-slider
+                            .min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
+                            .max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
+                            .step=${typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1}
+                            .value=${Number(chargeRateEntity?.state || 0)}
+                            .unit=${typeof chargeRateEntity?.attributes.unit_of_measurement === 'string' ? chargeRateEntity.attributes.unit_of_measurement : 'A'}
+                            .label=${this._t("charge rate")}
+                            .disabled=${!chargeRateEntity}
+                            @value-changed=${this._updateSlider}
+                        ></evse-slider>
                     </div>
-                </div>
-            `: html`
-                <div class="grid-item">
-                    <div class="grid-item-label">${this._t("elapsed")}</div>
-                    <div class="grid-item-value current-value">00:00:00</div>
-                </div>`
-            }
-            </div>
-            <div class="override-controls">
-                <div class="override-row">
-                    <div
-                    class="override-button ${overrideEntity?.state ==
-                'active'
-                ? 'active'
-                : ''}"
-                    data-option="active"
-                    @click=${() =>
-                this._selectOverrideState(
-                    this.config?.override_entity || '',
-                    'active'
-                )}
-                    >
-                    <ha-icon
-                        icon="mdi:lightning-bolt"
-                        class="${overrideEntity?.state == 'active' &&
-                chargingStatusEntity?.state == 'charging'
-                ? 'charging'
-                : ''}"
-                    ></ha-icon>
+                    <!-- Limits -->
+                    <div class="container">
+                        <limit-component
+                            .limit=${this._limits as Limits}
+                            .setLimit=${this._setLimit.bind(this)}
+                            .delLimit=${this._delLimit.bind(this)}
+                        ></limit-component>
                     </div>
-                    <div
-                    class="override-button ${overrideEntity?.state ==
-                'auto'
-                ? 'active'
-                : ''}"
-                    data-option="auto"
-                    @click=${() =>
-                this._selectOverrideState(
-                    this.config?.override_entity || '',
-                    'auto'
-                )}
-                    >
-                    <ha-icon
-                        icon="mdi:robot"
-                        class="${overrideEntity?.state == 'auto' &&
-                chargingStatusEntity?.state == 'charging'
-                ? 'charging'
-                : ''}"
-                    ></ha-icon>
-                    </div>
-                    <div
-                    class="override-button ${overrideEntity?.state ==
-                'disabled'
-                ? 'active'
-                : ''}"
-                    data-option="disabled"
-                    @click=${() =>
-                this._selectOverrideState(
-                    this.config?.override_entity || '',
-                    'disabled'
-                )}
-                    >
-                    <ha-icon icon="mdi:cancel"></ha-icon>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-            <evse-slider
-                .min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
-                .max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
-                .step=${typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1}
-                .value=${Number(chargeRateEntity?.state || 0)}
-                .unit=${typeof chargeRateEntity?.attributes.unit_of_measurement === 'string' ? chargeRateEntity.attributes.unit_of_measurement : 'A'}
-                .label=${this._t("charge rate")}
-                .disabled=${!chargeRateEntity}
-                @value-changed=${this._updateSlider}
-            ></evse-slider>
-            </div>
-          ${optionalEntities?.map(
-                    (entity) => html`
-              <div class="other-entities-container">
-              <div class="entity-row">
-                  <div class="entity-title">
-                  ${entity.icon != null
+                    <!-- End of Limits -->
+                    ${optionalEntities?.map((entity) =>
+                    html`
+                    <div class="other-entities-container">
+                        <div class="entity-row">
+                            <div class="entity-title">
+                            ${entity.icon != null
                             ? html`
-                        <div class="entity-icon">
-                            <ha-icon
-                            icon=${entity.icon}
-                            ></ha-icon>
-                        </div>
-                        `
+                                <div class="entity-icon">
+                                    <ha-icon
+                                    icon=${entity.icon}
+                                    ></ha-icon>
+                                </div>
+                            `
                             : html`
-                        <div
-                            class="entity-icon"
-                        ></div>
-                        `}
+                                <div
+                                    class="entity-icon"
+                                ></div>
+                            `}
 
-                  <div class="entity-label">
-                      ${entity.name ? entity.name : entity.id ? entity.id : ""}
-                  </div>
-                  </div>
-                  <div
-                  class="entity-value clickable"
-                  @click=${() =>
-                            this._showMoreInfo(entity.id ? entity.id : "")}
-                  >
-                  ${entity.value ? entity.value : ""}
-                  </div>
-              </div>
-              </div>
-          `
-                )}
-      </div>
-      </ha-card>
+                                <div class="entity-label">
+                                    ${entity.name ? entity.name : entity.id ? entity.id : ""}
+                                </div>
+                            </div>
+                            <div
+                            class="entity-value clickable"
+                            @click=${() => this._showMoreInfo(entity.id ? entity.id : "")}
+                            >
+                                ${entity.value ? entity.value : ""}
+                            </div>
+                        </div>
+                    </div>
+                    `)}
+            </div>
+        </ha-card>
     `;
     }
 }

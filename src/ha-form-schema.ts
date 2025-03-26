@@ -156,7 +156,20 @@ export const mainSchema = memoizeOne(
 				label: "Limit Active",
 				helper_text: "Select openevse_limit_active entity",
 				required: false
+			},
+			{
+				name: "vehicle_range_entity",
+				selector: {
+					entity: {
+						domain: ["sensor"],
+						include_entities: deviceEntities.sensor || []
+					}
+				},
+				label: "Vehicle Range",
+				helper_text: "Select openevse_vehicle_range entity",
+				required: false
 			}
+
 
 		];
 

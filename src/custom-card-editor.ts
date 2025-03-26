@@ -138,6 +138,7 @@ class CustomCardEditor extends LitElement {
             time_elapsed_entity: { names: ["charge_time_elapsed"], domains: ["sensor"], preferredPattern: "sensor.openevse_charge_time_elapsed" },
             wifi_signal_strength_entity: { names: ["wifi_signal_strength"], domains: ["sensor"], preferredPattern: "sensor.openevse_wifi_signal_strength" },
             limit_active_entity: { names: ["limit_active"], domains: ["binary_sensor"], preferredPattern: "sensor.openevse_limit_active" },
+            vehicle_range_entity: { names: ["vehicle_range"], domains: ["sensor"], preferredPattern: "sensor.openevse_vehicle_range" },
         };
 
         // For each required entity type, find the best match
