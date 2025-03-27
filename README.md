@@ -7,6 +7,7 @@ This is a Lovelace custom card for @firstof9 [OpenEVSE integration](https://gith
 **Requirements:**
 
 [Openevse WiFi firmware](https://github.com/OpenEVSE/openevse_esp32_firmware/) >= 5.0
+
 [OpenEVSE integration](https://github.com/firstof9/openevse) >= 2.1.47-b8
 
 ## Installation
