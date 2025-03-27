@@ -208,7 +208,7 @@ const translations =  {
 		"power": "potencia",
 		"current": "corriente",
 		"session": "sesión",
-		"elapsed": "tiempo transcurrido",
+		"elapsed": "pasado",
 		"charge rate": "amperaje",
 		"required_entities": "Entidades requeridas",
 		"entity_auto_success": "Todas las entidades requeridas se encontraron automáticamente",
