@@ -234,7 +234,6 @@ class CustomCard extends LitElement {
     // Set limit function
     _setLimit(type: string, value: number): void {
         if (!this.hass) return;
-        console.log("type: " + type + " value: " + value);
         try {
             this.hass.callService('openevse', 'set_limit', {
                 device_id: this.config?.device_id,
