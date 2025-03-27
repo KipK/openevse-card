@@ -1,41 +1,54 @@
 import memoizeOne from "memoize-one";
 import { SchemaItem } from "./types";
+import translations from "./translations";
+
+// Translation function
+const t = (key: string, lang: string = "en"): string => {
+	const lowerKey = key.toLowerCase();
+	// Use a safer approach with explicit checks
+	if (lang in translations && lowerKey in (translations as Record<string, Record<string, string>>)[lang]) {
+		return (translations as Record<string, Record<string, string>>)[lang][lowerKey];
+	} else if ("en" in translations && lowerKey in (translations as Record<string, Record<string, string>>)["en"]) {
+		return (translations as Record<string, Record<string, string>>)["en"][lowerKey];
+	}
+	return key;
+};
 
 export const mainSchema = memoizeOne(
-	(deviceEntities: Record<string, string[]> = {}): SchemaItem[] => {
+	(deviceEntities: Record<string, string[]> = {}, lang: string = "en"): SchemaItem[] => {
 		// Base schema
 		const schema: SchemaItem[] = [
 			{
 				type: "grid",
 				name: "",
 				schema: [
-					{ name: "name", selector: { text: {} }, required: false, label: "Header Title" },
-					{ name: "header", selector: { boolean: {} }, label: "Display header" }
+					{ name: "name", selector: { text: {} }, required: false, label: t("header title", lang) },
+					{ name: "header", selector: { boolean: {} }, label: t("display header", lang) }
 				]
 			},
 			{
 				type: "grid",
 				name: "",
-				label: "Features",
+				label: t("features", lang),
 				schema: [
-					{ name: "feat_soc", selector: { boolean: {} }, label: "Enable Vehicle Battery" },
-					{ name: "feat_range", selector: { boolean: {} }, label: "Enable Vehicle Range" },
+					{ name: "feat_soc", selector: { boolean: {} }, label: t("enable vehicle battery", lang) },
+					{ name: "feat_range", selector: { boolean: {} }, label: t("enable vehicle range", lang) },
 				]
 			},
 			{
 				type: "grid",
 				name: "",
-				label: "Limits settings",
+				label: t("limits settings", lang),
 				schema: [
-					{ name: "feat_max_energy", selector: { number: {} }, required: false, label: "Maximum charge energy (kWh)" },
-					{ name: "feat_max_range", selector: { number: {} }, required: false, label: "Maximum vehicle range (miles|km)" },
+					{ name: "feat_max_energy", selector: { number: {} }, required: false, label: t("maximum charge energy", lang) },
+					{ name: "feat_max_range", selector: { number: {} }, required: false, label: t("maximum vehicle range", lang) },
 				]
 			},
 			{
 				name: "device_id",
 				selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
-				label: "OpenEVSE Device",
-				helper_text: "Select your OpenEVSE device to automatically populate all entities",
+				label: t("openevse device", lang),
+				helper_text: t("select your openevse device", lang),
 				required: true
 			}
 		];
@@ -51,8 +64,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.select || []
 					}
 				},
-				label: "Override State",
-				helper_text: "Select openevse.override_state entity",
+				label: t("override state", lang),
+				helper_text: t("select openevse.override_state entity", lang),
 				required: true
 			},
 			{
@@ -63,8 +76,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Station Status",
-				helper_text: "Select openevse.station_status entity",
+				label: t("station status", lang),
+				helper_text: t("select openevse.station_status entity", lang),
 				required: true
 			},
 			{
@@ -75,8 +88,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Current power usage",
-				helper_text: "Select openevse.current_power_usage entity",
+				label: t("current power usage", lang),
+				helper_text: t("select openevse.current_power_usage entity", lang),
 				required: true
 			},
 			{
@@ -87,8 +100,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Charging current",
-				helper_text: "Select openevse.charging_current entity",
+				label: t("charging current", lang),
+				helper_text: t("select openevse.charging_current entity", lang),
 				required: true
 			},
 			{
@@ -99,8 +112,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.binary_sensor || []
 					}
 				},
-				label: "Vehicle Connected",
-				helper_text: "Select openevse.vehicle_connected entity",
+				label: t("vehicle connected", lang),
+				helper_text: t("select openevse.vehicle_connected entity", lang),
 				required: true
 			},
 			{
@@ -111,8 +124,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Charging status",
-				helper_text: "Select openevse.charging_status entity",
+				label: t("charging status", lang),
+				helper_text: t("select openevse.charging_status entity", lang),
 				required: true
 			},
 			{
@@ -123,8 +136,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.number || []
 					}
 				},
-				label: "Charge Rate",
-				helper_text: "Select openevse.charge_rate entity",
+				label: t("charge rate", lang),
+				helper_text: t("select openevse.charge_rate entity", lang),
 				required: true
 			},
 			{
@@ -135,8 +148,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Session Energy",
-				helper_text: "Select openevse.usage_this_session entity",
+				label: t("session energy", lang),
+				helper_text: t("select openevse.usage_this_session entity", lang),
 				required: true
 			},
 			{
@@ -147,8 +160,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Charge Time Elapsed",
-				helper_text: "Select openevse.charge_time_elapsed entity",
+				label: t("charge time elapsed", lang),
+				helper_text: t("select openevse.charge_time_elapsed entity", lang),
 				required: true
 			},
 			{
@@ -159,8 +172,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Wifi Signal",
-				helper_text: "Select openevse_wifi_signal_strength entity",
+				label: t("wifi signal", lang),
+				helper_text: t("select openevse_wifi_signal_strength entity", lang),
 				required: false
 			},
 			{
@@ -171,8 +184,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.binary_sensor || []
 					}
 				},
-				label: "Limit Active",
-				helper_text: "Select openevse_limit_active entity",
+				label: t("limit active", lang),
+				helper_text: t("select openevse_limit_active entity", lang),
 				required: false
 			},
 			{
@@ -183,8 +196,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Vehicle Range",
-				helper_text: "Select openevse_vehicle_range entity",
+				label: t("vehicle range", lang),
+				helper_text: t("select openevse_vehicle_range entity", lang),
 				required: false
 			},
 			{
@@ -195,8 +208,8 @@ export const mainSchema = memoizeOne(
 						include_entities: deviceEntities.sensor || []
 					}
 				},
-				label: "Battery Level",
-				helper_text: "Select openevse_vehicle_battery_level entity",
+				label: t("battery level", lang),
+				helper_text: t("select openevse_vehicle_battery_level entity", lang),
 				required: false
 			}
 
@@ -208,7 +221,7 @@ export const mainSchema = memoizeOne(
 );
 
 export const optionalEntitySchema = memoizeOne(
-	(deviceEntities: Record<string, string[]> = {}): SchemaItem[] => {
+	(deviceEntities: Record<string, string[]> = {}, lang: string = "en"): SchemaItem[] => {
 		const schema: SchemaItem[] = [
 			{
 				name: "id",
@@ -218,10 +231,10 @@ export const optionalEntitySchema = memoizeOne(
 						include_entities: [...deviceEntities.sensor || [], ...deviceEntities.binary_sensor || []]  // Now correctly passing an array
 					}
 				},
-				label: "Entity"
+				label: t("entity", lang)
 			},
-			{ name: "name", selector: { text: {} }, label: "Name" },
-			{ name: "icon", selector: { icon: {} }, label: "Icon" }
+			{ name: "name", selector: { text: {} }, label: t("name", lang) },
+			{ name: "icon", selector: { icon: {} }, label: t("icon", lang) }
 		];
 		return schema;  
 	}

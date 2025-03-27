@@ -430,9 +430,14 @@ class LimitComponent extends LitElement {
 
   _t(key: string): string {
     const lang = this._lang || "en";
-    return this._translations[lang]?.[key] ||
-      this._translations["en"]?.[key] ||
-      key;
+    const lowerKey = key.toLowerCase();
+    // Use a safer approach with explicit checks
+    if (lang in this._translations && lowerKey in (this._translations as Record<string, Record<string, string>>)[lang]) {
+      return (this._translations as Record<string, Record<string, string>>)[lang][lowerKey];
+    } else if ("en" in this._translations && lowerKey in (this._translations as Record<string, Record<string, string>>)["en"]) {
+      return (this._translations as Record<string, Record<string, string>>)["en"][lowerKey];
+    }
+    return key;
   }
 
   override render() {

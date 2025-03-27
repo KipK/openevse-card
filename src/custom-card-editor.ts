@@ -346,9 +346,14 @@ class CustomCardEditor extends LitElement {
 
     _t(key: string): string {
         const lang = this._lang || "en";
-        return this._translations[lang]?.[key] ||
-            this._translations["en"]?.[key] ||
-            key;
+        const lowerKey = key.toLowerCase();
+        // Use a safer approach with explicit checks
+        if (lang in this._translations && lowerKey in (this._translations as Record<string, Record<string, string>>)[lang]) {
+            return (this._translations as Record<string, Record<string, string>>)[lang][lowerKey];
+        } else if ("en" in this._translations && lowerKey in (this._translations as Record<string, Record<string, string>>)["en"]) {
+            return (this._translations as Record<string, Record<string, string>>)["en"][lowerKey];
+        }
+        return key;
     }
 
     override render() {
@@ -379,9 +384,9 @@ class CustomCardEditor extends LitElement {
             });
         }
 
-        // Create schema with entity lists
-        const schema = mainSchema(deviceEntities);
-        const optSchema = optionalEntitySchema(deviceEntities);
+        // Create schema with entity lists and language
+        const schema = mainSchema(deviceEntities, this._lang);
+        const optSchema = optionalEntitySchema(deviceEntities, this._lang);
         const missingEntities = this._getMissingEntities();
 
         return html`
@@ -412,8 +417,8 @@ class CustomCardEditor extends LitElement {
                     {
                         name: "device_id",
                         selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
-                        label: "OpenEVSE Device",
-                        helper_text: "Select your OpenEVSE device to automatically populate all entities",
+                        label: this._t("openevse device"),
+                        helper_text: this._t("select your openevse device"),
                         required: true
                     }
                 ] as SchemaItem[]}
