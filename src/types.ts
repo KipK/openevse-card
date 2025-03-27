@@ -23,6 +23,7 @@ export interface CardConfig {
 	feat_soc?: boolean,
 	feat_range?: boolean,
 	feat_max_range?: number,
+	feat_max_energy?: number,
 	device_id?: string;
 	optional_entities?: OptionalEntity[];
 	override_entity?: string;

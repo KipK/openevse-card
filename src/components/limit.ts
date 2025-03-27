@@ -9,6 +9,8 @@ class LimitComponent extends LitElement {
       delLimit: { type: Object, attribute: false },
       feat_battery: { type: Boolean},
       feat_soc: { type: Boolean },
+      energy_max_value: { type: Number },
+      range_max_value: { type: Number},
       range_unit: { type: String }
     };
   }
@@ -18,26 +20,28 @@ class LimitComponent extends LitElement {
   delLimit?: () => void;
   feat_soc: boolean = false;
   feat_range: boolean = false;
+  energy_max_value: number = 100;
+  range_max_value: number = 600;
   range_unit: string = "km";
   _showLimitForm: boolean = false;
   _selectedLimitType: string = 'time';
   _hours: number = 0;
   _minutes: number = 0;
-  _energyValue: number = 0;
-  _socValue: number = 0;
-  _rangeValue: number = 0;
+  _value: number = 0;
 
   constructor() {
     super();
     this.limit = null;
     this.feat_soc = false;
     this.feat_range = false;
+    this.energy_max_value = 100;
+    this.range_max_value = 600;
     this.range_unit = 'km';
     this._showLimitForm = false;
     this._selectedLimitType = 'time';
     this._hours = 0;
     this._minutes = 0;
-    this._energyValue = 0;
+    this._value = 0;
   }
 
   static override get styles() {
@@ -270,9 +274,7 @@ class LimitComponent extends LitElement {
     this._selectedLimitType = 'time';
     this._hours = 0;
     this._minutes = 0;
-    this._energyValue = 0;
-    this._socValue = 0;
-    this._rangeValue = 0;
+    this._value = 0;
     this.requestUpdate();
   }
 
@@ -294,23 +296,17 @@ class LimitComponent extends LitElement {
     this.requestUpdate();
   }
 
-  _handleEnergyChange(e: Event): void {
+  _handleValueChange(e: Event): void {
     const target = e.target as HTMLInputElement;
-    // Convert slider value (kWh) to Wh (multiply by 1000)
-    const kWh = parseInt(target.value) || 0;
-    this._energyValue = kWh * 1000;
-    this.requestUpdate();
-  }
-
-  _handleSocChange(e: Event): void {
-    const target = e.target as HTMLInputElement;
-    this._socValue = parseInt(target.value) || 0;
-    this.requestUpdate();
-  }
-
-  _handleRangeChange(e: Event): void {
-    const target = e.target as HTMLInputElement;
-    this._rangeValue = parseInt(target.value) || 0;
+    const value = parseInt(target.value) || 0;
+    
+    // For energy, convert kWh to Wh
+    if (this._selectedLimitType === 'energy') {
+      this._value = value * 1000;
+    } else {
+      this._value = value;
+    }
+    
     this.requestUpdate();
   }
 
@@ -346,17 +342,45 @@ class LimitComponent extends LitElement {
     const sliderWidth = sliderRect.width;
     const offsetX = clientX - sliderRect.left;
     
-    // Calculate percentage and value (in whole kWh, then convert to Wh)
+    // Calculate percentage
     const percentage = Math.min(Math.max(offsetX / sliderWidth, 0), 1);
-    const kWh = Math.round(percentage * 100);
-    this._energyValue = kWh * 1000;
+    
+    // Get max value based on limit type
+    let maxValue = 100; // Default for soc
+    
+    if (this._selectedLimitType === 'range') {
+      // For range, use range_max_value
+      maxValue = this.range_max_value;
+    } else if (this._selectedLimitType === 'energy') {
+      // For energy, use energy_max_value
+      maxValue = this.energy_max_value;
+    }
+    
+    // Calculate the raw value
+    const rawValue = Math.round(percentage * maxValue);
+    
+    // For energy, convert to Wh
+    if (this._selectedLimitType === 'energy') {
+      this._value = rawValue * 1000;
+    } else {
+      this._value = rawValue;
+    }
+    
     this.requestUpdate();
   }
 
-  // Convert Wh to kWh for display (always whole numbers)
-  _formatEnergyValue(wh: number): string {
-    const kwh = Math.round(wh / 1000);
-    return `${kwh} kWh`;
+  // Format value based on limit type
+  _formatValue(value: number, type: string): string {
+    if (type === 'energy') {
+      // Convert Wh to kWh for display (always whole numbers)
+      const kwh = Math.round(value / 1000);
+      return `${kwh} kWh`;
+    } else if (type === 'soc') {
+      return `${value}%`;
+    } else if (type === 'range') {
+      return `${value} ${this.range_unit}`;
+    }
+    return String(value);
   }
 
   _addLimit(): void {
@@ -365,9 +389,9 @@ class LimitComponent extends LitElement {
       if (totalMinutes > 0 && this.setLimit) {
         this.setLimit('time', totalMinutes);
       }
-    } else if (this._selectedLimitType === 'energy') {
-      if (this._energyValue > 0 && this.setLimit) {
-        this.setLimit('energy', this._energyValue);
+    } else if (['energy', 'soc', 'range'].includes(this._selectedLimitType)) {
+      if (this._value > 0 && this.setLimit) {
+        this.setLimit(this._selectedLimitType, this._value);
       }
     }
     this._showLimitForm = false;
@@ -382,8 +406,8 @@ class LimitComponent extends LitElement {
   _isAddButtonDisabled(): boolean {
     if (this._selectedLimitType === 'time') {
       return this._hours === 0 && this._minutes === 0;
-    } else if (this._selectedLimitType === 'energy') {
-      return this._energyValue === 0;
+    } else if (['energy', 'soc', 'range'].includes(this._selectedLimitType)) {
+      return this._value === 0;
     }
     return true;
   }
@@ -404,12 +428,17 @@ class LimitComponent extends LitElement {
       return html`
         <div class="limit-container">
           <div class="limit-badge">
-            <ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : 'mdi:lightning-bolt'}"></ha-icon>
-            <span class="limit-type">${this.limit.type === 'time' ? 'Time: ' : 'Energy: '}</span>
+            <ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : this.limit.type === 'range' ? 'mdi:map-marker-distance' : this.limit.type === 'soc' ? 'mdi:battery' : 'mdi:lightning-bolt'}"></ha-icon>
+            <span class="limit-type">Limit 
+              ${this.limit.type === 'time' ? 'Time: ' : 
+                this.limit.type === 'energy' ? 'Energy: ' : 
+                this.limit.type === 'range' ? 'Range: ' : 
+                this.limit.type === 'soc' ? 'Battery: ' : ''}
+            </span>
             <span class="limit-value">
               ${this.limit.type === 'time' 
                 ? this._formatTimeValue(this.limit.value)
-                : this._formatEnergyValue(this.limit.value)}
+                : this._formatValue(this.limit.value, this.limit.type)}
             </span>
             <ha-icon 
               class="close-icon" 
@@ -475,60 +504,26 @@ class LimitComponent extends LitElement {
             </div>
           </div>
           ` : ''}
-          ${this._selectedLimitType === 'energy' ? html`
+          ${this._selectedLimitType !== 'time' ? html`
           <div class="form-row">
-              <div class="slider-value">${this._formatEnergyValue(this._energyValue)}</div>
-                <div class="slider-container">
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="100" 
-                    step="1" 
-                    class="limit-slider"
-                    .value=${String(Math.round(this._energyValue / 1000))}
-                    @input=${this._handleEnergyChange}
-                    @mousedown=${this._sliderMouseDown}
-                  >
-                </div>
+              <div class="slider-value">
+                ${this._formatValue(this._value, this._selectedLimitType)}
+              </div>
+              <div class="slider-container">
+                <input 
+                  type="range" 
+                  min="0" 
+                  max=${this._selectedLimitType === 'range' ? this.range_max_value : this._selectedLimitType === 'energy' ? this.energy_max_value : "100"} 
+                  step="1" 
+                  class="limit-slider"
+                  .value=${String(this._selectedLimitType === 'energy' ? Math.round(this._value / 1000) : this._value)}
+                  @input=${this._handleValueChange}
+                  @mousedown=${this._sliderMouseDown}
+                >
               </div>
             </div>
+          </div>
           `:''}
-          ${this._selectedLimitType === 'soc' ? html`
-            <div class="form-row">
-              <div class="slider-value">${this._socValue}%</div>
-                <div class="slider-container">
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="100" 
-                    step="1" 
-                    class="limit-slider"
-                    .value=${String(this._socValue)}
-                    @input=${this._handleSocChange}
-                    @mousedown=${this._sliderMouseDown}
-                  >
-                </div>
-              </div>
-            </div>
-              `: ''}
-            ${this._selectedLimitType === 'range' ? html`
-            <div class="form-row">
-              <div class="slider-value">${this._socValue}%</div>
-                <div class="slider-container">
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max=${this.range_unit}
-                    step="1" 
-                    class="limit-slider"
-                    .value=${String(this._rangeValue)}
-                    @input=${this._handleRangeChange}
-                    @mousedown=${this._sliderMouseDown}
-                  >
-                </div>
-              </div>
-            </div>
-              `: ''}
           
             <div class="form-actions">
               <button class="btn btn-secondary" @click=${this._toggleLimitForm}>Cancel</button>

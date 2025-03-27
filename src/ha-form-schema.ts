@@ -16,10 +16,19 @@ export const mainSchema = memoizeOne(
 			{
 				type: "grid",
 				name: "",
+				label: "Features",
 				schema: [
 					{ name: "feat_soc", selector: { boolean: {} }, label: "Enable Vehicle Battery" },
 					{ name: "feat_range", selector: { boolean: {} }, label: "Enable Vehicle Range" },
-					{ name: "feat_max_range", selector: { number: {} }, required: false, label: "Max vehicle range" },
+				]
+			},
+			{
+				type: "grid",
+				name: "",
+				label: "Limits settings",
+				schema: [
+					{ name: "feat_max_energy", selector: { number: {} }, required: false, label: "Maximum charge energy (kWh)" },
+					{ name: "feat_max_range", selector: { number: {} }, required: false, label: "Maximum vehicle range (miles|km)" },
 				]
 			},
 			{

@@ -169,6 +169,7 @@ class CustomCard extends LitElement {
             feat_soc: false,
             feat_range: false,
             feat_max_range: 600,
+            feat_max_energy: 100,
             device_id: '',
             override_entity: '',
             status_entity: '',
@@ -233,6 +234,7 @@ class CustomCard extends LitElement {
     // Set limit function
     _setLimit(type: string, value: number): void {
         if (!this.hass) return;
+        console.log("type: " + type + " value: " + value);
         try {
             this.hass.callService('openevse', 'set_limit', {
                 device_id: this.config?.device_id,
@@ -627,6 +629,8 @@ class CustomCard extends LitElement {
                             .delLimit=${this._delLimit.bind(this)}
                             .feat_soc=${this.config.feat_soc || false}
                             .feat_range=${this.config.feat_range || false}
+                            .range_max_value=${Number(this.config.feat_max_range)}
+                            .energy_max_value=${Number(this.config.feat_max_energy)}
                             .range_unit=${String(vehicleRangeEntity?.attributes.unit_of_measurement || '')}
                         ></limit-component>
                     </div>
