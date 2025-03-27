@@ -571,4 +571,3 @@ class LimitComponent extends LitElement {
 }
 
 customElements.define('limit-component', LimitComponent);
-export { LimitComponent };
