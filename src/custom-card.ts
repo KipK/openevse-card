@@ -540,11 +540,11 @@ class CustomCard extends LitElement {
                     }
                     </div>
                     <div class="vehicle">
-                        ${ this.config.feat_soc ? html`
-                            <progress-bar value=${Number(vehicleBatteryLevelEntity?.state) || 0} unit="%" icon="mdi:battery-medium"></progress-bar>
+                        ${ this.config.feat_soc && vehicleBatteryLevelEntity ? html`
+                            <progress-bar value=${Number(vehicleBatteryLevelEntity?.state)} unit="%" icon="mdi:battery-medium"></progress-bar>
                             `:''}
-                        ${this.config.feat_range ? html`
-                            <progress-bar value=${Number(vehicleRangeEntity?.state) || 0} max_value=${this.config?.feat_max_range || 600} unit=${vehicleRangeEntity?.attributes.unit_of_measurement || ''} icon="mdi:map-marker-distance"></progress-bar>
+                        ${this.config.feat_range && vehicleRangeEntity ? html`
+                            <progress-bar value=${Number(vehicleRangeEntity?.state)} max_value=${this.config?.feat_max_range || 600} unit=${vehicleRangeEntity?.attributes.unit_of_measurement || ''} icon="mdi:map-marker-distance"></progress-bar>
                         `:''}
                          
                     </div>
@@ -625,6 +625,9 @@ class CustomCard extends LitElement {
                             .limit=${this._limit as Limit}
                             .setLimit=${this._setLimit.bind(this)}
                             .delLimit=${this._delLimit.bind(this)}
+                            .feat_soc=${this.config.feat_soc || false}
+                            .feat_range=${this.config.feat_range || false}
+                            .range_unit=${String(vehicleRangeEntity?.attributes.unit_of_measurement || '')}
                         ></limit-component>
                     </div>
                     <!-- End of Limit -->

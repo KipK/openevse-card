@@ -7,26 +7,32 @@ class LimitComponent extends LitElement {
       limit: { type: Object, attribute: false },
       setLimit: { type: Object, attribute: false },
       delLimit: { type: Object, attribute: false },
-      _showLimitForm: { type: Boolean },
-      _selectedLimitType: { type: String },
-      _hours: { type: Number },
-      _minutes: { type: Number },
-      _energyValue: { type: Number }
+      feat_battery: { type: Boolean},
+      feat_soc: { type: Boolean },
+      range_unit: { type: String }
     };
   }
 
   limit?: Limit | null;
   setLimit?: (type: string, value: number) => void;
   delLimit?: () => void;
+  feat_soc: boolean = false;
+  feat_range: boolean = false;
+  range_unit: string = "km";
   _showLimitForm: boolean = false;
   _selectedLimitType: string = 'time';
   _hours: number = 0;
   _minutes: number = 0;
   _energyValue: number = 0;
+  _socValue: number = 0;
+  _rangeValue: number = 0;
 
   constructor() {
     super();
     this.limit = null;
+    this.feat_soc = false;
+    this.feat_range = false;
+    this.range_unit = 'km';
     this._showLimitForm = false;
     this._selectedLimitType = 'time';
     this._hours = 0;
@@ -164,7 +170,7 @@ class LimitComponent extends LitElement {
         font-weight: 500;
         margin-bottom: 0px;
       }
-      .energy-slider {
+      .limit-slider {
         width: 100%;
         -webkit-appearance: none;
         height: 8px;
@@ -172,7 +178,7 @@ class LimitComponent extends LitElement {
         background: var(--secondary-background-color);
         outline: none;
       }
-      .energy-slider::-webkit-slider-thumb {
+      .limit-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 20px;
@@ -181,7 +187,7 @@ class LimitComponent extends LitElement {
         background: var(--primary-color);
         cursor: pointer;
       }
-      .energy-slider::-moz-range-thumb {
+      .limit-slider::-moz-range-thumb {
         width: 20px;
         height: 20px;
         border-radius: 50%;
@@ -265,6 +271,8 @@ class LimitComponent extends LitElement {
     this._hours = 0;
     this._minutes = 0;
     this._energyValue = 0;
+    this._socValue = 0;
+    this._rangeValue = 0;
     this.requestUpdate();
   }
 
@@ -293,6 +301,19 @@ class LimitComponent extends LitElement {
     this._energyValue = kWh * 1000;
     this.requestUpdate();
   }
+
+  _handleSocChange(e: Event): void {
+    const target = e.target as HTMLInputElement;
+    this._socValue = parseInt(target.value) || 0;
+    this.requestUpdate();
+  }
+
+  _handleRangeChange(e: Event): void {
+    const target = e.target as HTMLInputElement;
+    this._rangeValue = parseInt(target.value) || 0;
+    this.requestUpdate();
+  }
+
 
   // Enhanced slider functionality
   _sliderMouseDown(e: MouseEvent): void {
@@ -418,64 +439,108 @@ class LimitComponent extends LitElement {
               <select id="limit-type" @change=${this._handleTypeChange}>
                   <option value="time" ?selected=${this._selectedLimitType === 'time'}>Time</option>
                   <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>Energy</option>
+                  ${this.feat_soc ? html`
+                    <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>Battery</option>
+                    `: ''}
+                  ${this.feat_range ? html`
+                    <option value="range" ?selected=${this._selectedLimitType === 'range'}>Range</option>
+                    `: ''}
               </select>
             </div>
           </div>
           
           ${this._selectedLimitType === 'time' ? html`
-            <div class="form-row">
-              <div class="time-inputs">
-                <div class="time-input">
+          <div class="form-row">
+            <div class="time-inputs">
+              <div class="time-input">
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="23" 
+                  .value=${String(this._hours)}
+                  @input=${this._handleHoursChange}
+                >
+                <label>Hours</label>
+              </div>
+              <div class="time-input">
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="59" 
+                  .value=${String(this._minutes)}
+                  @input=${this._handleMinutesChange}
+                >
+                <label>Minutes</label>
+              </div>
+            </div>
+          </div>
+          ` : ''}
+          ${this._selectedLimitType === 'energy' ? html`
+          <div class="form-row">
+              <div class="slider-value">${this._formatEnergyValue(this._energyValue)}</div>
+                <div class="slider-container">
                   <input 
-                    type="number" 
+                    type="range" 
                     min="0" 
-                    max="23" 
-                    .value=${String(this._hours)}
-                    @input=${this._handleHoursChange}
+                    max="100" 
+                    step="1" 
+                    class="limit-slider"
+                    .value=${String(Math.round(this._energyValue / 1000))}
+                    @input=${this._handleEnergyChange}
+                    @mousedown=${this._sliderMouseDown}
                   >
-                  <label>Hours</label>
-                </div>
-                <div class="time-input">
-                  <input 
-                    type="number" 
-                    min="0" 
-                    max="59" 
-                    .value=${String(this._minutes)}
-                    @input=${this._handleMinutesChange}
-                  >
-                  <label>Minutes</label>
                 </div>
               </div>
             </div>
-          ` : html`
+          `:''}
+          ${this._selectedLimitType === 'soc' ? html`
             <div class="form-row">
-            <div class="slider-value">${this._formatEnergyValue(this._energyValue)}</div>
-            <div class="slider-container">
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                step="1" 
-                class="energy-slider"
-                .value=${String(Math.round(this._energyValue / 1000))}
-                @input=${this._handleEnergyChange}
-                @mousedown=${this._sliderMouseDown}
-              >
+              <div class="slider-value">${this._socValue}%</div>
+                <div class="slider-container">
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    step="1" 
+                    class="limit-slider"
+                    .value=${String(this._socValue)}
+                    @input=${this._handleSocChange}
+                    @mousedown=${this._sliderMouseDown}
+                  >
+                </div>
+              </div>
             </div>
+              `: ''}
+            ${this._selectedLimitType === 'range' ? html`
+            <div class="form-row">
+              <div class="slider-value">${this._socValue}%</div>
+                <div class="slider-container">
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max=${this.range_unit}
+                    step="1" 
+                    class="limit-slider"
+                    .value=${String(this._rangeValue)}
+                    @input=${this._handleRangeChange}
+                    @mousedown=${this._sliderMouseDown}
+                  >
+                </div>
+              </div>
             </div>
-          `}
+              `: ''}
           
-          <div class="form-actions">
-            <button class="btn btn-secondary" @click=${this._toggleLimitForm}>Cancel</button>
-            <button 
-              class="btn btn-primary" 
-              ?disabled=${this._isAddButtonDisabled()}
-              @click=${this._addLimit}
-            >
-              Add Limit
-            </button>
+            <div class="form-actions">
+              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>Cancel</button>
+              <button 
+                class="btn btn-primary" 
+                ?disabled=${this._isAddButtonDisabled()}
+                @click=${this._addLimit}
+              >
+                Add Limit
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       `;
     }
