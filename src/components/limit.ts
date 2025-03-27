@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
-import { Limit } from '../types';
+import { Limit, TranslationDict } from '../types';
+import translations from '../translations';
 
 class LimitComponent extends LitElement {
   static override get properties() {
@@ -11,7 +12,8 @@ class LimitComponent extends LitElement {
       feat_soc: { type: Boolean },
       energy_max_value: { type: Number },
       range_max_value: { type: Number},
-      range_unit: { type: String }
+      range_unit: { type: String },
+      _lang: { type: String }
     };
   }
 
@@ -23,6 +25,8 @@ class LimitComponent extends LitElement {
   energy_max_value: number = 100;
   range_max_value: number = 600;
   range_unit: string = "km";
+  _lang?: string = "en";
+  _translations: TranslationDict = translations;
   _showLimitForm: boolean = false;
   _selectedLimitType: string = 'time';
   _hours: number = 0;
@@ -37,6 +41,8 @@ class LimitComponent extends LitElement {
     this.energy_max_value = 100;
     this.range_max_value = 600;
     this.range_unit = 'km';
+    this._lang = "en";
+    this._translations = translations;
     this._showLimitForm = false;
     this._selectedLimitType = 'time';
     this._hours = 0;
@@ -422,6 +428,13 @@ class LimitComponent extends LitElement {
       .join(':');
   }
 
+  _t(key: string): string {
+    const lang = this._lang || "en";
+    return this._translations[lang]?.[key] ||
+      this._translations["en"]?.[key] ||
+      key;
+  }
+
   override render() {
     if (this.limit && this.limit.type) {
       // Display existing limit as a badge
@@ -429,11 +442,11 @@ class LimitComponent extends LitElement {
         <div class="limit-container">
           <div class="limit-badge">
             <ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : this.limit.type === 'range' ? 'mdi:map-marker-distance' : this.limit.type === 'soc' ? 'mdi:battery' : 'mdi:lightning-bolt'}"></ha-icon>
-            <span class="limit-type">Limit 
-              ${this.limit.type === 'time' ? 'Time: ' : 
-                this.limit.type === 'energy' ? 'Energy: ' : 
-                this.limit.type === 'range' ? 'Range: ' : 
-                this.limit.type === 'soc' ? 'Battery: ' : ''}
+            <span class="limit-type">
+              ${this.limit.type === 'time' ? this._t('time') + ': ' : 
+                this.limit.type === 'energy' ? this._t('energy') + ': ' : 
+                this.limit.type === 'range' ? this._t('range') + ': ' : 
+                this.limit.type === 'soc' ? this._t('battery') + ': ' : ''}
             </span>
             <span class="limit-value">
               ${this.limit.type === 'time' 
@@ -456,23 +469,23 @@ class LimitComponent extends LitElement {
       <div class="limit-container">
         <button class="new-limit-btn" @click=${this._toggleLimitForm}>
           <ha-icon icon="mdi:plus"></ha-icon>
-          New Limit
+          ${this._t('new limit')}
         </button>
       </div>
         <div class="modal-overlay">
           <div class="limit-form">
-          <div class="form-header">Add Charging Limit</div>
+          <div class="form-header">${this._t('add charging limit')}</div>
           
           <div class="form-row">
             <div class="select">
               <select id="limit-type" @change=${this._handleTypeChange}>
-                  <option value="time" ?selected=${this._selectedLimitType === 'time'}>Time</option>
-                  <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>Energy</option>
+                  <option value="time" ?selected=${this._selectedLimitType === 'time'}>${this._t('time')}</option>
+                  <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>${this._t('energy')}</option>
                   ${this.feat_soc ? html`
-                    <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>Battery</option>
+                    <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>${this._t('battery')}</option>
                     `: ''}
                   ${this.feat_range ? html`
-                    <option value="range" ?selected=${this._selectedLimitType === 'range'}>Range</option>
+                    <option value="range" ?selected=${this._selectedLimitType === 'range'}>${this._t('range')}</option>
                     `: ''}
               </select>
             </div>
@@ -489,7 +502,7 @@ class LimitComponent extends LitElement {
                   .value=${String(this._hours)}
                   @input=${this._handleHoursChange}
                 >
-                <label>Hours</label>
+                <label>${this._t('hours')}</label>
               </div>
               <div class="time-input">
                 <input 
@@ -499,7 +512,7 @@ class LimitComponent extends LitElement {
                   .value=${String(this._minutes)}
                   @input=${this._handleMinutesChange}
                 >
-                <label>Minutes</label>
+                <label>${this._t('minutes')}</label>
               </div>
             </div>
           </div>
@@ -526,13 +539,13 @@ class LimitComponent extends LitElement {
           `:''}
           
             <div class="form-actions">
-              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>Cancel</button>
+              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${this._t('cancel')}</button>
               <button 
                 class="btn btn-primary" 
                 ?disabled=${this._isAddButtonDisabled()}
                 @click=${this._addLimit}
               >
-                Add Limit
+                ${this._t('add limit')}
               </button>
             </div>
           </div>
@@ -545,7 +558,7 @@ class LimitComponent extends LitElement {
       <div class="limit-container">
         <button class="new-limit-btn" @click=${this._toggleLimitForm}>
           <ha-icon icon="mdi:plus"></ha-icon>
-          New Limit
+          ${this._t('new limit')}
         </button>
       </div>
     `;
