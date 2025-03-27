@@ -14,6 +14,15 @@ export const mainSchema = memoizeOne(
 				]
 			},
 			{
+				type: "grid",
+				name: "",
+				schema: [
+					{ name: "feat_soc", selector: { boolean: {} }, label: "Enable Vehicle Battery" },
+					{ name: "feat_range", selector: { boolean: {} }, label: "Enable Vehicle Range" },
+					{ name: "feat_max_range", selector: { number: {} }, required: false, label: "Max vehicle range" },
+				]
+			},
+			{
 				name: "device_id",
 				selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
 				label: "OpenEVSE Device",
@@ -167,6 +176,18 @@ export const mainSchema = memoizeOne(
 				},
 				label: "Vehicle Range",
 				helper_text: "Select openevse_vehicle_range entity",
+				required: false
+			},
+			{
+				name: "vehicle_battery_level_entity",
+				selector: {
+					entity: {
+						domain: ["sensor"],
+						include_entities: deviceEntities.sensor || []
+					}
+				},
+				label: "Battery Level",
+				helper_text: "Select openevse_vehicle_battery_level entity",
 				required: false
 			}
 

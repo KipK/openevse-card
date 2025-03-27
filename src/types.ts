@@ -20,6 +20,9 @@ export interface RegistryEntity {
 export interface CardConfig {
 	header?: boolean;
 	name?: string;
+	feat_soc?: boolean,
+	feat_range?: boolean,
+	feat_max_range?: number,
 	device_id?: string;
 	optional_entities?: OptionalEntity[];
 	override_entity?: string;
@@ -33,6 +36,7 @@ export interface CardConfig {
 	time_elapsed_entity?: string;
 	wifi_signal_strength_entity?: string;
 	limit_active_entity?: string;
+	vehicle_battery_level_entity?: string;
 	vehicle_range_entity?: string;
 }
 

@@ -166,6 +166,9 @@ class CustomCard extends LitElement {
         return {
             header: true,
             name: 'OpenEVSE',
+            feat_soc: false,
+            feat_range: false,
+            feat_max_range: 600,
             device_id: '',
             override_entity: '',
             status_entity: '',
@@ -178,6 +181,7 @@ class CustomCard extends LitElement {
             time_elapsed_entity: '',
             wifi_signal_strength_entity: '',
             limit_active_entity: '',
+            vehicle_battery_level_entity: '',
             vehicle_range_entity: '',
             optional_entities: [],
         };
@@ -334,6 +338,10 @@ class CustomCard extends LitElement {
             this.config.time_elapsed_entity ? this.hass.states[this.config.time_elapsed_entity] : null;
         const wifiSignalEntity =
             this.config.wifi_signal_strength_entity ? this.hass.states[this.config.wifi_signal_strength_entity] : null;
+        const vehicleBatteryLevelEntity =
+            this.config.vehicle_battery_level_entity ? this.hass.states[this.config.vehicle_battery_level_entity] : null;
+        const vehicleRangeEntity =
+            this.config.vehicle_range_entity ? this.hass.states[this.config.vehicle_range_entity] : null;
         
         const getOptionalEntities = (): OptionalEntity[] =>
             this.config?.optional_entities?.map((entity) => {
@@ -532,8 +540,13 @@ class CustomCard extends LitElement {
                     }
                     </div>
                     <div class="vehicle">
-                         <progress-bar value="65" unit="%" icon="mdi:battery-medium"></progress-bar>
-                         <progress-bar value="350" max_value="500" unit="Km" icon="mdi:map-marker-distance"></progress-bar>
+                        ${ this.config.feat_soc ? html`
+                            <progress-bar value=${Number(vehicleBatteryLevelEntity?.state) || 0} unit="%" icon="mdi:battery-medium"></progress-bar>
+                            `:''}
+                        ${this.config.feat_range ? html`
+                            <progress-bar value=${Number(vehicleRangeEntity?.state) || 0} max_value=${this.config?.feat_max_range || 600} unit=${vehicleRangeEntity?.attributes.unit_of_measurement || ''} icon="mdi:map-marker-distance"></progress-bar>
+                        `:''}
+                         
                     </div>
                    
                     <div class="override-controls">

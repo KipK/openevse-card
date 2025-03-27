@@ -138,6 +138,7 @@ class CustomCardEditor extends LitElement {
             time_elapsed_entity: { names: ["charge_time_elapsed"], domains: ["sensor"], preferredPattern: "sensor.openevse_charge_time_elapsed" },
             wifi_signal_strength_entity: { names: ["wifi_signal_strength"], domains: ["sensor"], preferredPattern: "sensor.openevse_wifi_signal_strength" },
             limit_active_entity: { names: ["limit_active"], domains: ["binary_sensor"], preferredPattern: "sensor.openevse_limit_active" },
+            vehicle_battery_level_entity: { names: ["vehicle_battery_level"], domains: ["sensor"], preferredPattern: "sensor.openevse_vehicle_battery_level" },
             vehicle_range_entity: { names: ["vehicle_range"], domains: ["sensor"], preferredPattern: "sensor.openevse_vehicle_range" },
         };
 
@@ -329,7 +330,8 @@ class CustomCardEditor extends LitElement {
         const requiredEntities = [
             "override_entity", "status_entity", "power_entity", "current_entity",
             "vehicle_connected_entity", "charging_status_entity", "charge_rate_entity",
-            "session_energy_entity", "time_elapsed_entity", "wifi_signal_strength_entity", "limit_active_entity"
+            "session_energy_entity", "time_elapsed_entity", "wifi_signal_strength_entity",
+            "limit_active_entity", "vehicle_range_entity", "vehicle_battery_level_entity"
         ];
 
         // Check both in the configuration and in the detected entities
