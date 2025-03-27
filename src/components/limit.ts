@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { Limit } from './types';
+import { Limit } from '../types';
 
 class LimitComponent extends LitElement {
   static override get properties() {

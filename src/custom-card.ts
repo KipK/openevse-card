@@ -2,8 +2,8 @@ import { LitElement, html, PropertyValues } from 'lit-element';
 import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetailEvent, Limit } from './types';
 import { cardStyles } from './styles';
 import translations from './translations';
-import './evse-slider/evse-slider';
-import './limit';
+import './components/evse-slider';
+import './components/limit';
 import './components/progress-bar'
 
 class CustomCard extends LitElement {
