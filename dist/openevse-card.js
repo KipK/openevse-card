@@ -134,7 +134,7 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
 			padding: 8px;
 			cursor: pointer;
 			transition: all 0.2s;
-			color: var (--primary-text-color);
+			color: var(--primary-text-color);
 			font-size: 2em;
 			width: 50px;
 			height: 25px;
@@ -264,6 +264,13 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
 			justify-content: center;
 			align-items: center;
 
+		}
+		.vehicle {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+		    gap: 12px;
 		}
 		
 	`,at={en:{disabled:"disabled",sleeping:"disabled",active:"active",charging:"charging","not connected":"waiting",connected:"connected",error:"error",power:"power",current:"current",session:"session",elapsed:"elapsed","charge rate":"charge rate",required_entities:"Required entities",entity_auto_success:"All required entities were automatically found",entity_auto_fail:"Some entities could not be automatically detected",entity_auto_loading:"Loading device entities","additional entities":"Additional entities"},fr:{disabled:"désactivé",sleeping:"désactivé",active:"activé",charging:"en charge","not connected":"en attente",connected:"connecté",error:"erreur",power:"puissance",current:"courant",session:"session",elapsed:"écoulé","charge rate":"ampérage",required_entities:"Entités requises",entity_auto_success:"Toutes les entités ont été trouvées automatiquement",entity_auto_fail:"certaines entités n'ont pas pu être détectées automatiquement",entity_auto_loading:"Chargement des entités de l'appareil","additional entities":"Entités supplémentaires"},de:{disabled:"deaktiviert",sleeping:"deaktiviert",active:"aktiv",charging:"lädt","not connected":"bereit",connected:"verbunden",error:"fehler",power:"leistung",current:"stromstärke",session:"sitzung",elapsed:"verstrichene zeit","charge rate":"laderate",required_entities:"Erforderliche Entitäten",entity_auto_success:"Alle erforderlichen Entitäten wurden automatisch gefunden",entity_auto_fail:"Einige Entitäten konnten nicht automatisch erkannt werden",entity_auto_loading:"Geräteentitäten werden geladen","additional entities":"Zusätzliche Entitäten"},es:{disabled:"desactivado",sleeping:"desactivado",active:"activo",charging:"cargando","not connected":"en espera",connected:"conectado",error:"error",power:"potencia",current:"corriente",session:"sesión",elapsed:"tiempo transcurrido","charge rate":"amperaje",required_entities:"Entidades requeridas",entity_auto_success:"Todas las entidades requeridas se encontraron automáticamente",entity_auto_fail:"Algunas entidades no pudieron ser detectadas automáticamente",entity_auto_loading:"Cargando entidades del dispositivo","additional entities":"Entidades adicionales"}},ct={attribute:!0,type:String,converter:f,reflect:!1,hasChanged:y},lt=(t=ct,e,i)=>{const{kind:s,metadata:r}=i;let n=globalThis.litPropertyMetadata.get(r);if(void 0===n&&globalThis.litPropertyMetadata.set(r,n=new Map),n.set(i.name,t),"accessor"===s){const{name:s}=i;return{set(i){const r=e.get.call(this);e.set.call(this,i),this.requestUpdate(s,r,t)},init(e){return void 0!==e&&this.P(s,void 0,t),e}}}if("setter"===s){const{name:s}=i;return function(i){const r=this[s];e.call(this,i),this.requestUpdate(s,r,t)}}throw Error("Unsupported decorator location: "+s)};function dt(t){return(e,i)=>"object"==typeof i?lt(t,e,i):((t,e,i)=>{const s=e.hasOwnProperty(i);return e.constructor.createProperty(i,s?{...t,wrapped:!0}:t),s?Object.getOwnPropertyDescriptor(e,i):void 0})(t,e,i)
@@ -716,6 +723,79 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
           New Limit
         </button>
       </div>
+    `}});customElements.define("progress-bar",class extends rt{static get properties(){return{label:{type:String},value:{type:Number},unit:{type:String},max_value:{type:Number},icon:{type:String}}}constructor(){super(),this.value=0,this.label="",this.unit="",this.max_value=100,this.icon="",this.value=0,this.label="",this.unit="",this.max_value=100,this.icon=""}static get styles(){return n`
+      :host {
+        display: block;
+        width: 100%;
+        margin-top: 12px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: center;
+      }
+      .container {
+        width: 100%;
+        max-width: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+      .label {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 6px;
+
+      }
+      .icon {
+        color: var(--state-icon-color);
+      }
+      .progress {
+        position: relative;
+        width: 100%;
+        height: 20px;
+        background-color: var(--evse-secondary-bg-color);
+        border-radius: 6px;
+        border: 1px solid var(--divider-color);
+        overflow: hidden;
+      }
+      .progress-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: var(--primary-color, #03a9f4);
+        transition: width 0.5s ease-in-out;
+      }
+      .value {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        z-index: 10;
+      }
+    `}render(){return R`
+    <div class="container">
+      <div class="label">
+        ${this.icon?R`<ha-icon class="icon" icon=${this.icon}> </ha-icon>`:""}
+        ${this.label?this.label:""}
+      </div>
+      <div class="progress">
+        <div
+          class="progress-fill"
+          style="width: ${100*this.value/this.max_value}%"
+        ></div>
+        <div class="value">
+          ${this.value}${this.unit}
+        </div>
+      </div>
+    </div>
+
     `}});var vt=Number.isNaN||function(t){return"number"==typeof t&&t!=t};function mt(t,e){if(t.length!==e.length)return!1;for(var i=0;i<t.length;i++)if(s=t[i],r=e[i],!(s===r||vt(s)&&vt(r)))return!1;var s,r;return!0}function gt(t,e){void 0===e&&(e=mt);var i=null;function s(){for(var s=[],r=0;r<arguments.length;r++)s[r]=arguments[r];if(i&&i.lastThis===this&&e(s,i.lastArgs))return i.lastResult;var n=t.apply(this,s);return i={lastResult:n,lastArgs:s,lastThis:this},n}return s.clear=function(){i=null},s}const bt=gt(((t={})=>[{type:"grid",name:"",schema:[{name:"name",selector:{text:{}},required:!1,label:"Header Title"},{name:"header",selector:{boolean:{}},label:"Display header"}]},{name:"device_id",selector:{device:{integration:"openevse",manufacturer:"OpenEVSE"}},label:"OpenEVSE Device",helper_text:"Select your OpenEVSE device to automatically populate all entities",required:!0},...[{name:"override_entity",selector:{entity:{domain:["input_select","select"],include_entities:t.select||[]}},label:"Override State",helper_text:"Select openevse.override_state entity",required:!0},{name:"status_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Station Status",helper_text:"Select openevse.station_status entity",required:!0},{name:"power_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Current power usage",helper_text:"Select openevse.current_power_usage entity",required:!0},{name:"current_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Charging current",helper_text:"Select openevse.charging_current entity",required:!0},{name:"vehicle_connected_entity",selector:{entity:{domain:["binary_sensor"],include_entities:t.binary_sensor||[]}},label:"Vehicle Connected",helper_text:"Select openevse.vehicle_connected entity",required:!0},{name:"charging_status_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Charging status",helper_text:"Select openevse.charging_status entity",required:!0},{name:"charge_rate_entity",selector:{entity:{domain:["number"],include_entities:t.number||[]}},label:"Charge Rate",helper_text:"Select openevse.charge_rate entity",required:!0},{name:"session_energy_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Session Energy",helper_text:"Select openevse.usage_this_session entity",required:!0},{name:"time_elapsed_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Charge Time Elapsed",helper_text:"Select openevse.charge_time_elapsed entity",required:!0},{name:"wifi_signal_strength_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Wifi Signal",helper_text:"Select openevse_wifi_signal_strength entity",required:!1},{name:"limit_active_entity",selector:{entity:{domain:["binary_sensor"],include_entities:t.binary_sensor||[]}},label:"Limit Active",helper_text:"Select openevse_limit_active entity",required:!1},{name:"vehicle_range_entity",selector:{entity:{domain:["sensor"],include_entities:t.sensor||[]}},label:"Vehicle Range",helper_text:"Select openevse_vehicle_range entity",required:!1}]])),ft=gt(((t={})=>[{name:"id",selector:{entity:{domain:["sensor","binary_sensor"],include_entities:[...t.sensor||[],...t.binary_sensor||[]]}},label:"Entity"},{name:"name",selector:{text:{}},label:"Name"},{name:"icon",selector:{icon:{}},label:"Icon"}]));customElements.define("openevse-card",class extends rt{static get properties(){return{hass:{type:Object},config:{type:Object},_lang:{type:String},_localTimeElapsed:{type:Number},_lastEntityTime:{type:Number},_timeUpdateInterval:{type:Number},_isCharging:{type:Boolean},_limit:{type:Object},_hasLimit:{type:Boolean}}}constructor(){super(),this._localTimeElapsed=0,this._lastEntityTime=0,this._timeUpdateInterval=null,this._isCharging=!1,this._translations=at,this._limit=null,this._hasLimit=!1,this._translations=at,this._localTimeElapsed=0,this._lastEntityTime=0,this._timeUpdateInterval=null,this._isCharging=!1,this._limit=null,this._hasLimit=!1}disconnectedCallback(){super.disconnectedCallback(),this._timeUpdateInterval&&(clearInterval(this._timeUpdateInterval),this._timeUpdateInterval=null)}getGridOptions(){return{columns:12,max_columns:12,min_columns:9}}_setupTimeInterval(){this._timeUpdateInterval&&(clearInterval(this._timeUpdateInterval),this._timeUpdateInterval=null),this._isCharging&&(this._timeUpdateInterval=window.setInterval((()=>{this._localTimeElapsed+=1/60,this.requestUpdate()}),1e3))}updated(t){if(t.has("hass")&&this.hass){if(this._lang=this.hass.language||"en",this.config&&this.config.charging_status_entity&&this.hass.states[this.config.charging_status_entity]){const t="charging"===this.hass.states[this.config.charging_status_entity].state;t!==this._isCharging&&(this._isCharging=t,this._setupTimeInterval())}if(this.config&&this.config.time_elapsed_entity&&this.hass.states[this.config.time_elapsed_entity]){const t=this.hass.states[this.config.time_elapsed_entity],e=parseFloat(t.state);isNaN(e)||e===this._lastEntityTime||(this._lastEntityTime=e,this._localTimeElapsed=e)}if(this.config&&this.config.limit_active_entity&&this.hass.states[this.config.limit_active_entity]){const t="on"===this.hass.states[this.config.limit_active_entity].state;t!=this._hasLimit&&(this._hasLimit=t,this.config.device_id&&this._getLimit().then((t=>{this._limit=t})))}}if(t.has("config")&&!t.has("hass")&&this.config&&this.hass){if(this.config.charging_status_entity&&this.hass.states[this.config.charging_status_entity]){const t=this.hass.states[this.config.charging_status_entity];this._isCharging="charging"===t.state}if(this.config.time_elapsed_entity&&this.hass.states[this.config.time_elapsed_entity]){const t=this.hass.states[this.config.time_elapsed_entity];t&&(this._lastEntityTime=parseFloat(t.state),this._localTimeElapsed=this._lastEntityTime,this._isCharging&&this._setupTimeInterval())}}}static getConfigElement(){return document.createElement("openevse-card-editor")}static getStubConfig(){return{header:!0,name:"OpenEVSE",device_id:"",override_entity:"",status_entity:"",power_entity:"",current_entity:"",charge_rate_entity:"",vehicle_connected_entity:"",charging_status_entity:"",session_energy_entity:"",time_elapsed_entity:"",wifi_signal_strength_entity:"",limit_active_entity:"",vehicle_range_entity:"",optional_entities:[]}}static get styles(){return ot}setConfig(t){this.config=t}getCardSize(){return 3}_selectOverrideState(t,e){this.hass&&this.hass.callService("select","select_option",{entity_id:t,option:e.toString()})}async _getLimit(){if(!this.hass)return null;try{const t=await this.hass.callService("openevse","get_limit",{device_id:this.config?.device_id},void 0,!1,!0);return t?.response?t.response:null}catch(t){return console.error("Error while getting limit",t),null}}_setLimit(t,e){if(this.hass)try{return void this.hass.callService("openevse","set_limit",{device_id:this.config?.device_id,type:t,value:e,auto_release:!0},void 0,!1,!1)}catch(t){return void console.error("Error while setting limit",t)}}_delLimit(){if(this.hass)try{return void this.hass.callService("openevse","clear_limit",{device_id:this.config?.device_id},void 0,!1,!1)}catch(t){return void console.error("Error while removing limit",t)}}_showMoreInfo(t){const e=new Event("hass-more-info",{bubbles:!0,composed:!0});e.detail={entityId:t},this.dispatchEvent(e)}_convertSeconds(t){if(isNaN(t)||t<0||null==t)return"00:00:00";return[Math.floor(t/3600),Math.floor(t%3600/60),Math.floor(t%60)].map((t=>String(t).padStart(2,"0"))).join(":")}_convertTime(t){if(isNaN(t)||t<0)return"00:00:00";const e=Math.round(60*t);return this._convertSeconds(e)}_t(t){const e=this._lang||"en";return this._translations[e]?.[t]||this._translations.en?.[t]||t}_updateSlider(t){this.hass&&this.config?.charge_rate_entity&&this.hass.callService("number","set_value",{entity_id:this.config.charge_rate_entity,value:t.detail.value})}render(){if(!this.hass||!this.config)return R``;const t=this.config.override_entity?this.hass.states[this.config.override_entity]:null,e=this.config.status_entity?this.hass.states[this.config.status_entity]:null,i=this.config.power_entity?this.hass.states[this.config.power_entity]:null,s=this.config.current_entity?this.hass.states[this.config.current_entity]:null,r=this.config.charge_rate_entity?this.hass.states[this.config.charge_rate_entity]:null,n=this.config.vehicle_connected_entity?this.hass.states[this.config.vehicle_connected_entity]:null,o=this.config.charging_status_entity?this.hass.states[this.config.charging_status_entity]:null,a=this.config.session_energy_entity?this.hass.states[this.config.session_energy_entity]:null,c=this.config.time_elapsed_entity?this.hass.states[this.config.time_elapsed_entity]:null,l=this.config.wifi_signal_strength_entity?this.hass.states[this.config.wifi_signal_strength_entity]:null,d=(()=>this.config?.optional_entities?.map((t=>({name:t.name?t.name:t.id?this.hass?.states[t.id]?.attributes.friendly_name:null,value:t.id?this.hass?.formatEntityState(this.hass.states[t.id])??null:null,icon:t.icon,id:t.id?t.id:void 0})))??[])();return R`
         <ha-card>
             ${this.config.header?R`<h1 class="card-header">
@@ -825,6 +905,11 @@ let rt=class extends x{constructor(){super(...arguments),this.renderOptions={hos
                             <div class="grid-item-value current-value">00:00:00</div>
                         </div>`}
                     </div>
+                    <div class="vehicle">
+                         <progress-bar value="65" unit="%" icon="mdi:battery-medium"></progress-bar>
+                         <progress-bar value="350" max_value="500" unit="Km" icon="mdi:map-marker-distance"></progress-bar>
+                    </div>
+                   
                     <div class="override-controls">
                         <div class="override-row">
                             <div

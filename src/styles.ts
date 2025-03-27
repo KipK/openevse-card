@@ -114,7 +114,7 @@ const cardStyles = css`
 			padding: 8px;
 			cursor: pointer;
 			transition: all 0.2s;
-			color: var (--primary-text-color);
+			color: var(--primary-text-color);
 			font-size: 2em;
 			width: 50px;
 			height: 25px;
@@ -244,6 +244,13 @@ const cardStyles = css`
 			justify-content: center;
 			align-items: center;
 
+		}
+		.vehicle {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+		    gap: 12px;
 		}
 		
 	`;

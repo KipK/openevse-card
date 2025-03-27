@@ -4,6 +4,7 @@ import { cardStyles } from './styles';
 import translations from './translations';
 import './evse-slider/evse-slider';
 import './limit';
+import './components/progress-bar'
 
 class CustomCard extends LitElement {
     static override get properties() {
@@ -530,6 +531,11 @@ class CustomCard extends LitElement {
                         </div>`
                     }
                     </div>
+                    <div class="vehicle">
+                         <progress-bar value="65" unit="%" icon="mdi:battery-medium"></progress-bar>
+                         <progress-bar value="350" max_value="500" unit="Km" icon="mdi:map-marker-distance"></progress-bar>
+                    </div>
+                   
                     <div class="override-controls">
                         <div class="override-row">
                             <div
