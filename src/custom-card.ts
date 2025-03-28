@@ -32,10 +32,10 @@ class CustomCard extends LitElement {
     _hasLimit?: boolean = false;
    
     constructor() {
-    	super();
-    	this._localTimeElapsed = 0;
-    	this._lastEntityTime = 0;
-    	this._timeUpdateInterval = null;
+        super();
+        this._localTimeElapsed = 0;
+        this._lastEntityTime = 0;
+        this._timeUpdateInterval = null;
         this._isCharging = false;
         this._limit = null;
         this._hasLimit = false;
@@ -274,13 +274,13 @@ class CustomCard extends LitElement {
       
        // Helper to safely get entity state
        _getEntityState(entityIdKey: EntityIdKey): EntityState | null { // Use the specific EntityIdKey type
-       	const entityId = this.config?.[entityIdKey];
-       	// Ensure entityId is a non-empty string and states exist
-       	if (typeof entityId !== 'string' || !entityId || !this.hass?.states) {
-       		return null;
-       	}
-       	// Access states only if entityId is a valid string key
-       	return this.hass.states[entityId] || null;
+           const entityId = this.config?.[entityIdKey];
+           // Ensure entityId is a non-empty string and states exist
+           if (typeof entityId !== 'string' || !entityId || !this.hass?.states) {
+               return null;
+           }
+           // Access states only if entityId is a valid string key
+           return this.hass.states[entityId] || null;
        }
       
        _convertSeconds(sec: number): string {
@@ -309,7 +309,7 @@ class CustomCard extends LitElement {
       
        _updateSlider(e: CustomEvent) {
         if (this.hass && this.config?.charge_rate_entity) {
-        	this.hass.callService('number', 'set_value', {
+            this.hass.callService('number', 'set_value', {
                 entity_id: this.config.charge_rate_entity,
                 value: e.detail.value
             })
@@ -338,7 +338,7 @@ class CustomCard extends LitElement {
       
       
         const getOptionalEntities = (): OptionalEntity[] =>
-        	this.config?.optional_entities?.map((entity) => {
+            this.config?.optional_entities?.map((entity) => {
                 return {
                     name: entity.name as string | null
                         ? entity.name as string | null
@@ -448,10 +448,10 @@ class CustomCard extends LitElement {
                     <div class="grid-container">
                             ${powerEntity
                         ? html`
-                        			<div class="grid-item">
-                        				<div class="grid-item-label">${localize("power", this._lang)}</div>
-                        				<div
-                        				class="grid-item-value current-value clickable"
+                                    <div class="grid-item">
+                                        <div class="grid-item-label">${localize("power", this._lang)}</div>
+                                        <div
+                                        class="grid-item-value current-value clickable"
                                         @click=${() =>
                                 this._showMoreInfo(
                                     this.config?.power_entity || ''
@@ -464,17 +464,17 @@ class CustomCard extends LitElement {
                                     </div>
                                     `
                         : html`
-                        	<div class="grid-item">
-                        		<div class="grid-item-label">${localize("power", this._lang)}</div>
-                        		<div class="grid-item-value current-value">0 W</div>
-                        	</div>`
+                            <div class="grid-item">
+                                <div class="grid-item-label">${localize("power", this._lang)}</div>
+                                <div class="grid-item-value current-value">0 W</div>
+                            </div>`
                     }
                         ${currentEntity
                         ? html`
-                        		<div class="grid-item">
-                        			<div class="grid-item-label">${localize("current", this._lang)}</div>
-                        			<div
-                        			class="grid-item-value current-value clickable"
+                                <div class="grid-item">
+                                    <div class="grid-item-label">${localize("current", this._lang)}</div>
+                                    <div
+                                    class="grid-item-value current-value clickable"
                                     @click=${() =>
                                 this._showMoreInfo(
                                     this.config?.current_entity || ''
@@ -488,16 +488,16 @@ class CustomCard extends LitElement {
                                 `
                               : html`
                                 <div class="grid-item">
-                                	<div class="grid-item-label">${localize("current", this._lang)}</div>
-                                	<div class="grid-item-value current-value">0 A</div>
+                                    <div class="grid-item-label">${localize("current", this._lang)}</div>
+                                    <div class="grid-item-value current-value">0 A</div>
                                 </div>`
                     }
                             ${sessionEnergyEntity
                            ? html`
                             <div class="grid-item">
-                            	<div class="grid-item-label">${localize("session", this._lang)}</div>
-                            	<div
-                            	class="grid-item-value current-value clickable"
+                                <div class="grid-item-label">${localize("session", this._lang)}</div>
+                                <div
+                                class="grid-item-value current-value clickable"
                                 @click=${() =>
                                 this._showMoreInfo(
                                     this.config?.session_energy_entity || ''
@@ -511,25 +511,25 @@ class CustomCard extends LitElement {
                         `
                         : html`
                         <div class="grid-item">
-                        	<div class="grid-item-label">${localize("session", this._lang)}</div>
-                        	<div class="grid-item-value current-value">0 kWh</div>
+                            <div class="grid-item-label">${localize("session", this._lang)}</div>
+                            <div class="grid-item-value current-value">0 kWh</div>
                         </div>`
                     }
 
                     ${timeElapsedEntity
-                    	? html`
-                    	<div class="grid-item">
-                    		<div class="grid-item-label">${localize("elapsed", this._lang)}</div>
-                    		<div
-                    		class="grid-item-value current-value"
+                        ? html`
+                        <div class="grid-item">
+                            <div class="grid-item-label">${localize("elapsed", this._lang)}</div>
+                            <div
+                            class="grid-item-value current-value"
                             >
                             ${this._convertTime(this._localTimeElapsed || 0)}
                             </div>
                         </div>
                        `: html`
                         <div class="grid-item">
-                        	<div class="grid-item-label">${localize("elapsed", this._lang)}</div>
-                        	<div class="grid-item-value current-value">00:00:00</div>
+                            <div class="grid-item-label">${localize("elapsed", this._lang)}</div>
+                            <div class="grid-item-value current-value">00:00:00</div>
                         </div>`
                     }
                     </div>
@@ -602,16 +602,16 @@ class CustomCard extends LitElement {
                         </div>
                     </div>
                     <div class="container">
-                    	<evse-slider
-                    		.min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
-                    		.max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
-                    		.step=${typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1}
-                    		.value=${Number(chargeRateEntity?.state || 0)}
-                    		.unit=${typeof chargeRateEntity?.attributes.unit_of_measurement === 'string' ? chargeRateEntity.attributes.unit_of_measurement : 'A'}
-                    		.label=${localize("charge rate", this._lang)}
-                    		.disabled=${!chargeRateEntity}
-                    		@value-changed=${this._updateSlider}
-                    	></evse-slider>
+                        <evse-slider
+                            .min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
+                            .max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
+                            .step=${typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1}
+                            .value=${Number(chargeRateEntity?.state || 0)}
+                            .unit=${typeof chargeRateEntity?.attributes.unit_of_measurement === 'string' ? chargeRateEntity.attributes.unit_of_measurement : 'A'}
+                            .label=${localize("charge rate", this._lang)}
+                            .disabled=${!chargeRateEntity}
+                            @value-changed=${this._updateSlider}
+                        ></evse-slider>
                     </div>
                     <!-- Limit -->
                     <div class="container">

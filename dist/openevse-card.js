@@ -21,259 +21,259 @@ const w=globalThis,$=w.trustedTypes,S=$?$.createPolicy("lit-html",{createHTML:e=
  * SPDX-License-Identifier: BSD-3-Clause
  */
 let ne=class extends x{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const s=i?.renderBefore??t;let n=s._$litPart$;if(void 0===n){const e=i?.renderBefore??null;s._$litPart$=n=new Q(t.insertBefore(j(),e),e,void 0,i??{})}return n._$AI(e),n})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return H}};ne._$litElement$=!0,ne.finalized=!0,globalThis.litElementHydrateSupport?.({LitElement:ne});const re=globalThis.litElementPolyfillSupport;re?.({LitElement:ne}),(globalThis.litElementVersions??=[]).push("4.1.1");const ae=r`
-		:host{
-			--evse-active-color: var(--success-color);
-			--evse-disabled-color: #116A88;
-			--evse-auto-color: #32B3D4;
-			--evse-slider-color: var(--accent-color, #2196f3);
-			--evse-shadow: var(--ha-card-box-shadow, 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px - 2px rgba(0,0,0,0.2));
-			--evse-border-radius: var(--ha-card-border-radius, 10px);
-			--evse-selector-bg-color: var(--primary-background-color);
-			--evse-secondary-bg-color: color-mix(in srgb, var(--divider-color) 60%, transparent);
-		}
-		.card-header {
-			padding: 8px 16px 0;
-			font-size: var(--ha-card-header-font-size, 24px);
-			font-weight: var(--ha-card-header-font-weight, 400);
-			line-height: 1.2;
-		}
-		.card-content {
-			padding: 16px;
-			transition: all 0.3s ease-out;
-		}
-		.evse-states {
-			display: flex;
-			justify-content: space-between;
-			width: 100%;
-			background: transparent;
-			padding-bottom: 20px;
-			border-radius: 16px;
-		}
-		.status-icons {
-			border-radius: 8px;
-			display: flex;
-			flex-direction: row;
-		}
-		.status-icon {
-			background: transparent;
-			padding: 8px 4px;
-			border-radius: 16px;
-		}
-		.wifi-icon {
-			color: var(--info-color)
-		}
-		.status-heading {
-			padding: 8px 8px 0;
-			font-size: var(--ha-card-header-font-size, 18px);
-			font-weight: var(--ha-card-header-font-weight, 400);
-			line-height: 1;
-		}
-		.status-container {
-			display: flex;
-			align-items: center;
-		}
-		.status-badge {
-			font-size: 14px;
-			border-radius: 4px;
-			background-color: white;
-			padding: 6px;
-			padding-bottom: 4px;
-			text-transform: uppercase;
-		}
-		.badge-charging {
-			background-color: yellow;
-			color: black;
-		}
-		.badge-connected {
-			background-color: var(--info-color);
-			color: white;
-		}
-		.badge-disabled {
-			background-color: var(--evse-disabled-color);
-			color: white;
-		}
-		.badge-active {
-			background-color: var(--evse-active-color);
-			color: white;
-		};
-		.error {
-			background-color: var(--error-color);
-			color: white;
-		}
-		.active {
-			color: var(--evse-active-color);
-		}
-		.charging {
-			color: yellow;
-		}
-		.disabled {
-			color: var(--evse-disabled-color);
-		}
-		
-		.override-controls {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-		.override-row {
-			width: auto;
-			display: flex;
-			justify-content: space-between;
-			margin-bottom: 16px;
-			margin-top: 10px;
-			align-items: center;
-		}
-		.override-button {
-			flex: 1;
-			position: relative;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			background-color: transparent;
-			padding: 8px;
-			cursor: pointer;
-			transition: all 0.2s;
-			color: var(--primary-text-color);
-			font-size: 2em;
-			width: 50px;
-			height: 25px;
-			border: 1px solid var(--divider-color);
-		}
-		.override-button[data-option="active"] {
-			border-radius: 10px 0 0 10px;
-			color: var(--evse-active-color);
-		}
-		.override-button[data-option="auto"] {
-			border-radius: 0;
-			border-left: 0;
-			border-right: 0;
-			color: var(--evse-auto-color);
-		}
-		.override-button[data-option="disabled"] {
-			border-radius: 0 10px 10px 0;
-			color: var(--evse-disabled-color);
-		}
-		.override-button:hover[data-option="active"] {
-			background: var(--evse-active-color);
-			color: var(--text-primary-color);
-		}
-		.override-button:hover[data-option="auto"] {
-			background: var(--evse-auto-color);
-			color: var(--text-primary-color);
-		}
-		.override-button:hover[data-option="disabled"] {
-			background: var(--evse-disabled-color);
-			color: var(--text-primary-color);
-		}
-		.override-button.active[data-option="active"] {
-			background: var(--evse-active-color);
-			color: var(--text-primary-color);
-		}
-		.override-button.active[data-option="auto"] {
-			background: var(--evse-auto-color);
-			color: var(--text-primary-color);
-		}
-		.override-button.active[data-option="disabled"] {
-			background: var(--evse-disabled-color);
-			color: var(--text-primary-color);
-		}
-		.override-button.active.charging {
-			color: yellow;
-		}
-		.override-button ha-icon {
-			margin-bottom: 4px;
-			--mdc-icon-size: 35px;
-		}
-		.entity-row {
-			display: flex;
-			justify-content: space-between;
-			margin: 8px;
-			color: var(--primary-text-color);
-			background-color: var(--evse-secondary-bg-color);
-			align-items: center;
-			border-radius: 10px;
-			align-items: center;
-			padding: 8px 16px;
-		}
-		.entity-title {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
+        :host{
+            --evse-active-color: var(--success-color);
+            --evse-disabled-color: #116A88;
+            --evse-auto-color: #32B3D4;
+            --evse-slider-color: var(--accent-color, #2196f3);
+            --evse-shadow: var(--ha-card-box-shadow, 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px - 2px rgba(0,0,0,0.2));
+            --evse-border-radius: var(--ha-card-border-radius, 10px);
+            --evse-selector-bg-color: var(--primary-background-color);
+            --evse-secondary-bg-color: color-mix(in srgb, var(--divider-color) 60%, transparent);
+        }
+        .card-header {
+            padding: 8px 16px 0;
+            font-size: var(--ha-card-header-font-size, 24px);
+            font-weight: var(--ha-card-header-font-weight, 400);
+            line-height: 1.2;
+        }
+        .card-content {
+            padding: 16px;
+            transition: all 0.3s ease-out;
+        }
+        .evse-states {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background: transparent;
+            padding-bottom: 20px;
+            border-radius: 16px;
+        }
+        .status-icons {
+            border-radius: 8px;
+            display: flex;
+            flex-direction: row;
+        }
+        .status-icon {
+            background: transparent;
+            padding: 8px 4px;
+            border-radius: 16px;
+        }
+        .wifi-icon {
+            color: var(--info-color)
+        }
+        .status-heading {
+            padding: 8px 8px 0;
+            font-size: var(--ha-card-header-font-size, 18px);
+            font-weight: var(--ha-card-header-font-weight, 400);
+            line-height: 1;
+        }
+        .status-container {
+            display: flex;
+            align-items: center;
+        }
+        .status-badge {
+            font-size: 14px;
+            border-radius: 4px;
+            background-color: white;
+            padding: 6px;
+            padding-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .badge-charging {
+            background-color: yellow;
+            color: black;
+        }
+        .badge-connected {
+            background-color: var(--info-color);
+            color: white;
+        }
+        .badge-disabled {
+            background-color: var(--evse-disabled-color);
+            color: white;
+        }
+        .badge-active {
+            background-color: var(--evse-active-color);
+            color: white;
+        };
+        .error {
+            background-color: var(--error-color);
+            color: white;
+        }
+        .active {
+            color: var(--evse-active-color);
+        }
+        .charging {
+            color: yellow;
+        }
+        .disabled {
+            color: var(--evse-disabled-color);
+        }
+        
+        .override-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .override-row {
+            width: auto;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            margin-top: 10px;
+            align-items: center;
+        }
+        .override-button {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--primary-text-color);
+            font-size: 2em;
+            width: 50px;
+            height: 25px;
+            border: 1px solid var(--divider-color);
+        }
+        .override-button[data-option="active"] {
+            border-radius: 10px 0 0 10px;
+            color: var(--evse-active-color);
+        }
+        .override-button[data-option="auto"] {
+            border-radius: 0;
+            border-left: 0;
+            border-right: 0;
+            color: var(--evse-auto-color);
+        }
+        .override-button[data-option="disabled"] {
+            border-radius: 0 10px 10px 0;
+            color: var(--evse-disabled-color);
+        }
+        .override-button:hover[data-option="active"] {
+            background: var(--evse-active-color);
+            color: var(--text-primary-color);
+        }
+        .override-button:hover[data-option="auto"] {
+            background: var(--evse-auto-color);
+            color: var(--text-primary-color);
+        }
+        .override-button:hover[data-option="disabled"] {
+            background: var(--evse-disabled-color);
+            color: var(--text-primary-color);
+        }
+        .override-button.active[data-option="active"] {
+            background: var(--evse-active-color);
+            color: var(--text-primary-color);
+        }
+        .override-button.active[data-option="auto"] {
+            background: var(--evse-auto-color);
+            color: var(--text-primary-color);
+        }
+        .override-button.active[data-option="disabled"] {
+            background: var(--evse-disabled-color);
+            color: var(--text-primary-color);
+        }
+        .override-button.active.charging {
+            color: yellow;
+        }
+        .override-button ha-icon {
+            margin-bottom: 4px;
+            --mdc-icon-size: 35px;
+        }
+        .entity-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px;
+            color: var(--primary-text-color);
+            background-color: var(--evse-secondary-bg-color);
+            align-items: center;
+            border-radius: 10px;
+            align-items: center;
+            padding: 8px 16px;
+        }
+        .entity-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-		}
-		.entity-label {
-			display: flex;
-			justify-content: right;
+        }
+        .entity-label {
+            display: flex;
+            justify-content: right;
 
-		}
-		.entity-value {
-			text-align: right;
-			color: var(--primary-color);
-			font-size: 1.1rem;
-			font-weight: 500;
-		}
-		.entity-icon {
-			padding: 6px;
-			margin-right: 20px;
-			color: var(--state-icon-color);
-			background-color: color-mix(in srgb, var(--state-icon-color) 20%, transparent);
-			border-radius: 50%;
-			display: flex;
-			justify-content: left;
-		}
-		.clickable {
-			cursor: pointer;
-			text-decoration: none;
-		}
-		.grid-container {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-		}
-		.grid-item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			margin-bottom: 10px;
-			background-color: var(--evse-secondary-bg-color);
-			border-radius: 10px;
-			padding: 4px;
-			margin: 8px;
-		}
-		.grid-item-label {
-			font-size: 1rem;
-			color: var(--primary-text-color);
-			margin-bottom: 3px;
-			font-weight: bold;
-			text-transform: capitalize;	
-		}
-		.grid-item-value {
-			font-size: 1.5rem;
-			font-weight: 500;
-			color: var(--primary-color);
-		}
-		.other-entities-container {
-			width: 100%;
-		}
-		.container {
-			width: 100%;
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
-			align-items: center;
+        }
+        .entity-value {
+            text-align: right;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .entity-icon {
+            padding: 6px;
+            margin-right: 20px;
+            color: var(--state-icon-color);
+            background-color: color-mix(in srgb, var(--state-icon-color) 20%, transparent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: left;
+        }
+        .clickable {
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            background-color: var(--evse-secondary-bg-color);
+            border-radius: 10px;
+            padding: 4px;
+            margin: 8px;
+        }
+        .grid-item-label {
+            font-size: 1rem;
+            color: var(--primary-text-color);
+            margin-bottom: 3px;
+            font-weight: bold;
+            text-transform: capitalize;	
+        }
+        .grid-item-value {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        .other-entities-container {
+            width: 100%;
+        }
+        .container {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
 
-		}
-		.vehicle {
-			width: 100%;
-			display: flex;
-			flex-direction: row;
-			justify-content: space-around;
-		    gap: 12px;
-		}
-		
-	`,oe={en:{disabled:"disabled",sleeping:"disabled",active:"active",charging:"charging","not connected":"waiting",connected:"connected",error:"error",power:"power",current:"current",session:"session",elapsed:"elapsed","charge rate":"charge rate",required_entities:"Required entities",entity_auto_success:"All required entities were automatically found",entity_auto_fail:"Some entities could not be automatically detected",entity_auto_loading:"Loading device entities","additional entities":"Additional entities","new limit":"New Limit","add charging limit":"Add Charging Limit",time:"Time",energy:"Energy",battery:"Battery",range:"Range",hours:"Hours",minutes:"Minutes",cancel:"Cancel","add limit":"Add Limit","header title":"Header Title","display header":"Display header",features:"Features","enable vehicle battery":"Enable Vehicle Battery","enable vehicle range":"Enable Vehicle Range","limits settings":"Limits settings","maximum charge energy":"Maximum charge energy (kWh)","maximum vehicle range":"Maximum vehicle range (miles|km)","openevse device":"OpenEVSE Device","select your openevse device":"Select your OpenEVSE device to automatically populate all entities","override state":"Override State","select openevse.override_state entity":"Select openevse.override_state entity","station status":"Station Status","select openevse.station_status entity":"Select openevse.station_status entity","current power usage":"Current power usage","select openevse.current_power_usage entity":"Select openevse.current_power_usage entity","charging current":"Charging current","select openevse.charging_current entity":"Select openevse.charging_current entity","vehicle connected":"Vehicle Connected","select openevse.vehicle_connected entity":"Select openevse.vehicle_connected entity","charging status":"Charging status","select openevse.charging_status entity":"Select openevse.charging_status entity","session energy":"Session Energy","select openevse.usage_this_session entity":"Select openevse.usage_this_session entity","charge time elapsed":"Charge Time Elapsed","select openevse.charge_time_elapsed entity":"Select openevse.charge_time_elapsed entity","wifi signal":"Wifi Signal","select openevse_wifi_signal_strength entity":"Select openevse_wifi_signal_strength entity","limit active":"Limit Active","select openevse_limit_active entity":"Select openevse_limit_active entity","vehicle range":"Vehicle Range","select openevse_vehicle_range entity":"Select openevse_vehicle_range entity","battery level":"Battery Level","select openevse_vehicle_battery_level entity":"Select openevse_vehicle_battery_level entity",entity:"Entity",name:"Name",icon:"Icon"},fr:{disabled:"désactivé",sleeping:"désactivé",active:"activé",charging:"en charge","not connected":"en attente",connected:"connecté",error:"erreur",power:"puissance",current:"courant",session:"session",elapsed:"écoulé","charge rate":"ampérage",required_entities:"Entités requises",entity_auto_success:"Toutes les entités ont été trouvées automatiquement",entity_auto_fail:"certaines entités n'ont pas pu être détectées automatiquement",entity_auto_loading:"Chargement des entités de l'appareil","additional entities":"Entités supplémentaires","new limit":"Nouvelle Limite","add charging limit":"Ajouter une Limite de Charge",time:"Temps",energy:"Énergie",battery:"Batterie",range:"Autonomie",hours:"Heures",minutes:"Minutes",cancel:"Annuler","add limit":"Ajouter Limite","header title":"Titre d'en-tête","display header":"Afficher l'en-tête",features:"Fonctionnalités","enable vehicle battery":"Activer la batterie du véhicule","enable vehicle range":"Activer l'autonomie du véhicule","limits settings":"Paramètres des limites","maximum charge energy":"Énergie de charge maximale (kWh)","maximum vehicle range":"Autonomie maximale du véhicule (miles|km)","openevse device":"Appareil OpenEVSE","select your openevse device":"Sélectionnez votre appareil OpenEVSE pour remplir automatiquement toutes les entités","override state":"État de surcharge","select openevse.override_state entity":"Sélectionnez l'entité openevse.override_state","station status":"État de la station","select openevse.station_status entity":"Sélectionnez l'entité openevse.station_status","current power usage":"Consommation électrique actuelle","select openevse.current_power_usage entity":"Sélectionnez l'entité openevse.current_power_usage","charging current":"Courant de charge","select openevse.charging_current entity":"Sélectionnez l'entité openevse.charging_current","vehicle connected":"Véhicule connecté","select openevse.vehicle_connected entity":"Sélectionnez l'entité openevse.vehicle_connected","charging status":"État de charge","select openevse.charging_status entity":"Sélectionnez l'entité openevse.charging_status","session energy":"Énergie de session","select openevse.usage_this_session entity":"Sélectionnez l'entité openevse.usage_this_session","charge time elapsed":"Temps de charge écoulé","select openevse.charge_time_elapsed entity":"Sélectionnez l'entité openevse.charge_time_elapsed","wifi signal":"Signal Wifi","select openevse_wifi_signal_strength entity":"Sélectionnez l'entité openevse_wifi_signal_strength","limit active":"Limite active","select openevse_limit_active entity":"Sélectionnez l'entité openevse_limit_active","vehicle range":"Autonomie du véhicule","select openevse_vehicle_range entity":"Sélectionnez l'entité openevse_vehicle_range","battery level":"Niveau de batterie","select openevse_vehicle_battery_level entity":"Sélectionnez l'entité openevse_vehicle_battery_level",entity:"Entité",name:"Nom",icon:"Icône"},de:{disabled:"deaktiviert",sleeping:"deaktiviert",active:"aktiv",charging:"lädt","not connected":"bereit",connected:"verbunden",error:"fehler",power:"leistung",current:"stromstärke",session:"sitzung",elapsed:"verstrichene zeit","charge rate":"laderate",required_entities:"Erforderliche Entitäten",entity_auto_success:"Alle erforderlichen Entitäten wurden automatisch gefunden",entity_auto_fail:"Einige Entitäten konnten nicht automatisch erkannt werden",entity_auto_loading:"Geräteentitäten werden geladen","additional entities":"Zusätzliche Entitäten","new limit":"Neues Limit","add charging limit":"Ladelimit hinzufügen",time:"Zeit",energy:"Energie",battery:"Batterie",range:"Reichweite",hours:"Stunden",minutes:"Minuten",cancel:"Abbrechen","add limit":"Limit hinzufügen","header title":"Kopfzeilentitel","display header":"Kopfzeile anzeigen",features:"Funktionen","enable vehicle battery":"Fahrzeugbatterie aktivieren","enable vehicle range":"Fahrzeugreichweite aktivieren","limits settings":"Limit-Einstellungen","maximum charge energy":"Maximale Ladeenergie (kWh)","maximum vehicle range":"Maximale Fahrzeugreichweite (Meilen|km)","openevse device":"OpenEVSE-Gerät","select your openevse device":"Wählen Sie Ihr OpenEVSE-Gerät aus, um alle Entitäten automatisch zu füllen","override state":"Überschreibungsstatus","select openevse.override_state entity":"Wählen Sie die openevse.override_state Entität","station status":"Stationsstatus","select openevse.station_status entity":"Wählen Sie die openevse.station_status Entität","current power usage":"Aktuelle Leistungsaufnahme","select openevse.current_power_usage entity":"Wählen Sie die openevse.current_power_usage Entität","charging current":"Ladestrom","select openevse.charging_current entity":"Wählen Sie die openevse.charging_current Entität","vehicle connected":"Fahrzeug verbunden","select openevse.vehicle_connected entity":"Wählen Sie die openevse.vehicle_connected Entität","charging status":"Ladestatus","select openevse.charging_status entity":"Wählen Sie die openevse.charging_status Entität","session energy":"Sitzungsenergie","select openevse.usage_this_session entity":"Wählen Sie die openevse.usage_this_session Entität","charge time elapsed":"Verstrichene Ladezeit","select openevse.charge_time_elapsed entity":"Wählen Sie die openevse.charge_time_elapsed Entität","wifi signal":"WLAN-Signal","select openevse_wifi_signal_strength entity":"Wählen Sie die openevse_wifi_signal_strength Entität","limit active":"Limit aktiv","select openevse_limit_active entity":"Wählen Sie die openevse_limit_active Entität","vehicle range":"Fahrzeugreichweite","select openevse_vehicle_range entity":"Wählen Sie die openevse_vehicle_range Entität","battery level":"Batteriestand","select openevse_vehicle_battery_level entity":"Wählen Sie die openevse_vehicle_battery_level Entität",entity:"Entität",name:"Name",icon:"Symbol"},es:{disabled:"desactivado",sleeping:"desactivado",active:"activo",charging:"cargando","not connected":"en espera",connected:"conectado",error:"error",power:"potencia",current:"corriente",session:"sesión",elapsed:"pasado","charge rate":"amperaje",required_entities:"Entidades requeridas",entity_auto_success:"Todas las entidades requeridas se encontraron automáticamente",entity_auto_fail:"Algunas entidades no pudieron ser detectadas automáticamente",entity_auto_loading:"Cargando entidades del dispositivo","additional entities":"Entidades adicionales","new limit":"Nuevo Límite","add charging limit":"Añadir Límite de Carga",time:"Tiempo",energy:"Energía",battery:"Batería",range:"Autonomía",hours:"Horas",minutes:"Minutos",cancel:"Cancelar","add limit":"Añadir Límite","header title":"Título del encabezado","display header":"Mostrar encabezado",features:"Características","enable vehicle battery":"Habilitar batería del vehículo","enable vehicle range":"Habilitar autonomía del vehículo","limits settings":"Configuración de límites","maximum charge energy":"Energía máxima de carga (kWh)","maximum vehicle range":"Autonomía máxima del vehículo (millas|km)","openevse device":"Dispositivo OpenEVSE","select your openevse device":"Seleccione su dispositivo OpenEVSE para completar automáticamente todas las entidades","override state":"Estado de anulación","select openevse.override_state entity":"Seleccione la entidad openevse.override_state","station status":"Estado de la estación","select openevse.station_status entity":"Seleccione la entidad openevse.station_status","current power usage":"Consumo de energía actual","select openevse.current_power_usage entity":"Seleccione la entidad openevse.current_power_usage","charging current":"Corriente de carga","select openevse.charging_current entity":"Seleccione la entidad openevse.charging_current","vehicle connected":"Vehículo conectado","select openevse.vehicle_connected entity":"Seleccione la entidad openevse.vehicle_connected","charging status":"Estado de carga","select openevse.charging_status entity":"Seleccione la entidad openevse.charging_status","session energy":"Energía de sesión","select openevse.usage_this_session entity":"Seleccione la entidad openevse.usage_this_session","charge time elapsed":"Tiempo de carga transcurrido","select openevse.charge_time_elapsed entity":"Seleccione la entidad openevse.charge_time_elapsed","wifi signal":"Señal Wifi","select openevse_wifi_signal_strength entity":"Seleccione la entidad openevse_wifi_signal_strength","limit active":"Límite activo","select openevse_limit_active entity":"Seleccione la entidad openevse_limit_active","vehicle range":"Autonomía del vehículo","select openevse_vehicle_range entity":"Seleccione la entidad openevse_vehicle_range","battery level":"Nivel de batería","select openevse_vehicle_battery_level entity":"Seleccione la entidad openevse_vehicle_battery_level",entity:"Entidad",name:"Nombre",icon:"Icono"}};function ce(e,t="en"){const i=e.toLowerCase();return t in oe&&i in oe[t]?oe[t][i]:"en"in oe&&i in oe.en?oe.en[i]:e}
+        }
+        .vehicle {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            gap: 12px;
+        }
+        
+    `,oe={en:{disabled:"disabled",sleeping:"disabled",active:"active",charging:"charging","not connected":"waiting",connected:"connected",error:"error",power:"power",current:"current",session:"session",elapsed:"elapsed","charge rate":"charge rate",required_entities:"Required entities",entity_auto_success:"All required entities were automatically found",entity_auto_fail:"Some entities could not be automatically detected",entity_auto_loading:"Loading device entities","additional entities":"Additional entities","new limit":"New Limit","add charging limit":"Add Charging Limit",time:"Time",energy:"Energy",battery:"Battery",range:"Range",hours:"Hours",minutes:"Minutes",cancel:"Cancel","add limit":"Add Limit","header title":"Header Title","display header":"Display header",features:"Features","enable vehicle battery":"Enable Vehicle Battery","enable vehicle range":"Enable Vehicle Range","limits settings":"Limits settings","maximum charge energy":"Maximum charge energy (kWh)","maximum vehicle range":"Maximum vehicle range (miles|km)","openevse device":"OpenEVSE Device","select your openevse device":"Select your OpenEVSE device to automatically populate all entities","override state":"Override State","select openevse.override_state entity":"Select openevse.override_state entity","station status":"Station Status","select openevse.station_status entity":"Select openevse.station_status entity","current power usage":"Current power usage","select openevse.current_power_usage entity":"Select openevse.current_power_usage entity","charging current":"Charging current","select openevse.charging_current entity":"Select openevse.charging_current entity","vehicle connected":"Vehicle Connected","select openevse.vehicle_connected entity":"Select openevse.vehicle_connected entity","charging status":"Charging status","select openevse.charging_status entity":"Select openevse.charging_status entity","session energy":"Session Energy","select openevse.usage_this_session entity":"Select openevse.usage_this_session entity","charge time elapsed":"Charge Time Elapsed","select openevse.charge_time_elapsed entity":"Select openevse.charge_time_elapsed entity","wifi signal":"Wifi Signal","select openevse_wifi_signal_strength entity":"Select openevse_wifi_signal_strength entity","limit active":"Limit Active","select openevse_limit_active entity":"Select openevse_limit_active entity","vehicle range":"Vehicle Range","select openevse_vehicle_range entity":"Select openevse_vehicle_range entity","battery level":"Battery Level","select openevse_vehicle_battery_level entity":"Select openevse_vehicle_battery_level entity",entity:"Entity",name:"Name",icon:"Icon"},fr:{disabled:"désactivé",sleeping:"désactivé",active:"activé",charging:"en charge","not connected":"en attente",connected:"connecté",error:"erreur",power:"puissance",current:"courant",session:"session",elapsed:"écoulé","charge rate":"ampérage",required_entities:"Entités requises",entity_auto_success:"Toutes les entités ont été trouvées automatiquement",entity_auto_fail:"certaines entités n'ont pas pu être détectées automatiquement",entity_auto_loading:"Chargement des entités de l'appareil","additional entities":"Entités supplémentaires","new limit":"Nouvelle Limite","add charging limit":"Ajouter une Limite de Charge",time:"Temps",energy:"Énergie",battery:"Batterie",range:"Autonomie",hours:"Heures",minutes:"Minutes",cancel:"Annuler","add limit":"Ajouter Limite","header title":"Titre d'en-tête","display header":"Afficher l'en-tête",features:"Fonctionnalités","enable vehicle battery":"Activer la batterie du véhicule","enable vehicle range":"Activer l'autonomie du véhicule","limits settings":"Paramètres des limites","maximum charge energy":"Énergie de charge maximale (kWh)","maximum vehicle range":"Autonomie maximale du véhicule (miles|km)","openevse device":"Appareil OpenEVSE","select your openevse device":"Sélectionnez votre appareil OpenEVSE pour remplir automatiquement toutes les entités","override state":"État de surcharge","select openevse.override_state entity":"Sélectionnez l'entité openevse.override_state","station status":"État de la station","select openevse.station_status entity":"Sélectionnez l'entité openevse.station_status","current power usage":"Consommation électrique actuelle","select openevse.current_power_usage entity":"Sélectionnez l'entité openevse.current_power_usage","charging current":"Courant de charge","select openevse.charging_current entity":"Sélectionnez l'entité openevse.charging_current","vehicle connected":"Véhicule connecté","select openevse.vehicle_connected entity":"Sélectionnez l'entité openevse.vehicle_connected","charging status":"État de charge","select openevse.charging_status entity":"Sélectionnez l'entité openevse.charging_status","session energy":"Énergie de session","select openevse.usage_this_session entity":"Sélectionnez l'entité openevse.usage_this_session","charge time elapsed":"Temps de charge écoulé","select openevse.charge_time_elapsed entity":"Sélectionnez l'entité openevse.charge_time_elapsed","wifi signal":"Signal Wifi","select openevse_wifi_signal_strength entity":"Sélectionnez l'entité openevse_wifi_signal_strength","limit active":"Limite active","select openevse_limit_active entity":"Sélectionnez l'entité openevse_limit_active","vehicle range":"Autonomie du véhicule","select openevse_vehicle_range entity":"Sélectionnez l'entité openevse_vehicle_range","battery level":"Niveau de batterie","select openevse_vehicle_battery_level entity":"Sélectionnez l'entité openevse_vehicle_battery_level",entity:"Entité",name:"Nom",icon:"Icône"},de:{disabled:"deaktiviert",sleeping:"deaktiviert",active:"aktiv",charging:"lädt","not connected":"bereit",connected:"verbunden",error:"fehler",power:"leistung",current:"stromstärke",session:"sitzung",elapsed:"verstrichene zeit","charge rate":"laderate",required_entities:"Erforderliche Entitäten",entity_auto_success:"Alle erforderlichen Entitäten wurden automatisch gefunden",entity_auto_fail:"Einige Entitäten konnten nicht automatisch erkannt werden",entity_auto_loading:"Geräteentitäten werden geladen","additional entities":"Zusätzliche Entitäten","new limit":"Neues Limit","add charging limit":"Ladelimit hinzufügen",time:"Zeit",energy:"Energie",battery:"Batterie",range:"Reichweite",hours:"Stunden",minutes:"Minuten",cancel:"Abbrechen","add limit":"Limit hinzufügen","header title":"Kopfzeilentitel","display header":"Kopfzeile anzeigen",features:"Funktionen","enable vehicle battery":"Fahrzeugbatterie aktivieren","enable vehicle range":"Fahrzeugreichweite aktivieren","limits settings":"Limit-Einstellungen","maximum charge energy":"Maximale Ladeenergie (kWh)","maximum vehicle range":"Maximale Fahrzeugreichweite (Meilen|km)","openevse device":"OpenEVSE-Gerät","select your openevse device":"Wählen Sie Ihr OpenEVSE-Gerät aus, um alle Entitäten automatisch zu füllen","override state":"Überschreibungsstatus","select openevse.override_state entity":"Wählen Sie die openevse.override_state Entität","station status":"Stationsstatus","select openevse.station_status entity":"Wählen Sie die openevse.station_status Entität","current power usage":"Aktuelle Leistungsaufnahme","select openevse.current_power_usage entity":"Wählen Sie die openevse.current_power_usage Entität","charging current":"Ladestrom","select openevse.charging_current entity":"Wählen Sie die openevse.charging_current Entität","vehicle connected":"Fahrzeug verbunden","select openevse.vehicle_connected entity":"Wählen Sie die openevse.vehicle_connected Entität","charging status":"Ladestatus","select openevse.charging_status entity":"Wählen Sie die openevse.charging_status Entität","session energy":"Sitzungsenergie","select openevse.usage_this_session entity":"Wählen Sie die openevse.usage_this_session Entität","charge time elapsed":"Verstrichene Ladezeit","select openevse.charge_time_elapsed entity":"Wählen Sie die openevse.charge_time_elapsed Entität","wifi signal":"WLAN-Signal","select openevse_wifi_signal_strength entity":"Wählen Sie die openevse_wifi_signal_strength Entität","limit active":"Limit aktiv","select openevse_limit_active entity":"Wählen Sie die openevse_limit_active Entität","vehicle range":"Fahrzeugreichweite","select openevse_vehicle_range entity":"Wählen Sie die openevse_vehicle_range Entität","battery level":"Batteriestand","select openevse_vehicle_battery_level entity":"Wählen Sie die openevse_vehicle_battery_level Entität",entity:"Entität",name:"Name",icon:"Symbol"},es:{disabled:"desactivado",sleeping:"desactivado",active:"activo",charging:"cargando","not connected":"en espera",connected:"conectado",error:"error",power:"potencia",current:"corriente",session:"sesión",elapsed:"pasado","charge rate":"amperaje",required_entities:"Entidades requeridas",entity_auto_success:"Todas las entidades requeridas se encontraron automáticamente",entity_auto_fail:"Algunas entidades no pudieron ser detectadas automáticamente",entity_auto_loading:"Cargando entidades del dispositivo","additional entities":"Entidades adicionales","new limit":"Nuevo Límite","add charging limit":"Añadir Límite de Carga",time:"Tiempo",energy:"Energía",battery:"Batería",range:"Autonomía",hours:"Horas",minutes:"Minutos",cancel:"Cancelar","add limit":"Añadir Límite","header title":"Título del encabezado","display header":"Mostrar encabezado",features:"Características","enable vehicle battery":"Habilitar batería del vehículo","enable vehicle range":"Habilitar autonomía del vehículo","limits settings":"Configuración de límites","maximum charge energy":"Energía máxima de carga (kWh)","maximum vehicle range":"Autonomía máxima del vehículo (millas|km)","openevse device":"Dispositivo OpenEVSE","select your openevse device":"Seleccione su dispositivo OpenEVSE para completar automáticamente todas las entidades","override state":"Estado de anulación","select openevse.override_state entity":"Seleccione la entidad openevse.override_state","station status":"Estado de la estación","select openevse.station_status entity":"Seleccione la entidad openevse.station_status","current power usage":"Consumo de energía actual","select openevse.current_power_usage entity":"Seleccione la entidad openevse.current_power_usage","charging current":"Corriente de carga","select openevse.charging_current entity":"Seleccione la entidad openevse.charging_current","vehicle connected":"Vehículo conectado","select openevse.vehicle_connected entity":"Seleccione la entidad openevse.vehicle_connected","charging status":"Estado de carga","select openevse.charging_status entity":"Seleccione la entidad openevse.charging_status","session energy":"Energía de sesión","select openevse.usage_this_session entity":"Seleccione la entidad openevse.usage_this_session","charge time elapsed":"Tiempo de carga transcurrido","select openevse.charge_time_elapsed entity":"Seleccione la entidad openevse.charge_time_elapsed","wifi signal":"Señal Wifi","select openevse_wifi_signal_strength entity":"Seleccione la entidad openevse_wifi_signal_strength","limit active":"Límite activo","select openevse_limit_active entity":"Seleccione la entidad openevse_limit_active","vehicle range":"Autonomía del vehículo","select openevse_vehicle_range entity":"Seleccione la entidad openevse_vehicle_range","battery level":"Nivel de batería","select openevse_vehicle_battery_level entity":"Seleccione la entidad openevse_vehicle_battery_level",entity:"Entidad",name:"Nombre",icon:"Icono"}};function ce(e,t="en"){const i=e.toLowerCase();return t in oe&&i in oe[t]?oe[t][i]:"en"in oe&&i in oe.en?oe.en[i]:e}
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -321,10 +321,10 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
       display: block;
       --evse-slider-color: var(--primary-color, #03a9f4);
       margin-bottom: 8px;
-	  width: 100%;
-	  margin-left: 8px;
-	  margin-right: 8px;
-	  
+      width: 100%;
+      margin-left: 8px;
+      margin-right: 8px;
+      
     }
     
     .slider-container {
@@ -333,10 +333,10 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
       padding-bottom: 15px;
       padding-top: 15px;
       background-color: transparent;
-	  border: 1px solid var(--divider-color, #e0e0e0);
-	  max-width: 300px;
-	  margin: 0 auto;
-	 
+      border: 1px solid var(--divider-color, #e0e0e0);
+      max-width: 300px;
+      margin: 0 auto;
+     
 
     }
     
@@ -511,7 +511,7 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
       .time-input {
         flex: 1;
         justify-content: center;
-			  align-items: center;
+        align-items: center;
         text-align: center;
       }
       .time-input input {
@@ -609,107 +609,107 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
         font-size: 1.1rem;
       }
     `}_toggleLimitForm(){this._showLimitForm=!this._showLimitForm,this._selectedLimitType="time",this._hours=0,this._minutes=0,this._value=0,this.requestUpdate()}_handleTypeChange(e){const t=e.target;this._selectedLimitType=t.value,this.requestUpdate()}_handleHoursChange(e){const t=e.target;this._hours=parseInt(t.value)||0,this.requestUpdate()}_handleMinutesChange(e){const t=e.target;this._minutes=parseInt(t.value)||0,this.requestUpdate()}_handleValueChange(e){const t=e.target,i=parseInt(t.value)||0;"energy"===this._selectedLimitType?this._value=1e3*i:this._value=i,this.requestUpdate()}_handleSliderChange(e){const t=e.detail.value;"energy"===this._selectedLimitType?this._value=Math.round(1e3*t):this._value=t,this.requestUpdate()}_formatValue(e,t){if("energy"===t){return`${Math.round(e/1e3)} kWh`}return"soc"===t?`${e}%`:"range"===t?`${e} ${this.range_unit}`:String(e)}_addLimit(){if("time"===this._selectedLimitType){const e=60*this._hours+this._minutes;e>0&&this.setLimit&&this.setLimit("time",e)}else["energy","soc","range"].includes(this._selectedLimitType)&&this._value>0&&this.setLimit&&this.setLimit(this._selectedLimitType,this._value);this._showLimitForm=!1}_removeLimit(){this.delLimit&&this.delLimit()}_isAddButtonDisabled(){return"time"===this._selectedLimitType?0===this._hours&&0===this._minutes:!["energy","soc","range"].includes(this._selectedLimitType)||0===this._value}_formatTimeValue(e){return[Math.floor(e/60),e%60,0].map((e=>String(e).padStart(2,"0"))).join(":")}render(){return this.limit&&this.limit.type?B`
-    		<div class="limit-container">
-    			<div class="limit-badge">
-    				<ha-icon icon="${"time"===this.limit.type?"mdi:clock":"range"===this.limit.type?"mdi:map-marker-distance":"soc"===this.limit.type?"mdi:battery":"mdi:lightning-bolt"}"></ha-icon>
-    				<span class="limit-type">
-    					${"time"===this.limit.type?ce("time",this._lang)+": ":"energy"===this.limit.type?ce("energy",this._lang)+": ":"range"===this.limit.type?ce("range",this._lang)+": ":"soc"===this.limit.type?ce("battery",this._lang)+": ":""} 
-    				</span>
-    				<span class="limit-value">
-    					${"time"===this.limit.type?this._formatTimeValue(this.limit.value):this._formatValue(this.limit.value,this.limit.type)}
-    				</span>
-    				<ha-icon
-    					class="close-icon"
-    					icon="mdi:close"
-    					@click=${this._removeLimit}
-    				></ha-icon>
-    			</div>
-    		</div>
-    	`:this._showLimitForm?B`
-    	<div class="limit-container">
-    		<button class="new-limit-btn" @click=${this._toggleLimitForm}>
-    			<ha-icon icon="mdi:plus"></ha-icon>
-    			${ce("new limit",this._lang)} 
-    		</button>
-    	</div>
-    		<div class="modal-overlay">
-    			<div class="limit-form">
-    			<div class="form-header">${ce("add charging limit",this._lang)}</div> 
+        <div class="limit-container">
+          <div class="limit-badge">
+            <ha-icon icon="${"time"===this.limit.type?"mdi:clock":"range"===this.limit.type?"mdi:map-marker-distance":"soc"===this.limit.type?"mdi:battery":"mdi:lightning-bolt"}"></ha-icon>
+            <span class="limit-type">
+              ${"time"===this.limit.type?ce("time",this._lang)+": ":"energy"===this.limit.type?ce("energy",this._lang)+": ":"range"===this.limit.type?ce("range",this._lang)+": ":"soc"===this.limit.type?ce("battery",this._lang)+": ":""} 
+            </span>
+            <span class="limit-value">
+              ${"time"===this.limit.type?this._formatTimeValue(this.limit.value):this._formatValue(this.limit.value,this.limit.type)}
+            </span>
+            <ha-icon
+              class="close-icon"
+              icon="mdi:close"
+              @click=${this._removeLimit}
+            ></ha-icon>
+          </div>
+        </div>
+      `:this._showLimitForm?B`
+      <div class="limit-container">
+        <button class="new-limit-btn" @click=${this._toggleLimitForm}>
+          <ha-icon icon="mdi:plus"></ha-icon>
+          ${ce("new limit",this._lang)} 
+        </button>
+      </div>
+        <div class="modal-overlay">
+          <div class="limit-form">
+          <div class="form-header">${ce("add charging limit",this._lang)}</div> 
   
-    			<div class="form-row">
-    				<div class="select">
-    					<select id="limit-type" @change=${this._handleTypeChange}>
-    							<option value="time" ?selected=${"time"===this._selectedLimitType}>${ce("time",this._lang)}</option> 
-    							<option value="energy" ?selected=${"energy"===this._selectedLimitType}>${ce("energy",this._lang)}</option> 
-    							${this.feat_soc?B`
-    								<option value="soc" ?selected=${"soc"===this._selectedLimitType}>${ce("battery",this._lang)}</option> 
-    								`:""}
-    							${this.feat_range?B`
-    								<option value="range" ?selected=${"range"===this._selectedLimitType}>${ce("range",this._lang)}</option> 
-    								`:""}
-    					</select>
-    				</div>
-    			</div>
+          <div class="form-row">
+            <div class="select">
+              <select id="limit-type" @change=${this._handleTypeChange}>
+                  <option value="time" ?selected=${"time"===this._selectedLimitType}>${ce("time",this._lang)}</option> 
+                  <option value="energy" ?selected=${"energy"===this._selectedLimitType}>${ce("energy",this._lang)}</option> 
+                  ${this.feat_soc?B`
+                    <option value="soc" ?selected=${"soc"===this._selectedLimitType}>${ce("battery",this._lang)}</option> 
+                    `:""}
+                  ${this.feat_range?B`
+                    <option value="range" ?selected=${"range"===this._selectedLimitType}>${ce("range",this._lang)}</option> 
+                    `:""}
+              </select>
+            </div>
+          </div>
   
-    			${"time"===this._selectedLimitType?B`
-    			<div class="form-row">
-    				<div class="time-inputs">
-    					<div class="time-input">
-    						<input
-    							type="number"
-    							min="0"
-    							max="23"
-    							.value=${String(this._hours)}
-    							@input=${this._handleHoursChange}
-    						>
-    						<label>${ce("hours",this._lang)}</label> 
-    					</div>
-    					<div class="time-input">
-    						<input
-    							type="number"
-    							min="0"
-    							max="59"
-    							.value=${String(this._minutes)}
-    							@input=${this._handleMinutesChange}
-    						>
-    						<label>${ce("minutes",this._lang)}</label> 
-    					</div>
-    				</div>
-    			</div>
-    			`:""}
-    			${"time"!==this._selectedLimitType?B`
-    			<div class="form-row">
-    				<evse-slider
-    					.min=${0}
-    					.max=${"range"===this._selectedLimitType?this.range_max_value:"energy"===this._selectedLimitType?this.energy_max_value:100}
-    					.step=${1}
-    					.value=${"energy"===this._selectedLimitType?Math.round(this._value/1e3):this._value}
-    					.unit=${"range"===this._selectedLimitType?this.range_unit:"energy"===this._selectedLimitType?"kWh":"%"}
-    					.label=${""}
-    					@value-changed=${this._handleSliderChange}
-    				></evse-slider>
-    			</div>
-    			`:""}
+          ${"time"===this._selectedLimitType?B`
+          <div class="form-row">
+            <div class="time-inputs">
+              <div class="time-input">
+                <input
+                  type="number"
+                  min="0"
+                  max="23"
+                  .value=${String(this._hours)}
+                  @input=${this._handleHoursChange}
+                >
+                <label>${ce("hours",this._lang)}</label> 
+              </div>
+              <div class="time-input">
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  .value=${String(this._minutes)}
+                  @input=${this._handleMinutesChange}
+                >
+                <label>${ce("minutes",this._lang)}</label> 
+              </div>
+            </div>
+          </div>
+          `:""}
+          ${"time"!==this._selectedLimitType?B`
+          <div class="form-row">
+            <evse-slider
+              .min=${0}
+              .max=${"range"===this._selectedLimitType?this.range_max_value:"energy"===this._selectedLimitType?this.energy_max_value:100}
+              .step=${1}
+              .value=${"energy"===this._selectedLimitType?Math.round(this._value/1e3):this._value}
+              .unit=${"range"===this._selectedLimitType?this.range_unit:"energy"===this._selectedLimitType?"kWh":"%"}
+              .label=${""}
+              @value-changed=${this._handleSliderChange}
+            ></evse-slider>
+          </div>
+          `:""}
   
-    				<div class="form-actions">
-    					<button class="btn btn-secondary" @click=${this._toggleLimitForm}>${ce("cancel",this._lang)}</button> 
-    					<button
-    						class="btn btn-primary"
-    						?disabled=${this._isAddButtonDisabled()}
-    						@click=${this._addLimit}
-    					>
-    						${ce("add limit",this._lang)} 
-    					</button>
-    				</div>
-    			</div>
-    		</div>
-    	`:B`
-    	<div class="limit-container">
-    		<button class="new-limit-btn" @click=${this._toggleLimitForm}>
-    			<ha-icon icon="mdi:plus"></ha-icon>
-    			${ce("new limit",this._lang)} 
-    		</button>
-    	</div>
+            <div class="form-actions">
+              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${ce("cancel",this._lang)}</button> 
+              <button
+                class="btn btn-primary"
+                ?disabled=${this._isAddButtonDisabled()}
+                @click=${this._addLimit}
+              >
+                ${ce("add limit",this._lang)} 
+              </button>
+            </div>
+          </div>
+        </div>
+      `:B`
+      <div class="limit-container">
+        <button class="new-limit-btn" @click=${this._toggleLimitForm}>
+          <ha-icon icon="mdi:plus"></ha-icon>
+          ${ce("new limit",this._lang)} 
+        </button>
+      </div>
     `}});customElements.define("progress-bar",class extends ne{static get properties(){return{label:{type:String},value:{type:Number},unit:{type:String},max_value:{type:Number},icon:{type:String}}}constructor(){super(),this.value=0,this.label="",this.unit="",this.max_value=100,this.icon=""}static get styles(){return r`
       :host {
         display: block;
@@ -768,17 +768,17 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
       }
     `}render(){const e=this.max_value>0?100*this.value/this.max_value:0;return B`
     <div class="container">
-    	<div class="label">
-    		${this.icon?B`<ha-icon class="icon" icon=${this.icon}> </ha-icon>`:""}
-    		${this.label?this.label:""}
-    	</div>
-    	<div class="progress">
-    		<div
-    			class="progress-fill"
-    			style="width: ${e}%"
-    		></div>
-    		<div class="value">
-    			${this.value}${this.unit}
+      <div class="label">
+        ${this.icon?B`<ha-icon class="icon" icon=${this.icon}> </ha-icon>`:""}
+        ${this.label?this.label:""}
+      </div>
+      <div class="progress">
+        <div
+          class="progress-fill"
+          style="width: ${e}%"
+        ></div>
+        <div class="value">
+          ${this.value}${this.unit}
         </div>
       </div>
     </div>
@@ -832,25 +832,25 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
                             </div>
                     <div class="grid-container">
                             ${i?B`
-                        			<div class="grid-item">
-                        				<div class="grid-item-label">${ce("power",this._lang)}</div>
-                        				<div
-                        				class="grid-item-value current-value clickable"
+                                    <div class="grid-item">
+                                        <div class="grid-item-label">${ce("power",this._lang)}</div>
+                                        <div
+                                        class="grid-item-value current-value clickable"
                                         @click=${()=>this._showMoreInfo(this.config?.power_entity||"")}
                                         >
                                         ${i?this.hass.formatEntityState(i):"0 W"}
                                         </div>
                                     </div>
                                     `:B`
-                        	<div class="grid-item">
-                        		<div class="grid-item-label">${ce("power",this._lang)}</div>
-                        		<div class="grid-item-value current-value">0 W</div>
-                        	</div>`}
+                            <div class="grid-item">
+                                <div class="grid-item-label">${ce("power",this._lang)}</div>
+                                <div class="grid-item-value current-value">0 W</div>
+                            </div>`}
                         ${s?B`
-                        		<div class="grid-item">
-                        			<div class="grid-item-label">${ce("current",this._lang)}</div>
-                        			<div
-                        			class="grid-item-value current-value clickable"
+                                <div class="grid-item">
+                                    <div class="grid-item-label">${ce("current",this._lang)}</div>
+                                    <div
+                                    class="grid-item-value current-value clickable"
                                     @click=${()=>this._showMoreInfo(this.config?.current_entity||"")}
                                     >
                                     ${s?this.hass.formatEntityState(s):"0 A"}
@@ -858,14 +858,14 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
                                 </div>
                                 `:B`
                                 <div class="grid-item">
-                                	<div class="grid-item-label">${ce("current",this._lang)}</div>
-                                	<div class="grid-item-value current-value">0 A</div>
+                                    <div class="grid-item-label">${ce("current",this._lang)}</div>
+                                    <div class="grid-item-value current-value">0 A</div>
                                 </div>`}
                             ${o?B`
                             <div class="grid-item">
-                            	<div class="grid-item-label">${ce("session",this._lang)}</div>
-                            	<div
-                            	class="grid-item-value current-value clickable"
+                                <div class="grid-item-label">${ce("session",this._lang)}</div>
+                                <div
+                                class="grid-item-value current-value clickable"
                                 @click=${()=>this._showMoreInfo(this.config?.session_energy_entity||"")}
                                 >
                             ${o?this.hass.formatEntityState(o):"0 kWh"}
@@ -873,23 +873,23 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
                         </div>
                         `:B`
                         <div class="grid-item">
-                        	<div class="grid-item-label">${ce("session",this._lang)}</div>
-                        	<div class="grid-item-value current-value">0 kWh</div>
+                            <div class="grid-item-label">${ce("session",this._lang)}</div>
+                            <div class="grid-item-value current-value">0 kWh</div>
                         </div>`}
 
                     ${c?B`
-                    	<div class="grid-item">
-                    		<div class="grid-item-label">${ce("elapsed",this._lang)}</div>
-                    		<div
-                    		class="grid-item-value current-value"
+                        <div class="grid-item">
+                            <div class="grid-item-label">${ce("elapsed",this._lang)}</div>
+                            <div
+                            class="grid-item-value current-value"
                             >
                             ${this._convertTime(this._localTimeElapsed||0)}
                             </div>
                         </div>
                        `:B`
                         <div class="grid-item">
-                        	<div class="grid-item-label">${ce("elapsed",this._lang)}</div>
-                        	<div class="grid-item-value current-value">00:00:00</div>
+                            <div class="grid-item-label">${ce("elapsed",this._lang)}</div>
+                            <div class="grid-item-value current-value">00:00:00</div>
                         </div>`}
                     </div>
                     <div class="vehicle">
@@ -934,16 +934,16 @@ let ne=class extends x{constructor(){super(...arguments),this.renderOptions={hos
                         </div>
                     </div>
                     <div class="container">
-                    	<evse-slider
-                    		.min=${"number"==typeof n?.attributes.min?n.attributes.min:0}
-                    		.max=${"number"==typeof n?.attributes.max?n.attributes.max:32}
-                    		.step=${"number"==typeof n?.attributes.step?n.attributes.step:1}
-                    		.value=${Number(n?.state||0)}
-                    		.unit=${"string"==typeof n?.attributes.unit_of_measurement?n.attributes.unit_of_measurement:"A"}
-                    		.label=${ce("charge rate",this._lang)}
-                    		.disabled=${!n}
-                    		@value-changed=${this._updateSlider}
-                    	></evse-slider>
+                        <evse-slider
+                            .min=${"number"==typeof n?.attributes.min?n.attributes.min:0}
+                            .max=${"number"==typeof n?.attributes.max?n.attributes.max:32}
+                            .step=${"number"==typeof n?.attributes.step?n.attributes.step:1}
+                            .value=${Number(n?.state||0)}
+                            .unit=${"string"==typeof n?.attributes.unit_of_measurement?n.attributes.unit_of_measurement:"A"}
+                            .label=${ce("charge rate",this._lang)}
+                            .disabled=${!n}
+                            @value-changed=${this._updateSlider}
+                        ></evse-slider>
                     </div>
                     <!-- Limit -->
                     <div class="container">

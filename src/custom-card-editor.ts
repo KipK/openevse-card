@@ -283,24 +283,24 @@ class CustomCardEditor extends LitElement {
       
         // Iterate over the changed values and update the entity safely
         for (const key in changedValues) {
-        	if (Object.prototype.hasOwnProperty.call(changedValues, key)) {
-        		const typedKey = key as keyof OptionalEntity;
-        		let rawValue = changedValues[typedKey];
+            if (Object.prototype.hasOwnProperty.call(changedValues, key)) {
+                const typedKey = key as keyof OptionalEntity;
+                let rawValue = changedValues[typedKey];
       
-        		// Process the value based on the key
-        		switch (typedKey) {
-        			case 'id':
-        				// ID is string | undefined. Convert empty string to undefined.
-        				updatedEntity.id = (rawValue === "" || rawValue === undefined) ? undefined : String(rawValue);
-        				break;
-        			case 'name':
-        			case 'icon':
-        				// Name and Icon are string | null. Convert empty string/undefined to null.
-        				updatedEntity[typedKey] = (rawValue === "" || rawValue === undefined) ? null : String(rawValue);
-        				break;
-        			// 'value' is not set via this form, so we don't handle it here.
-        		}
-        	}
+                // Process the value based on the key
+                switch (typedKey) {
+                    case 'id':
+                        // ID is string | undefined. Convert empty string to undefined.
+                        updatedEntity.id = (rawValue === "" || rawValue === undefined) ? undefined : String(rawValue);
+                        break;
+                    case 'name':
+                    case 'icon':
+                        // Name and Icon are string | null. Convert empty string/undefined to null.
+                        updatedEntity[typedKey] = (rawValue === "" || rawValue === undefined) ? null : String(rawValue);
+                        break;
+                    // 'value' is not set via this form, so we don't handle it here.
+                }
+            }
         }
       
         // Update the entities array
@@ -319,19 +319,19 @@ class CustomCardEditor extends LitElement {
        // Check if all required entities have been found
        _getMissingEntities(): string[] {
         const requiredEntities = [
-        	"override_entity", "status_entity", "power_entity", "current_entity",
-        	"vehicle_connected_entity", "charging_status_entity", "charge_rate_entity",
-        	"session_energy_entity", "time_elapsed_entity", "wifi_signal_strength_entity",
-        	"limit_active_entity", "vehicle_range_entity", "vehicle_battery_level_entity"
+            "override_entity", "status_entity", "power_entity", "current_entity",
+            "vehicle_connected_entity", "charging_status_entity", "charge_rate_entity",
+            "session_energy_entity", "time_elapsed_entity", "wifi_signal_strength_entity",
+            "limit_active_entity", "vehicle_range_entity", "vehicle_battery_level_entity"
         ];
       
         // Check both in the configuration and in the detected entities
         return requiredEntities.filter(entity => {
-        	const isInConfig = this.config[entity as keyof CardConfig] &&
-        		(this.config[entity as keyof CardConfig] as string).length > 0;
-        	const isInDetected = this.openEVSEEntities[entity as keyof CardConfig] &&
-        		(this.openEVSEEntities[entity as keyof CardConfig] as string).length > 0;
-        	return !isInConfig && !isInDetected;
+            const isInConfig = this.config[entity as keyof CardConfig] &&
+                (this.config[entity as keyof CardConfig] as string).length > 0;
+            const isInDetected = this.openEVSEEntities[entity as keyof CardConfig] &&
+                (this.openEVSEEntities[entity as keyof CardConfig] as string).length > 0;
+            return !isInConfig && !isInDetected;
         });
        }
       
@@ -339,30 +339,30 @@ class CustomCardEditor extends LitElement {
       
        override render() {
         if (!this.hass) {
-        	return html``;
+            return html``;
         }
       
         // Get entities for the selected device
         const deviceEntities: Record<string, string[]> = {};
       
         if (this.config.device_id && this.hass.entities) {
-        	const entityRegistry = Object.values(this.hass.entities);
+            const entityRegistry = Object.values(this.hass.entities);
       
-        	// Filter entities by device ID
-        	const deviceEntityList = entityRegistry.filter(entity =>
-        		entity.device_id === this.config.device_id
-        	);
+            // Filter entities by device ID
+            const deviceEntityList = entityRegistry.filter(entity =>
+                entity.device_id === this.config.device_id
+            );
       
-        	// Group entities by domain
-        	deviceEntityList.forEach(entity => {
-        		const domain = entity.entity_id.split('.')[0];
+            // Group entities by domain
+            deviceEntityList.forEach(entity => {
+                const domain = entity.entity_id.split('.')[0];
       
-        		if (!deviceEntities[domain]) {
-        			deviceEntities[domain] = [];
-        		}
+                if (!deviceEntities[domain]) {
+                    deviceEntities[domain] = [];
+                }
       
-        		deviceEntities[domain].push(entity.entity_id);
-        	});
+                deviceEntities[domain].push(entity.entity_id);
+            });
         }
       
         // Create schema with entity lists and language

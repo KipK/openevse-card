@@ -18,8 +18,8 @@ class ProgressBar extends LitElement {
   icon: string = "";
  
   constructor() {
-  	super();
-  	// Initializations removed as they are handled by property declarations
+    super();
+    // Initializations removed as they are handled by property declarations
   }
  
   static override get styles() {
@@ -87,19 +87,19 @@ class ProgressBar extends LitElement {
   
     return html`
     <div class="container">
-    	<div class="label">
-    		${this.icon?
-    		html`<ha-icon class="icon" icon=${this.icon}> </ha-icon>`
-    	: ''}
-    		${this.label ? this.label:"" }
-    	</div>
-    	<div class="progress">
-    		<div
-    			class="progress-fill"
-    			style="width: ${percentage}%"
-    		></div>
-    		<div class="value">
-    			${this.value}${this.unit}
+      <div class="label">
+        ${this.icon?
+        html`<ha-icon class="icon" icon=${this.icon}> </ha-icon>`
+      : ''}
+        ${this.label ? this.label:"" }
+      </div>
+      <div class="progress">
+        <div
+          class="progress-fill"
+          style="width: ${percentage}%"
+        ></div>
+        <div class="value">
+          ${this.value}${this.unit}
         </div>
       </div>
     </div>

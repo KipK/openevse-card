@@ -49,12 +49,12 @@ const REQUIRED_HA_COMPONENTS = [
 
 export const loadHaForm = async (): Promise<void> => {
  try {
- 	// Check if all required custom elements are already defined using the array
- 	if (REQUIRED_HA_COMPONENTS.every(component => customElements.get(component))) {
- 		return;
- 	}
+     // Check if all required custom elements are already defined using the array
+     if (REQUIRED_HA_COMPONENTS.every(component => customElements.get(component))) {
+         return;
+     }
 
- 	// Wait for the partial-panel-resolver to be defined with timeout
+     // Wait for the partial-panel-resolver to be defined with timeout
         await Promise.race([
             customElements.whenDefined('partial-panel-resolver'),
             new Promise((_, reject) =>
@@ -130,7 +130,7 @@ export const loadHaForm = async (): Promise<void> => {
       
         // Final verification that components were loaded using the array
         const missingComponents = REQUIRED_HA_COMPONENTS.filter(
-        	component => !customElements.get(component)
+            component => !customElements.get(component)
         );
 
         if (missingComponents.length > 0) {
@@ -148,11 +148,11 @@ export const loadHaForm = async (): Promise<void> => {
                 console.log('Attempting fallback loading method for HA components');
                 // This is a fallback approach that might work in some environments
                 const event = new CustomEvent('ha-request-load-components', {
-                	detail: {
-                		components: REQUIRED_HA_COMPONENTS // Use the constant array
-                	},
-                	bubbles: true,
-                	composed: true
+                    detail: {
+                        components: REQUIRED_HA_COMPONENTS // Use the constant array
+                    },
+                    bubbles: true,
+                    composed: true
                 });
                 document.dispatchEvent(event);
             }

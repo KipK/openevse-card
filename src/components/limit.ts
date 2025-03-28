@@ -4,7 +4,7 @@ import { localize } from '../utils/translations';
 import './evse-slider';
 
 class LimitComponent extends LitElement {
-	static override get properties() {
+  static override get properties() {
     return {
       limit: { type: Object, attribute: false },
       setLimit: { type: Object, attribute: false },
@@ -35,8 +35,8 @@ class LimitComponent extends LitElement {
   _value: number = 0;
  
   constructor() {
-  	super();
-  	// Initializations removed as they are handled by property declarations
+    super();
+    // Initializations removed as they are handled by property declarations
   }
  
   static override get styles() {
@@ -141,7 +141,7 @@ class LimitComponent extends LitElement {
       .time-input {
         flex: 1;
         justify-content: center;
-			  align-items: center;
+        align-items: center;
         text-align: center;
       }
       .time-input input {
@@ -286,10 +286,10 @@ class LimitComponent extends LitElement {
    _handleSliderChange(e: CustomEvent): void {
     const value = e.detail.value;
     if (this._selectedLimitType === 'energy') {
-    	// Convert kWh from slider back to Wh for internal state
-    	this._value = Math.round(value * 1000);
+      // Convert kWh from slider back to Wh for internal state
+      this._value = Math.round(value * 1000);
     } else {
-    	this._value = value;
+      this._value = value;
     }
     this.requestUpdate();
    }
@@ -345,131 +345,131 @@ class LimitComponent extends LitElement {
     const secs = 0;
   
     return [hours, mins, secs]
-    	.map(unit => String(unit).padStart(2, '0'))
-    	.join(':');
+      .map(unit => String(unit).padStart(2, '0'))
+      .join(':');
    }
   
    // Removed the _t method
   
    override render() {
     if (this.limit && this.limit.type) {
-    	// Display existing limit as a badge
-    	return html`
-    		<div class="limit-container">
-    			<div class="limit-badge">
-    				<ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : this.limit.type === 'range' ? 'mdi:map-marker-distance' : this.limit.type === 'soc' ? 'mdi:battery' : 'mdi:lightning-bolt'}"></ha-icon>
-    				<span class="limit-type">
-    					${this.limit.type === 'time' ? localize('time', this._lang) + ': ' : 
-    						this.limit.type === 'energy' ? localize('energy', this._lang) + ': ' : 
-    						this.limit.type === 'range' ? localize('range', this._lang) + ': ' : 
-    						this.limit.type === 'soc' ? localize('battery', this._lang) + ': ' : ''} 
-    				</span>
-    				<span class="limit-value">
-    					${this.limit.type === 'time'
-    						? this._formatTimeValue(this.limit.value)
-    						: this._formatValue(this.limit.value, this.limit.type)}
-    				</span>
-    				<ha-icon
-    					class="close-icon"
-    					icon="mdi:close"
-    					@click=${this._removeLimit}
-    				></ha-icon>
-    			</div>
-    		</div>
-    	`;
+      // Display existing limit as a badge
+      return html`
+        <div class="limit-container">
+          <div class="limit-badge">
+            <ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : this.limit.type === 'range' ? 'mdi:map-marker-distance' : this.limit.type === 'soc' ? 'mdi:battery' : 'mdi:lightning-bolt'}"></ha-icon>
+            <span class="limit-type">
+              ${this.limit.type === 'time' ? localize('time', this._lang) + ': ' : 
+                this.limit.type === 'energy' ? localize('energy', this._lang) + ': ' : 
+                this.limit.type === 'range' ? localize('range', this._lang) + ': ' : 
+                this.limit.type === 'soc' ? localize('battery', this._lang) + ': ' : ''} 
+            </span>
+            <span class="limit-value">
+              ${this.limit.type === 'time'
+                ? this._formatTimeValue(this.limit.value)
+                : this._formatValue(this.limit.value, this.limit.type)}
+            </span>
+            <ha-icon
+              class="close-icon"
+              icon="mdi:close"
+              @click=${this._removeLimit}
+            ></ha-icon>
+          </div>
+        </div>
+      `;
     }
   
     if (this._showLimitForm) {
-    	// Display limit form in modal overlay
-    	return html`
-    	<div class="limit-container">
-    		<button class="new-limit-btn" @click=${this._toggleLimitForm}>
-    			<ha-icon icon="mdi:plus"></ha-icon>
-    			${localize('new limit', this._lang)} 
-    		</button>
-    	</div>
-    		<div class="modal-overlay">
-    			<div class="limit-form">
-    			<div class="form-header">${localize('add charging limit', this._lang)}</div> 
+      // Display limit form in modal overlay
+      return html`
+      <div class="limit-container">
+        <button class="new-limit-btn" @click=${this._toggleLimitForm}>
+          <ha-icon icon="mdi:plus"></ha-icon>
+          ${localize('new limit', this._lang)} 
+        </button>
+      </div>
+        <div class="modal-overlay">
+          <div class="limit-form">
+          <div class="form-header">${localize('add charging limit', this._lang)}</div> 
   
-    			<div class="form-row">
-    				<div class="select">
-    					<select id="limit-type" @change=${this._handleTypeChange}>
-    							<option value="time" ?selected=${this._selectedLimitType === 'time'}>${localize('time', this._lang)}</option> 
-    							<option value="energy" ?selected=${this._selectedLimitType === 'energy'}>${localize('energy', this._lang)}</option> 
-    							${this.feat_soc ? html`
-    								<option value="soc" ?selected=${this._selectedLimitType === 'soc'}>${localize('battery', this._lang)}</option> 
-    								`: ''}
-    							${this.feat_range ? html`
-    								<option value="range" ?selected=${this._selectedLimitType === 'range'}>${localize('range', this._lang)}</option> 
-    								`: ''}
-    					</select>
-    				</div>
-    			</div>
+          <div class="form-row">
+            <div class="select">
+              <select id="limit-type" @change=${this._handleTypeChange}>
+                  <option value="time" ?selected=${this._selectedLimitType === 'time'}>${localize('time', this._lang)}</option> 
+                  <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>${localize('energy', this._lang)}</option> 
+                  ${this.feat_soc ? html`
+                    <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>${localize('battery', this._lang)}</option> 
+                    `: ''}
+                  ${this.feat_range ? html`
+                    <option value="range" ?selected=${this._selectedLimitType === 'range'}>${localize('range', this._lang)}</option> 
+                    `: ''}
+              </select>
+            </div>
+          </div>
   
-    			${this._selectedLimitType === 'time' ? html`
-    			<div class="form-row">
-    				<div class="time-inputs">
-    					<div class="time-input">
-    						<input
-    							type="number"
-    							min="0"
-    							max="23"
-    							.value=${String(this._hours)}
-    							@input=${this._handleHoursChange}
-    						>
-    						<label>${localize('hours', this._lang)}</label> 
-    					</div>
-    					<div class="time-input">
-    						<input
-    							type="number"
-    							min="0"
-    							max="59"
-    							.value=${String(this._minutes)}
-    							@input=${this._handleMinutesChange}
-    						>
-    						<label>${localize('minutes', this._lang)}</label> 
-    					</div>
-    				</div>
-    			</div>
-    			` : ''}
-    			${this._selectedLimitType !== 'time' ? html`
-    			<div class="form-row">
-    				<evse-slider
-    					.min=${0}
-    					.max=${this._selectedLimitType === 'range' ? this.range_max_value : this._selectedLimitType === 'energy' ? this.energy_max_value : 100}
-    					.step=${1}
-    					.value=${this._selectedLimitType === 'energy' ? Math.round(this._value / 1000) : this._value}
-    					.unit=${this._selectedLimitType === 'range' ? this.range_unit : this._selectedLimitType === 'energy' ? 'kWh' : '%'}
-    					.label=${''}
-    					@value-changed=${this._handleSliderChange}
-    				></evse-slider>
-    			</div>
-    			`:''}
+          ${this._selectedLimitType === 'time' ? html`
+          <div class="form-row">
+            <div class="time-inputs">
+              <div class="time-input">
+                <input
+                  type="number"
+                  min="0"
+                  max="23"
+                  .value=${String(this._hours)}
+                  @input=${this._handleHoursChange}
+                >
+                <label>${localize('hours', this._lang)}</label> 
+              </div>
+              <div class="time-input">
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  .value=${String(this._minutes)}
+                  @input=${this._handleMinutesChange}
+                >
+                <label>${localize('minutes', this._lang)}</label> 
+              </div>
+            </div>
+          </div>
+          ` : ''}
+          ${this._selectedLimitType !== 'time' ? html`
+          <div class="form-row">
+            <evse-slider
+              .min=${0}
+              .max=${this._selectedLimitType === 'range' ? this.range_max_value : this._selectedLimitType === 'energy' ? this.energy_max_value : 100}
+              .step=${1}
+              .value=${this._selectedLimitType === 'energy' ? Math.round(this._value / 1000) : this._value}
+              .unit=${this._selectedLimitType === 'range' ? this.range_unit : this._selectedLimitType === 'energy' ? 'kWh' : '%'}
+              .label=${''}
+              @value-changed=${this._handleSliderChange}
+            ></evse-slider>
+          </div>
+          `:''}
   
-    				<div class="form-actions">
-    					<button class="btn btn-secondary" @click=${this._toggleLimitForm}>${localize('cancel', this._lang)}</button> 
-    					<button
-    						class="btn btn-primary"
-    						?disabled=${this._isAddButtonDisabled()}
-    						@click=${this._addLimit}
-    					>
-    						${localize('add limit', this._lang)} 
-    					</button>
-    				</div>
-    			</div>
-    		</div>
-    	`;
+            <div class="form-actions">
+              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${localize('cancel', this._lang)}</button> 
+              <button
+                class="btn btn-primary"
+                ?disabled=${this._isAddButtonDisabled()}
+                @click=${this._addLimit}
+              >
+                ${localize('add limit', this._lang)} 
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
     }
   
     // Display "New Limit" button
     return html`
-    	<div class="limit-container">
-    		<button class="new-limit-btn" @click=${this._toggleLimitForm}>
-    			<ha-icon icon="mdi:plus"></ha-icon>
-    			${localize('new limit', this._lang)} 
-    		</button>
-    	</div>
+      <div class="limit-container">
+        <button class="new-limit-btn" @click=${this._toggleLimitForm}>
+          <ha-icon icon="mdi:plus"></ha-icon>
+          ${localize('new limit', this._lang)} 
+        </button>
+      </div>
     `;
    }
   }
