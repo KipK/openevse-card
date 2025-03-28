@@ -357,7 +357,7 @@ class LimitComponent extends LitElement {
       return html`
         <div class="limit-container">
           <div class="limit-badge">
-            <ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : this.limit.type === 'range' ? 'mdi:map-marker-distance' : this.limit.type === 'soc' ? 'mdi:battery' : 'mdi:lightning-bolt'}"></ha-icon>
+            <ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : this.limit.type === 'range' ? 'mdi:map-marker-distance' : this.limit.type === 'soc' ? 'mdi:battery-medium' : 'mdi:lightning-bolt'}"></ha-icon>
             <span class="limit-type">
               ${this.limit.type === 'time' ? localize('time', this._lang) + ': ' : 
                 this.limit.type === 'energy' ? localize('energy', this._lang) + ': ' : 
