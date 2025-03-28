@@ -285,7 +285,7 @@ class CustomCardEditor extends LitElement {
         for (const key in changedValues) {
             if (Object.prototype.hasOwnProperty.call(changedValues, key)) {
                 const typedKey = key as keyof OptionalEntity;
-                let rawValue = changedValues[typedKey];
+                const rawValue = changedValues[typedKey];
       
                 // Process the value based on the key
                 switch (typedKey) {
