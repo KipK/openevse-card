@@ -41,6 +41,23 @@ export interface CardConfig {
 	vehicle_range_entity?: string;
 }
 
+// Define a type for keys in CardConfig that hold entity IDs
+export type EntityIdKey =
+	| 'override_entity'
+	| 'status_entity'
+	| 'power_entity'
+	| 'current_entity'
+	| 'vehicle_connected_entity'
+	| 'charging_status_entity'
+	| 'charge_rate_entity'
+	| 'session_energy_entity'
+	| 'time_elapsed_entity'
+	| 'wifi_signal_strength_entity'
+	| 'limit_active_entity'
+	| 'vehicle_battery_level_entity'
+	| 'vehicle_range_entity';
+
+
 export interface OptionalEntity {
 	id?: string;
 	name: string | null;
@@ -62,11 +79,6 @@ export interface SchemaItem {
 	helper_text?: string;
 	required?: boolean;
 	schema?: SchemaItem[];
-}
-
-export interface EntityState {
-	state: string;
-	attributes: Record<string, unknown>;
 }
 
 export interface CustomDetailEvent extends Event {

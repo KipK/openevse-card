@@ -1,7 +1,7 @@
 import { LitElement, html, PropertyValues } from 'lit-element';
-import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, CustomDetailEvent, Limit } from './types';
+import { HomeAssistant, CardConfig, OptionalEntity, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Added EntityIdKey import
 import { cardStyles } from './styles';
-import translations from './translations';
+import { localize } from './utils/translations';
 import './components/evse-slider';
 import './components/limit';
 import './components/progress-bar'
@@ -28,16 +28,14 @@ class CustomCard extends LitElement {
     _lastEntityTime: number = 0;
     _timeUpdateInterval: number | null = null;
     _isCharging: boolean = false;
-    _translations: TranslationDict = translations;
     _limit?: Limit | null = null;
     _hasLimit?: boolean = false;
-
+   
     constructor() {
-        super();
-        this._translations = translations;
-        this._localTimeElapsed = 0;
-        this._lastEntityTime = 0;
-        this._timeUpdateInterval = null;
+    	super();
+    	this._localTimeElapsed = 0;
+    	this._lastEntityTime = 0;
+    	this._timeUpdateInterval = null;
         this._isCharging = false;
         this._limit = null;
         this._hasLimit = false;
@@ -272,9 +270,20 @@ class CustomCard extends LitElement {
 
         event.detail = { entityId: entity_id };
         this.dispatchEvent(event);
-    }
-
-    _convertSeconds(sec: number): string {
+       }
+      
+       // Helper to safely get entity state
+       _getEntityState(entityIdKey: EntityIdKey): EntityState | null { // Use the specific EntityIdKey type
+       	const entityId = this.config?.[entityIdKey];
+       	// Ensure entityId is a non-empty string and states exist
+       	if (typeof entityId !== 'string' || !entityId || !this.hass?.states) {
+       		return null;
+       	}
+       	// Access states only if entityId is a valid string key
+       	return this.hass.states[entityId] || null;
+       }
+      
+       _convertSeconds(sec: number): string {
         if (isNaN(sec) || sec < 0 || sec == undefined) {
             return "00:00:00";
         }
@@ -294,18 +303,13 @@ class CustomCard extends LitElement {
         }
         const totalSeconds = Math.round(t * 60);
         return this._convertSeconds(totalSeconds);
-    }
-
-    _t(key: string): string {
-        const lang = this._lang || "en";
-        return this._translations[lang]?.[key] ||
-            this._translations["en"]?.[key] ||
-            key;
-    }
-
-    _updateSlider(e: CustomEvent) {
+       }
+      
+       // Removed the _t method
+      
+       _updateSlider(e: CustomEvent) {
         if (this.hass && this.config?.charge_rate_entity) {
-            this.hass.callService('number', 'set_value', {
+        	this.hass.callService('number', 'set_value', {
                 entity_id: this.config.charge_rate_entity,
                 value: e.detail.value
             })
@@ -317,35 +321,24 @@ class CustomCard extends LitElement {
         if (!this.hass || !this.config) {
             return html``;
         }
-
-        // Get entities from hass states
-        const overrideEntity = this.config.override_entity ? this.hass.states[this.config.override_entity] : null;
-        const statusEntity = this.config.status_entity ? this.hass.states[this.config.status_entity] : null;
-        const powerEntity = this.config.power_entity
-            ? this.hass.states[this.config.power_entity]
-            : null;
-        const currentEntity = this.config.current_entity
-            ? this.hass.states[this.config.current_entity]
-            : null;
-        const chargeRateEntity =
-            this.config.charge_rate_entity ? this.hass.states[this.config.charge_rate_entity] : null;
-        const vehicleConnectedEntity =
-            this.config.vehicle_connected_entity ? this.hass.states[this.config.vehicle_connected_entity] : null;
-        const chargingStatusEntity =
-            this.config.charging_status_entity ? this.hass.states[this.config.charging_status_entity] : null;
-        const sessionEnergyEntity =
-            this.config.session_energy_entity ? this.hass.states[this.config.session_energy_entity] : null;
-        const timeElapsedEntity =
-            this.config.time_elapsed_entity ? this.hass.states[this.config.time_elapsed_entity] : null;
-        const wifiSignalEntity =
-            this.config.wifi_signal_strength_entity ? this.hass.states[this.config.wifi_signal_strength_entity] : null;
-        const vehicleBatteryLevelEntity =
-            this.config.vehicle_battery_level_entity ? this.hass.states[this.config.vehicle_battery_level_entity] : null;
-        const vehicleRangeEntity =
-            this.config.vehicle_range_entity ? this.hass.states[this.config.vehicle_range_entity] : null;
-        
+      
+        // Get entities using the helper method
+        const overrideEntity = this._getEntityState('override_entity');
+        const statusEntity = this._getEntityState('status_entity');
+        const powerEntity = this._getEntityState('power_entity');
+        const currentEntity = this._getEntityState('current_entity');
+        const chargeRateEntity = this._getEntityState('charge_rate_entity');
+        const vehicleConnectedEntity = this._getEntityState('vehicle_connected_entity');
+        const chargingStatusEntity = this._getEntityState('charging_status_entity');
+        const sessionEnergyEntity = this._getEntityState('session_energy_entity');
+        const timeElapsedEntity = this._getEntityState('time_elapsed_entity');
+        const wifiSignalEntity = this._getEntityState('wifi_signal_strength_entity');
+        const vehicleBatteryLevelEntity = this._getEntityState('vehicle_battery_level_entity');
+        const vehicleRangeEntity = this._getEntityState('vehicle_range_entity');
+      
+      
         const getOptionalEntities = (): OptionalEntity[] =>
-            this.config?.optional_entities?.map((entity) => {
+        	this.config?.optional_entities?.map((entity) => {
                 return {
                     name: entity.name as string | null
                         ? entity.name as string | null
@@ -447,18 +440,18 @@ class CustomCard extends LitElement {
                             : chargingStatusEntity?.state == 'charging'
                                 ? 'badge-charging'
                                 : 'badge-active'}"
-                        >
-                        ${this._t(chargingStatusEntity?.state || '')}
-                        </div>
-                    </div>
-                </div>
+                              >
+                              ${localize(chargingStatusEntity?.state || '', this._lang)}
+                              </div>
+                             </div>
+                            </div>
                     <div class="grid-container">
                             ${powerEntity
                         ? html`
-                                    <div class="grid-item">
-                                        <div class="grid-item-label">${this._t("power")}</div>
-                                        <div
-                                        class="grid-item-value current-value clickable"
+                        			<div class="grid-item">
+                        				<div class="grid-item-label">${localize("power", this._lang)}</div>
+                        				<div
+                        				class="grid-item-value current-value clickable"
                                         @click=${() =>
                                 this._showMoreInfo(
                                     this.config?.power_entity || ''
@@ -471,17 +464,17 @@ class CustomCard extends LitElement {
                                     </div>
                                     `
                         : html`
-                                    <div class="grid-item">
-                                        <div class="grid-item-label">${this._t("power")}</div>
-                                        <div class="grid-item-value current-value">0 W</div>
-                                    </div>`
+                        	<div class="grid-item">
+                        		<div class="grid-item-label">${localize("power", this._lang)}</div>
+                        		<div class="grid-item-value current-value">0 W</div>
+                        	</div>`
                     }
                         ${currentEntity
                         ? html`
-                                <div class="grid-item">
-                                    <div class="grid-item-label">${this._t("current")}</div>
-                                    <div
-                                    class="grid-item-value current-value clickable"
+                        		<div class="grid-item">
+                        			<div class="grid-item-label">${localize("current", this._lang)}</div>
+                        			<div
+                        			class="grid-item-value current-value clickable"
                                     @click=${() =>
                                 this._showMoreInfo(
                                     this.config?.current_entity || ''
@@ -493,18 +486,18 @@ class CustomCard extends LitElement {
                                     </div>
                                 </div>
                                 `
-                        : html`
+                              : html`
                                 <div class="grid-item">
-                                    <div class="grid-item-label">${this._t("current")}</div>
-                                    <div class="grid-item-value current-value">0 A</div>
+                                	<div class="grid-item-label">${localize("current", this._lang)}</div>
+                                	<div class="grid-item-value current-value">0 A</div>
                                 </div>`
                     }
                             ${sessionEnergyEntity
-                        ? html`
+                           ? html`
                             <div class="grid-item">
-                                <div class="grid-item-label">${this._t("session")}</div>
-                                <div
-                                class="grid-item-value current-value clickable"
+                            	<div class="grid-item-label">${localize("session", this._lang)}</div>
+                            	<div
+                            	class="grid-item-value current-value clickable"
                                 @click=${() =>
                                 this._showMoreInfo(
                                     this.config?.session_energy_entity || ''
@@ -518,25 +511,25 @@ class CustomCard extends LitElement {
                         `
                         : html`
                         <div class="grid-item">
-                            <div class="grid-item-label">${this._t("session")}</div>
-                            <div class="grid-item-value current-value">0 kWh</div>
+                        	<div class="grid-item-label">${localize("session", this._lang)}</div>
+                        	<div class="grid-item-value current-value">0 kWh</div>
                         </div>`
                     }
 
                     ${timeElapsedEntity
-                        ? html`
-                        <div class="grid-item">
-                            <div class="grid-item-label">${this._t("elapsed")}</div>
-                            <div
-                            class="grid-item-value current-value"
+                    	? html`
+                    	<div class="grid-item">
+                    		<div class="grid-item-label">${localize("elapsed", this._lang)}</div>
+                    		<div
+                    		class="grid-item-value current-value"
                             >
                             ${this._convertTime(this._localTimeElapsed || 0)}
                             </div>
                         </div>
-                    `: html`
+                       `: html`
                         <div class="grid-item">
-                            <div class="grid-item-label">${this._t("elapsed")}</div>
-                            <div class="grid-item-value current-value">00:00:00</div>
+                        	<div class="grid-item-label">${localize("elapsed", this._lang)}</div>
+                        	<div class="grid-item-value current-value">00:00:00</div>
                         </div>`
                     }
                     </div>
@@ -609,16 +602,16 @@ class CustomCard extends LitElement {
                         </div>
                     </div>
                     <div class="container">
-                        <evse-slider
-                            .min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
-                            .max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
-                            .step=${typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1}
-                            .value=${Number(chargeRateEntity?.state || 0)}
-                            .unit=${typeof chargeRateEntity?.attributes.unit_of_measurement === 'string' ? chargeRateEntity.attributes.unit_of_measurement : 'A'}
-                            .label=${this._t("charge rate")}
-                            .disabled=${!chargeRateEntity}
-                            @value-changed=${this._updateSlider}
-                        ></evse-slider>
+                    	<evse-slider
+                    		.min=${typeof chargeRateEntity?.attributes.min === 'number' ? chargeRateEntity.attributes.min : 0}
+                    		.max=${typeof chargeRateEntity?.attributes.max === 'number' ? chargeRateEntity.attributes.max : 32}
+                    		.step=${typeof chargeRateEntity?.attributes.step === 'number' ? chargeRateEntity.attributes.step : 1}
+                    		.value=${Number(chargeRateEntity?.state || 0)}
+                    		.unit=${typeof chargeRateEntity?.attributes.unit_of_measurement === 'string' ? chargeRateEntity.attributes.unit_of_measurement : 'A'}
+                    		.label=${localize("charge rate", this._lang)}
+                    		.disabled=${!chargeRateEntity}
+                    		@value-changed=${this._updateSlider}
+                    	></evse-slider>
                     </div>
                     <!-- Limit -->
                     <div class="container">

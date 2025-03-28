@@ -41,7 +41,11 @@ export class EVSESlider extends LitElement {
 	}
 
 	private get _percentage() {
-		return ((this._sliderValue - this.min) / (this.max - this.min)) * 100;
+		const range = this.max - this.min;
+		if (range === 0) {
+			return 0; // Avoid division by zero, return 0% or 100% based on value vs min/max
+		}
+		return ((this._sliderValue - this.min) / range) * 100;
 	}
 
 	private _formatValue(val: number): string {

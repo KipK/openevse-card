@@ -1,8 +1,8 @@
 import { LitElement, html, css } from 'lit';
-import { HomeAssistant, CardConfig, OptionalEntity, TranslationDict, SchemaItem } from './types';
-import { loadHaForm } from './components/load-ha-form';
+import { HomeAssistant, CardConfig, OptionalEntity, SchemaItem } from './types';
+import { loadHaForm } from './utils/load-ha-form';
 import { mainSchema, optionalEntitySchema } from './ha-form-schema';
-import translations from './translations';
+import { localize } from './utils/translations';
 
 // Editor for the card configuration
 class CustomCardEditor extends LitElement {
@@ -19,7 +19,7 @@ class CustomCardEditor extends LitElement {
     config: CardConfig = {};
     _lang?: string;
     _deviceIdChanged: boolean = false;
-    _translations: TranslationDict = translations;
+    // _translations: TranslationDict = translations; // Removed _translations property
     optionalEntities: OptionalEntity[] = [];
     openEVSEEntities: Partial<CardConfig> = {};
     deviceEntitiesLoaded: boolean = false;
@@ -76,10 +76,9 @@ class CustomCardEditor extends LitElement {
         this.optionalEntities = [];
         this.openEVSEEntities = {};
         this.deviceEntitiesLoaded = false;
-        this._translations = translations;
         this._deviceIdChanged = false;
-    }
-
+       }
+      
     override async firstUpdated(): Promise<void> {
         try {
             await loadHaForm();
@@ -198,7 +197,7 @@ class CustomCardEditor extends LitElement {
         // Reset the device_id change flag
         this._deviceIdChanged = false;
 
-        // IMPORTANT: Update the local config object
+        // Update the local config object
         this.config = updatedConfig;
 
         // Trigger the config change event
@@ -281,37 +280,29 @@ class CustomCardEditor extends LitElement {
     _updateOptionalEntity(index: number, changedValues: Partial<OptionalEntity>): void {
         // Create a copy of the current entity
         const updatedEntity = { ...this.optionalEntities[index] };
-
-        // Type the keys properly
-        const keys = Object.keys(changedValues) as Array<keyof OptionalEntity>;
-
-        // Update each field, handling empty values specially
-        for (const key of keys) {
-            const value = changedValues[key];
-
-            if (value === "" || value === undefined) {
-                if (key === 'id') {
-                    updatedEntity.id = undefined;
-                } else if (key === 'name') {
-                    updatedEntity.name = null;
-                } else if (key === 'icon') {
-                    updatedEntity.icon = null;
-                } else if (key === 'value') {
-                    updatedEntity.value = null;
-                }
-            } else {
-                if (key === 'id') {
-                    updatedEntity.id = value as string | undefined;
-                } else if (key === 'name') {
-                    updatedEntity.name = value as string | null;
-                } else if (key === 'icon') {
-                    updatedEntity.icon = value as string | null;
-                } else if (key === 'value') {
-                    updatedEntity.value = value as string | null;
-                }
-            }
+      
+        // Iterate over the changed values and update the entity safely
+        for (const key in changedValues) {
+        	if (Object.prototype.hasOwnProperty.call(changedValues, key)) {
+        		const typedKey = key as keyof OptionalEntity;
+        		let rawValue = changedValues[typedKey];
+      
+        		// Process the value based on the key
+        		switch (typedKey) {
+        			case 'id':
+        				// ID is string | undefined. Convert empty string to undefined.
+        				updatedEntity.id = (rawValue === "" || rawValue === undefined) ? undefined : String(rawValue);
+        				break;
+        			case 'name':
+        			case 'icon':
+        				// Name and Icon are string | null. Convert empty string/undefined to null.
+        				updatedEntity[typedKey] = (rawValue === "" || rawValue === undefined) ? null : String(rawValue);
+        				break;
+        			// 'value' is not set via this form, so we don't handle it here.
+        		}
+        	}
         }
-
+      
         // Update the entities array
         this.optionalEntities = this.optionalEntities.map((entity, i) =>
             i === index ? updatedEntity : entity
@@ -322,158 +313,148 @@ class CustomCardEditor extends LitElement {
             ...this.config,
             optional_entities: this.optionalEntities
         });
-    }
-
-    
-    // Check if all required entities have been found
-    _getMissingEntities(): string[] {
+       }
+      
+      
+       // Check if all required entities have been found
+       _getMissingEntities(): string[] {
         const requiredEntities = [
-            "override_entity", "status_entity", "power_entity", "current_entity",
-            "vehicle_connected_entity", "charging_status_entity", "charge_rate_entity",
-            "session_energy_entity", "time_elapsed_entity", "wifi_signal_strength_entity",
-            "limit_active_entity", "vehicle_range_entity", "vehicle_battery_level_entity"
+        	"override_entity", "status_entity", "power_entity", "current_entity",
+        	"vehicle_connected_entity", "charging_status_entity", "charge_rate_entity",
+        	"session_energy_entity", "time_elapsed_entity", "wifi_signal_strength_entity",
+        	"limit_active_entity", "vehicle_range_entity", "vehicle_battery_level_entity"
         ];
-
+      
         // Check both in the configuration and in the detected entities
         return requiredEntities.filter(entity => {
-            const isInConfig = this.config[entity as keyof CardConfig] &&
-                (this.config[entity as keyof CardConfig] as string).length > 0;
-            const isInDetected = this.openEVSEEntities[entity as keyof CardConfig] &&
-                (this.openEVSEEntities[entity as keyof CardConfig] as string).length > 0;
-            return !isInConfig && !isInDetected;
+        	const isInConfig = this.config[entity as keyof CardConfig] &&
+        		(this.config[entity as keyof CardConfig] as string).length > 0;
+        	const isInDetected = this.openEVSEEntities[entity as keyof CardConfig] &&
+        		(this.openEVSEEntities[entity as keyof CardConfig] as string).length > 0;
+        	return !isInConfig && !isInDetected;
         });
-    }
-
-    _t(key: string): string {
-        const lang = this._lang || "en";
-        const lowerKey = key.toLowerCase();
-        // Use a safer approach with explicit checks
-        if (lang in this._translations && lowerKey in (this._translations as Record<string, Record<string, string>>)[lang]) {
-            return (this._translations as Record<string, Record<string, string>>)[lang][lowerKey];
-        } else if ("en" in this._translations && lowerKey in (this._translations as Record<string, Record<string, string>>)["en"]) {
-            return (this._translations as Record<string, Record<string, string>>)["en"][lowerKey];
-        }
-        return key;
-    }
-
-    override render() {
+       }
+      
+       // Removed the _t method
+      
+       override render() {
         if (!this.hass) {
-            return html``;
+        	return html``;
         }
-
+      
         // Get entities for the selected device
         const deviceEntities: Record<string, string[]> = {};
-
+      
         if (this.config.device_id && this.hass.entities) {
-            const entityRegistry = Object.values(this.hass.entities);
-
-            // Filter entities by device ID
-            const deviceEntityList = entityRegistry.filter(entity =>
-                entity.device_id === this.config.device_id
-            );
-
-            // Group entities by domain
-            deviceEntityList.forEach(entity => {
-                const domain = entity.entity_id.split('.')[0];
-
-                if (!deviceEntities[domain]) {
-                    deviceEntities[domain] = [];
-                }
-
-                deviceEntities[domain].push(entity.entity_id);
-            });
+        	const entityRegistry = Object.values(this.hass.entities);
+      
+        	// Filter entities by device ID
+        	const deviceEntityList = entityRegistry.filter(entity =>
+        		entity.device_id === this.config.device_id
+        	);
+      
+        	// Group entities by domain
+        	deviceEntityList.forEach(entity => {
+        		const domain = entity.entity_id.split('.')[0];
+      
+        		if (!deviceEntities[domain]) {
+        			deviceEntities[domain] = [];
+        		}
+      
+        		deviceEntities[domain].push(entity.entity_id);
+        	});
         }
-
+      
         // Create schema with entity lists and language
         const schema = mainSchema(deviceEntities, this._lang);
         const optSchema = optionalEntitySchema(deviceEntities, this._lang);
         const missingEntities = this._getMissingEntities();
-
-        return html`
-      <!-- Auto-detection status -->
-      ${this.config.device_id ? html`
-          <div class="entity-section">
-              ${this.deviceEntitiesLoaded ? html`
-                  <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
-                      ${missingEntities.length === 0
-                        ? this._t("entity_auto_success") + "!"
-                        : this._t("entity_auto_fail") + ": " + missingEntities.join(', ')
-                    }
-                  </div>
-              ` : html`
-                  <div class="entity-status">
-                      ${this._t("entity_auto_loading")}
-                  </div>
-              `}
-          </div>
-      ` : ''}
       
-      <div class="form-container">
-          ${!this.config.device_id ? html`
-          <ha-form
-              .hass=${this.hass}  
-              .data=${this.openEVSEEntities}
-              .schema=${[
-                    {
-                        name: "device_id",
-                        selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
-                        label: this._t("openevse device"),
-                        helper_text: this._t("select your openevse device"),
-                        required: true
-                    }
-                ] as SchemaItem[]}
-              @value-changed=${this._handleConfigChange}
-          ></ha-form>
-          `: html`
-          <!-- Main configuration -->
-          <ha-form
-              .hass=${this.hass}
-              .data=${this.config}
-              .schema=${schema}
-              .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
-              .computeHelper=${(schema: SchemaItem) => schema.helper_text}
-              @value-changed=${this._handleConfigChange}
-          ></ha-form>
-          
-          <!-- Additional entities -->
-          <div class="entities">
-              <h3>${this._t("additional entities")}</h3>
-              
-              ${this.optionalEntities?.map((entity, index) => html`
-                  <div class="entity-row">
-                      <ha-form
-                          .hass=${this.hass}
-                          .data=${entity}
-                          .schema=${optSchema}
-                          .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
-                          @value-changed=${(ev: CustomEvent) => this._updateOptionalEntity(index, ev.detail.value)}
-                      ></ha-form>
-                      
-                      <div class="entity-actions">
-                          <ha-icon-button
-                              .path=${"M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"}
-                              @click=${() => this._removeEntity(index)}
-                          ></ha-icon-button>
-                      </div>
-                  </div>
-              `)}
-              
-              <div class="add-entity">
-                  <ha-entity-picker
-                      .hass="${this.hass}"
-                      .includeDomains=${['sensor', 'binary_sensor']}
-                       .includeEntities=${[
-                            ...(deviceEntities.sensor || []),
-                            ...(deviceEntities.binary_sensor || [])
-                        ]}
-                      @value-changed="${this._addOptionalEntity}"
-                  ></ha-entity-picker>
-              </div>
-          </div>
-          `}
-      </div>
-    `;
-    }
-}
-
-export { CustomCardEditor };
+        return html`
+            <!-- Auto-detection status -->
+            ${this.config.device_id ? html`
+                <div class="entity-section">
+                    ${this.deviceEntitiesLoaded ? html`
+                        <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
+                            ${missingEntities.length === 0
+                              ? localize("entity_auto_success", this._lang) + "!" 
+                              : localize("entity_auto_fail", this._lang) + ": " + missingEntities.join(', ') 
+                          }
+                        </div>
+                    ` : html`
+                        <div class="entity-status">
+                            ${localize("entity_auto_loading", this._lang)}
+                        </div>
+                    `}
+                </div>
+            ` : ''}
+      
+            <div class="form-container">
+                ${!this.config.device_id ? html`
+                <ha-form
+                    .hass=${this.hass}
+                    .data=${this.openEVSEEntities}
+                    .schema=${[
+                          {
+                              name: "device_id",
+                              selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
+                              label: localize("openevse device", this._lang), 
+                              helper_text: localize("select your openevse device", this._lang), 
+                              required: true
+                          }
+                      ] as SchemaItem[]}
+                    @value-changed=${this._handleConfigChange}
+                ></ha-form>
+                `: html`
+                <!-- Main configuration -->
+                <ha-form
+                    .hass=${this.hass}
+                    .data=${this.config}
+                    .schema=${schema}
+                    .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
+                    .computeHelper=${(schema: SchemaItem) => schema.helper_text}
+                    @value-changed=${this._handleConfigChange}
+                ></ha-form>
+      
+                <!-- Additional entities -->
+                <div class="entities">
+                    <h3>${localize("additional entities", this._lang)}</h3>
+      
+                    ${this.optionalEntities?.map((entity, index) => html`
+                        <div class="entity-row">
+                            <ha-form
+                                .hass=${this.hass}
+                                .data=${entity}
+                                .schema=${optSchema}
+                                .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
+                                @value-changed=${(ev: CustomEvent) => this._updateOptionalEntity(index, ev.detail.value)}
+                            ></ha-form>
+      
+                            <div class="entity-actions">
+                                <ha-icon-button
+                                    .path=${"M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"}
+                                    @click=${() => this._removeEntity(index)}
+                                ></ha-icon-button>
+                            </div>
+                        </div>
+                    `)}
+      
+                    <div class="add-entity">
+                        <ha-entity-picker
+                            .hass="${this.hass}"
+                            .includeDomains=${['sensor', 'binary_sensor']}
+                             .includeEntities=${[
+                                  ...(deviceEntities.sensor || []),
+                                  ...(deviceEntities.binary_sensor || [])
+                              ]}
+                            @value-changed="${this._addOptionalEntity}"
+                        ></ha-entity-picker>
+                    </div>
+                </div>
+                `}
+            </div>
+          `;
+       }
+      }
+      
+      export { CustomCardEditor };

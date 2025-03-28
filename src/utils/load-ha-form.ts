@@ -35,21 +35,26 @@ interface HaPanelConfig extends HTMLElement {
  * 
  * @returns Promise that resolves when all required components are loaded
  */
-export const loadHaForm = async (): Promise<void> => {
-    try {
-        // Check if all required custom elements are already defined
-        if (
-            customElements.get('ha-form') &&
-            customElements.get('ha-selector') &&
-            customElements.get('ha-textfield') &&
-            customElements.get('ha-icon-picker') &&
-            customElements.get('ha-icon-button') &&
-            customElements.get('ha-entity-picker')
-        ) {
-            return;
-        }
 
-        // Wait for the partial-panel-resolver to be defined with timeout
+// Define the list of required components
+const REQUIRED_HA_COMPONENTS = [
+ 'ha-form',
+ 'ha-selector',
+ 'ha-textfield',
+ 'ha-icon-picker',
+ 'ha-icon-button',
+ 'ha-entity-picker'
+];
+
+
+export const loadHaForm = async (): Promise<void> => {
+ try {
+ 	// Check if all required custom elements are already defined using the array
+ 	if (REQUIRED_HA_COMPONENTS.every(component => customElements.get(component))) {
+ 		return;
+ 	}
+
+ 	// Wait for the partial-panel-resolver to be defined with timeout
         await Promise.race([
             customElements.whenDefined('partial-panel-resolver'),
             new Promise((_, reject) =>
@@ -122,19 +127,10 @@ export const loadHaForm = async (): Promise<void> => {
                 setTimeout(() => reject(new Error('Timeout loading automation components')), 10000)
             )
         ]);
-
-        // Final verification that components were loaded
-        const requiredComponents = [
-            'ha-form',
-            'ha-selector',
-            'ha-textfield',
-            'ha-icon-picker',
-            'ha-icon-button',
-            'ha-entity-picker'
-        ];
-
-        const missingComponents = requiredComponents.filter(
-            component => !customElements.get(component)
+      
+        // Final verification that components were loaded using the array
+        const missingComponents = REQUIRED_HA_COMPONENTS.filter(
+        	component => !customElements.get(component)
         );
 
         if (missingComponents.length > 0) {
@@ -152,18 +148,11 @@ export const loadHaForm = async (): Promise<void> => {
                 console.log('Attempting fallback loading method for HA components');
                 // This is a fallback approach that might work in some environments
                 const event = new CustomEvent('ha-request-load-components', {
-                    detail: {
-                        components: [
-                            'ha-form',
-                            'ha-selector',
-                            'ha-textfield',
-                            'ha-icon-picker',
-                            'ha-icon-button',
-                            'ha-entity-picker'
-                        ]
-                    },
-                    bubbles: true,
-                    composed: true
+                	detail: {
+                		components: REQUIRED_HA_COMPONENTS // Use the constant array
+                	},
+                	bubbles: true,
+                	composed: true
                 });
                 document.dispatchEvent(event);
             }

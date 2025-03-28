@@ -16,16 +16,12 @@ class ProgressBar extends LitElement {
   unit: string = "";
   max_value: number = 100;
   icon: string = "";
-
+ 
   constructor() {
-    super();
-    this.value = 0;
-    this.label = "";
-    this.unit = "";
-    this.max_value = 100;
-    this.icon = "";
+  	super();
+  	// Initializations removed as they are handled by property declarations
   }
-
+ 
   static override get styles() {
     return css`
       :host {
@@ -87,21 +83,23 @@ class ProgressBar extends LitElement {
   }
 
   override render() {
+    const percentage = (this.max_value > 0) ? (100 * this.value / this.max_value) : 0;
+  
     return html`
     <div class="container">
-      <div class="label">
-        ${this.icon?
-        html`<ha-icon class="icon" icon=${this.icon}> </ha-icon>`
-      : ''}
-        ${this.label ? this.label:"" }
-      </div>
-      <div class="progress">
-        <div
-          class="progress-fill"
-          style="width: ${100*this.value/this.max_value}%"
-        ></div>
-        <div class="value">
-          ${this.value}${this.unit}
+    	<div class="label">
+    		${this.icon?
+    		html`<ha-icon class="icon" icon=${this.icon}> </ha-icon>`
+    	: ''}
+    		${this.label ? this.label:"" }
+    	</div>
+    	<div class="progress">
+    		<div
+    			class="progress-fill"
+    			style="width: ${percentage}%"
+    		></div>
+    		<div class="value">
+    			${this.value}${this.unit}
         </div>
       </div>
     </div>
