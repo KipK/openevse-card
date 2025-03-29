@@ -416,7 +416,7 @@ class CustomCard extends LitElement {
                             .range_max_value=${Number(this.config.feat_max_range)}
                             .energy_max_value=${Number(this.config.feat_max_energy)}
                             .range_unit=${String(vehicleRangeEntity?.attributes.unit_of_measurement || '')}
-                            ._lang=${this._lang}
+                            .language=${this._lang}
                         ></limit-component>
                     </div>
                     <!-- End of Limit -->

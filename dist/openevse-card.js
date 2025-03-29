@@ -411,7 +411,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
     :host([disabled]) .slider-knob {
       cursor: not-allowed;
     }
-  `,ve([ce({type:Number})],ge.prototype,"min",void 0),ve([ce({type:Number})],ge.prototype,"max",void 0),ve([ce({type:Number})],ge.prototype,"step",void 0),ve([ce({type:Number})],ge.prototype,"value",void 0),ve([ce({type:String})],ge.prototype,"unit",void 0),ve([ce({type:Boolean})],ge.prototype,"disabled",void 0),ve([ce({type:String})],ge.prototype,"label",void 0),ve([le()],ge.prototype,"_sliderValue",void 0),ve([le()],ge.prototype,"_dragging",void 0),ve([function(e){return(t,i)=>{const s="function"==typeof t?t:t[i];Object.assign(s,e)}}({passive:!0})],ge.prototype,"_handleSliderStart",null),ge=ve([(e=>(t,i)=>{void 0!==i?i.addInitializer((()=>{customElements.define(e,t)})):customElements.define(e,t)})("evse-slider")],ge);var pe=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class me extends ne{constructor(){super(),this.feat_soc=!1,this.feat_range=!1,this.energy_max_value=100,this.range_max_value=600,this.range_unit="km",this._lang="en",this._showLimitForm=!1,this._selectedLimitType="time",this._hours=0,this._minutes=0,this._value=0}static get styles(){return r`
+  `,ve([ce({type:Number})],ge.prototype,"min",void 0),ve([ce({type:Number})],ge.prototype,"max",void 0),ve([ce({type:Number})],ge.prototype,"step",void 0),ve([ce({type:Number})],ge.prototype,"value",void 0),ve([ce({type:String})],ge.prototype,"unit",void 0),ve([ce({type:Boolean})],ge.prototype,"disabled",void 0),ve([ce({type:String})],ge.prototype,"label",void 0),ve([le()],ge.prototype,"_sliderValue",void 0),ve([le()],ge.prototype,"_dragging",void 0),ve([function(e){return(t,i)=>{const s="function"==typeof t?t:t[i];Object.assign(s,e)}}({passive:!0})],ge.prototype,"_handleSliderStart",null),ge=ve([(e=>(t,i)=>{void 0!==i?i.addInitializer((()=>{customElements.define(e,t)})):customElements.define(e,t)})("evse-slider")],ge);var pe=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class me extends ne{constructor(){super(),this.feat_soc=!1,this.feat_range=!1,this.energy_max_value=100,this.range_max_value=600,this.range_unit="km",this.language="en",this._showLimitForm=!1,this._selectedLimitType="time",this._hours=0,this._minutes=0,this._value=0}static get styles(){return r`
       :host {
         display: block;
         width: 100%;
@@ -614,7 +614,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
           <div class="limit-badge">
             <ha-icon icon="${"time"===this.limit.type?"mdi:clock":"range"===this.limit.type?"mdi:map-marker-distance":"soc"===this.limit.type?"mdi:battery-medium":"mdi:lightning-bolt"}"></ha-icon>
             <span class="limit-type">
-              ${"time"===this.limit.type?ue("time",this._lang)+": ":"energy"===this.limit.type?ue("energy",this._lang)+": ":"range"===this.limit.type?ue("range",this._lang)+": ":"soc"===this.limit.type?ue("battery",this._lang)+": ":""}
+              ${"time"===this.limit.type?ue("time",this.language)+": ":"energy"===this.limit.type?ue("energy",this.language)+": ":"range"===this.limit.type?ue("range",this.language)+": ":"soc"===this.limit.type?ue("battery",this.language)+": ":""}
             </span>
             <span class="limit-value">
               ${"time"===this.limit.type?this._formatTimeValue(this.limit.value):this._formatValue(this.limit.value,this.limit.type)}
@@ -630,23 +630,23 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
       <div class="limit-container">
         <button class="new-limit-btn" @click=${this._toggleLimitForm}>
           <ha-icon icon="mdi:plus"></ha-icon>
-          ${ue("new limit",this._lang)}
+          ${ue("new limit",this.language)}
         </button>
       </div>
         <div class="modal-overlay">
           <div class="limit-form">
-          <div class="form-header">${ue("add charging limit",this._lang)}</div>
+          <div class="form-header">${ue("add charging limit",this.language)}</div>
 
           <div class="form-row">
             <div class="select">
               <select id="limit-type" @change=${this._handleTypeChange}>
-                  <option value="time" ?selected=${"time"===this._selectedLimitType}>${ue("time",this._lang)}</option>
-                  <option value="energy" ?selected=${"energy"===this._selectedLimitType}>${ue("energy",this._lang)}</option>
+                  <option value="time" ?selected=${"time"===this._selectedLimitType}>${ue("time",this.language)}</option>
+                  <option value="energy" ?selected=${"energy"===this._selectedLimitType}>${ue("energy",this.language)}</option>
                   ${this.feat_soc?q`
-                    <option value="soc" ?selected=${"soc"===this._selectedLimitType}>${ue("battery",this._lang)}</option>
+                    <option value="soc" ?selected=${"soc"===this._selectedLimitType}>${ue("battery",this.language)}</option>
                     `:""}
                   ${this.feat_range?q`
-                    <option value="range" ?selected=${"range"===this._selectedLimitType}>${ue("range",this._lang)}</option>
+                    <option value="range" ?selected=${"range"===this._selectedLimitType}>${ue("range",this.language)}</option>
                     `:""}
               </select>
             </div>
@@ -663,7 +663,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                   .value=${String(this._hours)}
                   @input=${this._handleHoursChange}
                 >
-                <label>${ue("hours",this._lang)}</label>
+                <label>${ue("hours",this.language)}</label>
               </div>
               <div class="time-input">
                 <input
@@ -673,7 +673,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                   .value=${String(this._minutes)}
                   @input=${this._handleMinutesChange}
                 >
-                <label>${ue("minutes",this._lang)}</label>
+                <label>${ue("minutes",this.language)}</label>
               </div>
             </div>
           </div>
@@ -693,13 +693,13 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
           `:""}
 
             <div class="form-actions">
-              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${ue("cancel",this._lang)}</button>
+              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${ue("cancel",this.language)}</button>
               <button
                 class="btn btn-primary"
                 ?disabled=${this._isAddButtonDisabled()}
                 @click=${this._addLimit}
               >
-                ${ue("add limit",this._lang)}
+                ${ue("add limit",this.language)}
               </button>
             </div>
           </div>
@@ -708,10 +708,10 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
       <div class="limit-container">
         <button class="new-limit-btn" @click=${this._toggleLimitForm}>
           <ha-icon icon="mdi:plus"></ha-icon>
-          ${ue("new limit",this._lang)}
+          ${ue("new limit",this.language)}
         </button>
       </div>
-    `}}pe([ce({attribute:!1})],me.prototype,"limit",void 0),pe([ce({attribute:!1})],me.prototype,"setLimit",void 0),pe([ce({attribute:!1})],me.prototype,"delLimit",void 0),pe([ce({type:Boolean})],me.prototype,"feat_soc",void 0),pe([ce({type:Boolean})],me.prototype,"feat_range",void 0),pe([ce({type:Number})],me.prototype,"energy_max_value",void 0),pe([ce({type:Number})],me.prototype,"range_max_value",void 0),pe([ce({type:String})],me.prototype,"range_unit",void 0),pe([le()],me.prototype,"_lang",void 0),pe([le()],me.prototype,"_showLimitForm",void 0),pe([le()],me.prototype,"_selectedLimitType",void 0),pe([le()],me.prototype,"_hours",void 0),pe([le()],me.prototype,"_minutes",void 0),pe([le()],me.prototype,"_value",void 0),customElements.define("limit-component",me);var ye=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class _e extends ne{constructor(){super(),this.label="",this.value=0,this.unit="",this.max_value=100,this.icon=""}static get styles(){return r`
+    `}}pe([ce({attribute:!1})],me.prototype,"limit",void 0),pe([ce({attribute:!1})],me.prototype,"setLimit",void 0),pe([ce({attribute:!1})],me.prototype,"delLimit",void 0),pe([ce({type:Boolean})],me.prototype,"feat_soc",void 0),pe([ce({type:Boolean})],me.prototype,"feat_range",void 0),pe([ce({type:Number})],me.prototype,"energy_max_value",void 0),pe([ce({type:Number})],me.prototype,"range_max_value",void 0),pe([ce({type:String})],me.prototype,"range_unit",void 0),pe([ce({type:String})],me.prototype,"language",void 0),pe([le()],me.prototype,"_showLimitForm",void 0),pe([le()],me.prototype,"_selectedLimitType",void 0),pe([le()],me.prototype,"_hours",void 0),pe([le()],me.prototype,"_minutes",void 0),pe([le()],me.prototype,"_value",void 0),customElements.define("limit-component",me);var ye=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class _e extends ne{constructor(){super(),this.label="",this.value=0,this.unit="",this.max_value=100,this.icon=""}static get styles(){return r`
       :host {
         display: block;
         width: 100%;
@@ -1027,7 +1027,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                             .range_max_value=${Number(this.config.feat_max_range)}
                             .energy_max_value=${Number(this.config.feat_max_energy)}
                             .range_unit=${String(h?.attributes.unit_of_measurement||"")}
-                            ._lang=${this._lang}
+                            .language=${this._lang}
                         ></limit-component>
                     </div>
                     <!-- End of Limit -->
@@ -1038,7 +1038,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                     ></optional-entities>
             </div>
         </ha-card>
-    `}}Oe([ce({attribute:!1})],Le.prototype,"hass",void 0),Oe([ce({attribute:!1})],Le.prototype,"config",void 0),Oe([le()],Le.prototype,"_lang",void 0),Oe([le()],Le.prototype,"_localTimeElapsed",void 0),Oe([le()],Le.prototype,"_lastEntityTime",void 0),Oe([le()],Le.prototype,"_timeUpdateInterval",void 0),Oe([le()],Le.prototype,"_isCharging",void 0),Oe([le()],Le.prototype,"_limit",void 0),Oe([le()],Le.prototype,"_hasLimit",void 0);const Me=["ha-form","ha-icon","ha-selector","ha-textfield","ha-icon-picker","ha-icon-button","ha-entity-picker"];var Te=Number.isNaN||function(e){return"number"==typeof e&&e!=e};function Ne(e,t){if(e.length!==t.length)return!1;for(var i=0;i<e.length;i++)if(s=e[i],n=t[i],!(s===n||Te(s)&&Te(n)))return!1;var s,n;return!0}function Pe(e,t){void 0===t&&(t=Ne);var i=null;function s(){for(var s=[],n=0;n<arguments.length;n++)s[n]=arguments[n];if(i&&i.lastThis===this&&t(s,i.lastArgs))return i.lastResult;var r=e.apply(this,s);return i={lastResult:r,lastArgs:s,lastThis:this},r}return s.clear=function(){i=null},s}function Ve(e,t,i,s,n,r={},o="en"){return{name:e,selector:{entity:{domain:t,include_entities:(Array.isArray(t)?t:[t]).flatMap((e=>r[e]||[]))}},label:ue(i,o),helper_text:ue(s,o),required:n}}const He=Pe(((e={},t="en")=>[...[{type:"grid",name:"",schema:[{name:"name",selector:{text:{}},required:!1,label:ue("header title",t)},{name:"header",selector:{boolean:{}},label:ue("display header",t)}]},{type:"grid",name:"",label:ue("features",t),schema:[{name:"feat_soc",selector:{boolean:{}},label:ue("enable vehicle battery",t)},{name:"feat_range",selector:{boolean:{}},label:ue("enable vehicle range",t)}]},{type:"grid",name:"",label:ue("limits settings",t),schema:[{name:"feat_max_energy",selector:{number:{}},required:!1,label:ue("maximum charge energy",t)},{name:"feat_max_range",selector:{number:{}},required:!1,label:ue("maximum vehicle range",t)}]},{name:"device_id",selector:{device:{integration:"openevse",manufacturer:"OpenEVSE"}},label:ue("openevse device",t),helper_text:ue("select your openevse device",t),required:!0}],...[Ve("override_entity",["input_select","select"],"override state","select openevse.override_state entity",!0,e,t),Ve("status_entity","sensor","station status","select openevse.station_status entity",!0,e,t),Ve("power_entity","sensor","current power usage","select openevse.current_power_usage entity",!0,e,t),Ve("current_entity","sensor","charging current","select openevse.charging_current entity",!0,e,t),Ve("vehicle_connected_entity","binary_sensor","vehicle connected","select openevse.vehicle_connected entity",!0,e,t),Ve("charging_status_entity","sensor","charging status","select openevse.charging_status entity",!0,e,t),Ve("charge_rate_entity","number","charge rate","select openevse.charge_rate entity",!0,e,t),Ve("session_energy_entity","sensor","session energy","select openevse.usage_this_session entity",!0,e,t),Ve("time_elapsed_entity","sensor","charge time elapsed","select openevse.charge_time_elapsed entity",!0,e,t),Ve("wifi_signal_strength_entity","sensor","wifi signal","select openevse_wifi_signal_strength entity",!1,e,t),Ve("limit_active_entity","binary_sensor","limit active","select openevse_limit_active entity",!1,e,t),Ve("vehicle_range_entity","sensor","vehicle range","select openevse_vehicle_range entity",!1,e,t),Ve("vehicle_battery_level_entity","sensor","battery level","select openevse_vehicle_battery_level entity",!1,e,t)]])),Ie=Pe(((e={},t="en")=>[{name:"id",selector:{entity:{domain:["sensor","binary_sensor"],include_entities:[...e.sensor||[],...e.binary_sensor||[]]}},label:ue("entity",t)},{name:"name",selector:{text:{}},label:ue("name",t)},{name:"icon",selector:{icon:{}},label:ue("icon",t)}]));var We=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class qe extends ne{static get styles(){return r`
+    `}}Oe([ce({attribute:!1})],Le.prototype,"hass",void 0),Oe([ce({attribute:!1})],Le.prototype,"config",void 0),Oe([le()],Le.prototype,"_lang",void 0),Oe([le()],Le.prototype,"_localTimeElapsed",void 0),Oe([le()],Le.prototype,"_lastEntityTime",void 0),Oe([le()],Le.prototype,"_timeUpdateInterval",void 0),Oe([le()],Le.prototype,"_isCharging",void 0),Oe([le()],Le.prototype,"_limit",void 0),Oe([le()],Le.prototype,"_hasLimit",void 0);const Me=["ha-form","ha-icon","ha-icon-button","ha-selector","ha-textfield","ha-icon-picker","ha-icon-button","ha-entity-picker"];var Te=Number.isNaN||function(e){return"number"==typeof e&&e!=e};function Ne(e,t){if(e.length!==t.length)return!1;for(var i=0;i<e.length;i++)if(s=e[i],n=t[i],!(s===n||Te(s)&&Te(n)))return!1;var s,n;return!0}function Pe(e,t){void 0===t&&(t=Ne);var i=null;function s(){for(var s=[],n=0;n<arguments.length;n++)s[n]=arguments[n];if(i&&i.lastThis===this&&t(s,i.lastArgs))return i.lastResult;var r=e.apply(this,s);return i={lastResult:r,lastArgs:s,lastThis:this},r}return s.clear=function(){i=null},s}function Ve(e,t,i,s,n,r={},o="en"){return{name:e,selector:{entity:{domain:t,include_entities:(Array.isArray(t)?t:[t]).flatMap((e=>r[e]||[]))}},label:ue(i,o),helper_text:ue(s,o),required:n}}const He=Pe(((e={},t="en")=>[...[{type:"grid",name:"",schema:[{name:"name",selector:{text:{}},required:!1,label:ue("header title",t)},{name:"header",selector:{boolean:{}},label:ue("display header",t)}]},{type:"grid",name:"",label:ue("features",t),schema:[{name:"feat_soc",selector:{boolean:{}},label:ue("enable vehicle battery",t)},{name:"feat_range",selector:{boolean:{}},label:ue("enable vehicle range",t)}]},{type:"grid",name:"",label:ue("limits settings",t),schema:[{name:"feat_max_energy",selector:{number:{}},required:!1,label:ue("maximum charge energy",t)},{name:"feat_max_range",selector:{number:{}},required:!1,label:ue("maximum vehicle range",t)}]},{name:"device_id",selector:{device:{integration:"openevse",manufacturer:"OpenEVSE"}},label:ue("openevse device",t),helper_text:ue("select your openevse device",t),required:!0}],...[Ve("override_entity",["input_select","select"],"override state","select openevse.override_state entity",!0,e,t),Ve("status_entity","sensor","station status","select openevse.station_status entity",!0,e,t),Ve("power_entity","sensor","current power usage","select openevse.current_power_usage entity",!0,e,t),Ve("current_entity","sensor","charging current","select openevse.charging_current entity",!0,e,t),Ve("vehicle_connected_entity","binary_sensor","vehicle connected","select openevse.vehicle_connected entity",!0,e,t),Ve("charging_status_entity","sensor","charging status","select openevse.charging_status entity",!0,e,t),Ve("charge_rate_entity","number","charge rate","select openevse.charge_rate entity",!0,e,t),Ve("session_energy_entity","sensor","session energy","select openevse.usage_this_session entity",!0,e,t),Ve("time_elapsed_entity","sensor","charge time elapsed","select openevse.charge_time_elapsed entity",!0,e,t),Ve("wifi_signal_strength_entity","sensor","wifi signal","select openevse_wifi_signal_strength entity",!1,e,t),Ve("limit_active_entity","binary_sensor","limit active","select openevse_limit_active entity",!1,e,t),Ve("vehicle_range_entity","sensor","vehicle range","select openevse_vehicle_range entity",!1,e,t),Ve("vehicle_battery_level_entity","sensor","battery level","select openevse_vehicle_battery_level entity",!1,e,t)]])),Ie=Pe(((e={},t="en")=>[{name:"id",selector:{entity:{domain:["sensor","binary_sensor"],include_entities:[...e.sensor||[],...e.binary_sensor||[]]}},label:ue("entity",t)},{name:"name",selector:{text:{}},label:ue("name",t)},{name:"icon",selector:{icon:{}},label:ue("icon",t)}]));var We=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class qe extends ne{static get styles(){return r`
       .form-container {
           display: flex;
           flex-direction: column;

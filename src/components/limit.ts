@@ -13,7 +13,7 @@ class LimitComponent extends LitElement {
   @property({ type: Number }) energy_max_value: number = 100;
   @property({ type: Number }) range_max_value: number = 600;
   @property({ type: String }) range_unit: string = "km";
-  @state() private _lang?: string = "en"; // Changed to @state
+  @property({ type: String }) language?: string = "en";
 
 
   // Internal state properties
@@ -345,10 +345,10 @@ class LimitComponent extends LitElement {
           <div class="limit-badge">
             <ha-icon icon="${this.limit.type === 'time' ? 'mdi:clock' : this.limit.type === 'range' ? 'mdi:map-marker-distance' : this.limit.type === 'soc' ? 'mdi:battery-medium' : 'mdi:lightning-bolt'}"></ha-icon>
             <span class="limit-type">
-              ${this.limit.type === 'time' ? localize('time', this._lang) + ': ' :
-                this.limit.type === 'energy' ? localize('energy', this._lang) + ': ' :
-                this.limit.type === 'range' ? localize('range', this._lang) + ': ' :
-                this.limit.type === 'soc' ? localize('battery', this._lang) + ': ' : ''}
+              ${this.limit.type === 'time' ? localize('time', this.language) + ': ' :
+                this.limit.type === 'energy' ? localize('energy', this.language) + ': ' :
+                this.limit.type === 'range' ? localize('range', this.language) + ': ' :
+                this.limit.type === 'soc' ? localize('battery', this.language) + ': ' : ''}
             </span>
             <span class="limit-value">
               ${this.limit.type === 'time'
@@ -371,23 +371,23 @@ class LimitComponent extends LitElement {
       <div class="limit-container">
         <button class="new-limit-btn" @click=${this._toggleLimitForm}>
           <ha-icon icon="mdi:plus"></ha-icon>
-          ${localize('new limit', this._lang)}
+          ${localize('new limit', this.language)}
         </button>
       </div>
         <div class="modal-overlay">
           <div class="limit-form">
-          <div class="form-header">${localize('add charging limit', this._lang)}</div>
+          <div class="form-header">${localize('add charging limit', this.language)}</div>
 
           <div class="form-row">
             <div class="select">
               <select id="limit-type" @change=${this._handleTypeChange}>
-                  <option value="time" ?selected=${this._selectedLimitType === 'time'}>${localize('time', this._lang)}</option>
-                  <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>${localize('energy', this._lang)}</option>
+                  <option value="time" ?selected=${this._selectedLimitType === 'time'}>${localize('time', this.language)}</option>
+                  <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>${localize('energy', this.language)}</option>
                   ${this.feat_soc ? html`
-                    <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>${localize('battery', this._lang)}</option>
+                    <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>${localize('battery', this.language)}</option>
                     `: ''}
                   ${this.feat_range ? html`
-                    <option value="range" ?selected=${this._selectedLimitType === 'range'}>${localize('range', this._lang)}</option>
+                    <option value="range" ?selected=${this._selectedLimitType === 'range'}>${localize('range', this.language)}</option>
                     `: ''}
               </select>
             </div>
@@ -404,7 +404,7 @@ class LimitComponent extends LitElement {
                   .value=${String(this._hours)}
                   @input=${this._handleHoursChange}
                 >
-                <label>${localize('hours', this._lang)}</label>
+                <label>${localize('hours', this.language)}</label>
               </div>
               <div class="time-input">
                 <input
@@ -414,7 +414,7 @@ class LimitComponent extends LitElement {
                   .value=${String(this._minutes)}
                   @input=${this._handleMinutesChange}
                 >
-                <label>${localize('minutes', this._lang)}</label>
+                <label>${localize('minutes', this.language)}</label>
               </div>
             </div>
           </div>
@@ -434,13 +434,13 @@ class LimitComponent extends LitElement {
           `:''}
 
             <div class="form-actions">
-              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${localize('cancel', this._lang)}</button>
+              <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${localize('cancel', this.language)}</button>
               <button
                 class="btn btn-primary"
                 ?disabled=${this._isAddButtonDisabled()}
                 @click=${this._addLimit}
               >
-                ${localize('add limit', this._lang)}
+                ${localize('add limit', this.language)}
               </button>
             </div>
           </div>
@@ -453,7 +453,7 @@ class LimitComponent extends LitElement {
       <div class="limit-container">
         <button class="new-limit-btn" @click=${this._toggleLimitForm}>
           <ha-icon icon="mdi:plus"></ha-icon>
-          ${localize('new limit', this._lang)}
+          ${localize('new limit', this.language)}
         </button>
       </div>
     `;
