@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js'; // Import state decorator
 import { Limit } from '../types';
 import { localize } from '../utils/translations';
 import './evse-slider';
@@ -13,15 +13,15 @@ class LimitComponent extends LitElement {
   @property({ type: Number }) energy_max_value: number = 100;
   @property({ type: Number }) range_max_value: number = 600;
   @property({ type: String }) range_unit: string = "km";
-  @property({ type: String }) _lang?: string = "en"; //
+  @state() private _lang?: string = "en"; // Changed to @state
 
 
-  // Internal state properties (no decorator needed unless they need to be observed/reflected)
-  _showLimitForm: boolean = false;
-  _selectedLimitType: string = 'time';
-  _hours: number = 0;
-  _minutes: number = 0;
-  _value: number = 0;
+  // Internal state properties
+  @state() private _showLimitForm: boolean = false;
+  @state() private _selectedLimitType: string = 'time';
+  @state() private _hours: number = 0;
+  @state() private _minutes: number = 0;
+  @state() private _value: number = 0;
 
   constructor() {
     super();

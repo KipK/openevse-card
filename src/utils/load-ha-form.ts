@@ -38,12 +38,14 @@ interface HaPanelConfig extends HTMLElement {
 
 // Define the list of required components
 const REQUIRED_HA_COMPONENTS = [
- 'ha-form',
- 'ha-selector',
- 'ha-textfield',
- 'ha-icon-picker',
- 'ha-icon-button',
- 'ha-entity-picker'
+    'ha-form',
+    'ha-icon',
+    'ha-icon-button',
+    'ha-selector',
+    'ha-textfield',
+    'ha-icon-picker',
+    'ha-icon-button',
+    'ha-entity-picker'
 ];
 
 
