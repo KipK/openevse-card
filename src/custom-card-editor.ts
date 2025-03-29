@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { property, state } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, OptionalEntity, SchemaItem } from './types';
 import { loadHaForm } from './utils/load-ha-form';
 import { mainSchema, optionalEntitySchema } from './ha-form-schema';
@@ -6,24 +7,15 @@ import { localize } from './utils/translations';
 
 // Editor for the card configuration
 class CustomCardEditor extends LitElement {
-    static override get properties() {
-        return {
-            hass: { type: Object },
-            config: { type: Object },
-            _lang: { type: String },
-            _deviceIdChanged: { type: Boolean }
-        };
-    }
+    @property({ attribute: false }) hass?: HomeAssistant;
+    @property({ attribute: false }) config: CardConfig = {};
 
-    hass?: HomeAssistant;
-    config: CardConfig = {};
-    _lang?: string;
-    _deviceIdChanged: boolean = false;
-    // _translations: TranslationDict = translations; // Removed _translations property
-    optionalEntities: OptionalEntity[] = [];
-    openEVSEEntities: Partial<CardConfig> = {};
-    deviceEntitiesLoaded: boolean = false;
-    _entityPickerKey: number = 0;
+    @state() private _lang?: string;
+    @state() private _deviceIdChanged: boolean = false;
+    @state() private optionalEntities: OptionalEntity[] = [];
+    @state() private openEVSEEntities: Partial<CardConfig> = {};
+    @state() private deviceEntitiesLoaded: boolean = false;
+    @state() private _entityPickerKey: number = 0;
 
     static override get styles() {
         return css`
@@ -72,13 +64,8 @@ class CustomCardEditor extends LitElement {
 
     constructor() {
         super();
-        this.config = {};
-        this.optionalEntities = [];
-        this.openEVSEEntities = {};
-        this.deviceEntitiesLoaded = false;
-        this._deviceIdChanged = false;
        }
-      
+
     override async firstUpdated(): Promise<void> {
         try {
             await loadHaForm();
@@ -203,8 +190,8 @@ class CustomCardEditor extends LitElement {
         // Trigger the config change event
         this._fireConfigChanged(updatedConfig);
 
-        // Force component update
-        this.requestUpdate();
+        // Force component update (already handled by @state)
+        // this.requestUpdate();
     }
 
     // Main configuration handling
@@ -265,7 +252,7 @@ class CustomCardEditor extends LitElement {
             });
 
             this._entityPickerKey++;
-            this.requestUpdate();
+            // this.requestUpdate(); // Handled by @state
         }
     }
 
@@ -280,13 +267,13 @@ class CustomCardEditor extends LitElement {
     _updateOptionalEntity(index: number, changedValues: Partial<OptionalEntity>): void {
         // Create a copy of the current entity
         const updatedEntity = { ...this.optionalEntities[index] };
-      
+
         // Iterate over the changed values and update the entity safely
         for (const key in changedValues) {
             if (Object.prototype.hasOwnProperty.call(changedValues, key)) {
                 const typedKey = key as keyof OptionalEntity;
                 const rawValue = changedValues[typedKey];
-      
+
                 // Process the value based on the key
                 switch (typedKey) {
                     case 'id':
@@ -302,7 +289,7 @@ class CustomCardEditor extends LitElement {
                 }
             }
         }
-      
+
         // Update the entities array
         this.optionalEntities = this.optionalEntities.map((entity, i) =>
             i === index ? updatedEntity : entity
@@ -314,8 +301,8 @@ class CustomCardEditor extends LitElement {
             optional_entities: this.optionalEntities
         });
        }
-      
-      
+
+
        // Check if all required entities have been found
        _getMissingEntities(): string[] {
         const requiredEntities = [
@@ -324,7 +311,7 @@ class CustomCardEditor extends LitElement {
             "session_energy_entity", "time_elapsed_entity", "wifi_signal_strength_entity",
             "limit_active_entity", "vehicle_range_entity", "vehicle_battery_level_entity"
         ];
-      
+
         // Check both in the configuration and in the detected entities
         return requiredEntities.filter(entity => {
             const isInConfig = this.config[entity as keyof CardConfig] &&
@@ -334,42 +321,42 @@ class CustomCardEditor extends LitElement {
             return !isInConfig && !isInDetected;
         });
        }
-      
+
        // Removed the _t method
-      
+
        override render() {
         if (!this.hass) {
             return html``;
         }
-      
+
         // Get entities for the selected device
         const deviceEntities: Record<string, string[]> = {};
-      
+
         if (this.config.device_id && this.hass.entities) {
             const entityRegistry = Object.values(this.hass.entities);
-      
+
             // Filter entities by device ID
             const deviceEntityList = entityRegistry.filter(entity =>
                 entity.device_id === this.config.device_id
             );
-      
+
             // Group entities by domain
             deviceEntityList.forEach(entity => {
                 const domain = entity.entity_id.split('.')[0];
-      
+
                 if (!deviceEntities[domain]) {
                     deviceEntities[domain] = [];
                 }
-      
+
                 deviceEntities[domain].push(entity.entity_id);
             });
         }
-      
+
         // Create schema with entity lists and language
         const schema = mainSchema(deviceEntities, this._lang);
         const optSchema = optionalEntitySchema(deviceEntities, this._lang);
         const missingEntities = this._getMissingEntities();
-      
+
         return html`
             <!-- Auto-detection status -->
             ${this.config.device_id ? html`
@@ -377,8 +364,8 @@ class CustomCardEditor extends LitElement {
                     ${this.deviceEntitiesLoaded ? html`
                         <div class="entity-status ${missingEntities.length > 0 ? 'warning' : 'success'}">
                             ${missingEntities.length === 0
-                              ? localize("entity_auto_success", this._lang) + "!" 
-                              : localize("entity_auto_fail", this._lang) + ": " + missingEntities.join(', ') 
+                              ? localize("entity_auto_success", this._lang) + "!"
+                              : localize("entity_auto_fail", this._lang) + ": " + missingEntities.join(', ')
                           }
                         </div>
                     ` : html`
@@ -388,7 +375,7 @@ class CustomCardEditor extends LitElement {
                     `}
                 </div>
             ` : ''}
-      
+
             <div class="form-container">
                 ${!this.config.device_id ? html`
                 <ha-form
@@ -398,8 +385,8 @@ class CustomCardEditor extends LitElement {
                           {
                               name: "device_id",
                               selector: { device: { integration: "openevse", manufacturer: "OpenEVSE" } },
-                              label: localize("openevse device", this._lang), 
-                              helper_text: localize("select your openevse device", this._lang), 
+                              label: localize("openevse device", this._lang),
+                              helper_text: localize("select your openevse device", this._lang),
                               required: true
                           }
                       ] as SchemaItem[]}
@@ -415,11 +402,11 @@ class CustomCardEditor extends LitElement {
                     .computeHelper=${(schema: SchemaItem) => schema.helper_text}
                     @value-changed=${this._handleConfigChange}
                 ></ha-form>
-      
+
                 <!-- Additional entities -->
                 <div class="entities">
                     <h3>${localize("additional entities", this._lang)}</h3>
-      
+
                     ${this.optionalEntities?.map((entity, index) => html`
                         <div class="entity-row">
                             <ha-form
@@ -429,7 +416,7 @@ class CustomCardEditor extends LitElement {
                                 .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
                                 @value-changed=${(ev: CustomEvent) => this._updateOptionalEntity(index, ev.detail.value)}
                             ></ha-form>
-      
+
                             <div class="entity-actions">
                                 <ha-icon-button
                                     .path=${"M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"}
@@ -438,7 +425,7 @@ class CustomCardEditor extends LitElement {
                             </div>
                         </div>
                     `)}
-      
+
                     <div class="add-entity">
                         <ha-entity-picker
                             .hass="${this.hass}"
@@ -456,5 +443,5 @@ class CustomCardEditor extends LitElement {
           `;
        }
       }
-      
+
       export { CustomCardEditor };
