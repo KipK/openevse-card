@@ -39,13 +39,13 @@ class CustomCard extends LitElement {
     }
 
     override async firstUpdated(): Promise<void> {
-            try {
-                await loadHaComponents();
-            } catch (error) {
-                console.error('Error loading ha-components:', error);
-            }
-            this._lang = this.hass?.language || "en";
+        try {
+            await loadHaComponents();
+        } catch (error) {
+            console.error('Error loading ha-components:', error);
         }
+        this._lang = this.hass?.language || "en";
+    }
 
     public getGridOptions() {
         return {

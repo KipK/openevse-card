@@ -1,5 +1,3 @@
-/// <reference path="../globals.d.ts"/>
-
 import { CustomCard } from './custom-card';
 import { CustomCardEditor } from './custom-card-editor';
 

@@ -1,6 +1,5 @@
 declare global {
 	interface HTMLElementTagNameMap {
-
 		'ha-card': HTMLElement;
 		'ha-icon': HTMLElement;
 		'evse-slider': HTMLElement;
@@ -15,7 +14,6 @@ declare global {
 		'ha-form': HTMLElement;
 		'ha-icon-button': HTMLElement;
 		'ha-entity-picker': HTMLElement;
-	
 	}
 }
 
