@@ -1,7 +1,7 @@
-import { LitElement, html } from 'lit-element'; // Removed css import
+import { LitElement, html } from 'lit-element';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant, OptionalEntity } from '../types';
-import { cardStyles } from '../styles'; // Import cardStyles
+import { cardStyles } from '../styles';
 
 class OptionalEntities extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
@@ -9,7 +9,7 @@ class OptionalEntities extends LitElement {
     @property({ attribute: false }) showMoreInfoHandler?: (entityId: string) => void;
 
     static override get styles() {
-        return cardStyles; // Use imported styles
+        return cardStyles;
     }
 
     private _handleEntityClick(entityId?: string) {

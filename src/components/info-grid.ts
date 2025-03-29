@@ -1,8 +1,8 @@
-import { LitElement, html } from 'lit-element'; // Removed css import
+import { LitElement, html } from 'lit-element';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, EntityState } from '../types';
 import { localize } from '../utils/translations';
-import { cardStyles } from '../styles'; // Import cardStyles
+import { cardStyles } from '../styles';
 
 class InfoGrid extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
@@ -17,7 +17,7 @@ class InfoGrid extends LitElement {
     @property({ attribute: false }) convertTimeHandler?: (time: number) => string;
 
     static override get styles() {
-        return cardStyles; // Use imported styles
+        return cardStyles;
     }
 
     private _handleItemClick(entityIdKey: keyof CardConfig) {

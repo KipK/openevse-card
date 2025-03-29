@@ -1,8 +1,8 @@
-import { LitElement, html } from 'lit-element'; // Removed css import
+import { LitElement, html } from 'lit-element';
 import { property } from 'lit/decorators.js';
 import { EntityState } from '../types';
 import { localize } from '../utils/translations';
-import { cardStyles } from '../styles'; // Import cardStyles
+import { cardStyles } from '../styles';
 
 class StatusHeading extends LitElement {
     @property({ attribute: false }) statusEntity?: EntityState | null;
@@ -10,7 +10,7 @@ class StatusHeading extends LitElement {
     @property({ attribute: false }) language?: string; // Renamed from lang
 
     static override get styles() {
-        return cardStyles; // Use imported styles
+        return cardStyles;
     }
 
     override render() {

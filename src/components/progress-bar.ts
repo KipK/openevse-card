@@ -1,27 +1,17 @@
 import { LitElement, html, css } from 'lit-element';
+import { property } from 'lit/decorators.js';
 
 class ProgressBar extends LitElement {
-  static override get properties() {
-    return {
-      label: { type: String },
-      value: { type: Number },
-      unit: { type: String },
-      max_value: { type: Number },
-      icon: { type: String }
-    };
-  }
+  @property({ type: String }) label: string = "";
+  @property({ type: Number }) value: number = 0;
+  @property({ type: String }) unit: string = "";
+  @property({ type: Number }) max_value: number = 100;
+  @property({ type: String }) icon: string = "";
 
-  value: number = 0;
-  label: string = "";
-  unit: string = "";
-  max_value: number = 100;
-  icon: string = "";
- 
   constructor() {
     super();
-    // Initializations removed as they are handled by property declarations
   }
- 
+
   static override get styles() {
     return css`
       :host {
@@ -84,7 +74,7 @@ class ProgressBar extends LitElement {
 
   override render() {
     const percentage = (this.max_value > 0) ? (100 * this.value / this.max_value) : 0;
-  
+
     return html`
     <div class="container">
       <div class="label">

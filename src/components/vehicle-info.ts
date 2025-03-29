@@ -1,8 +1,8 @@
-import { LitElement, html } from 'lit-element'; // Removed css import
+import { LitElement, html } from 'lit-element';
 import { property } from 'lit/decorators.js';
 import { CardConfig, EntityState } from '../types';
-import './progress-bar'; // Ensure progress-bar is imported if used internally
-import { cardStyles } from '../styles'; // Import cardStyles
+import './progress-bar';
+import { cardStyles } from '../styles';
 
 class VehicleInfo extends LitElement {
     @property({ attribute: false }) config?: CardConfig;
@@ -10,7 +10,7 @@ class VehicleInfo extends LitElement {
     @property({ attribute: false }) vehicleRangeEntity?: EntityState | null;
 
     static override get styles() {
-        return cardStyles; // Use imported styles
+        return cardStyles;
     }
 
     override render() {

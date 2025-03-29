@@ -1,7 +1,7 @@
-import { LitElement, html } from 'lit-element'; // Removed css import
+import { LitElement, html } from 'lit-element';
 import { property } from 'lit/decorators.js';
 import { CardConfig, EntityState } from '../types';
-import { cardStyles } from '../styles'; // Import cardStyles
+import { cardStyles } from '../styles';
 
 class OverrideControls extends LitElement {
     @property({ attribute: false }) config?: CardConfig;
@@ -10,7 +10,7 @@ class OverrideControls extends LitElement {
     @property({ attribute: false }) selectOverrideStateHandler?: (entityId: string, option: string | number) => void;
 
     static override get styles() {
-        return cardStyles; // Use imported styles
+        return cardStyles;
     }
 
     private _handleButtonClick(option: string) {
