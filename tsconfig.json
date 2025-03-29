@@ -30,6 +30,6 @@
     ],
     "types": ["mocha"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "global.d.ts"],
   "exclude": []
 }
