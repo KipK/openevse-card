@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, OptionalEntity, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Added EntityIdKey import
 import { cardStyles } from './styles';
 import { localize } from './utils/translations';
+import { loadHaComponents } from './utils/load-ha-components';
 import './components/evse-slider';
 import './components/limit';
 import './components/progress-bar';
@@ -36,6 +37,15 @@ class CustomCard extends LitElement {
             this._timeUpdateInterval = null;
         }
     }
+
+    override async firstUpdated(): Promise<void> {
+            try {
+                await loadHaComponents();
+            } catch (error) {
+                console.error('Error loading ha-components:', error);
+            }
+            this._lang = this.hass?.language || "en";
+        }
 
     public getGridOptions() {
         return {

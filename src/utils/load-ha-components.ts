@@ -49,7 +49,7 @@ const REQUIRED_HA_COMPONENTS = [
 ];
 
 
-export const loadHaForm = async (): Promise<void> => {
+export const loadHaComponents = async (): Promise<void> => {
  try {
      // Check if all required custom elements are already defined using the array
      if (REQUIRED_HA_COMPONENTS.every(component => customElements.get(component))) {

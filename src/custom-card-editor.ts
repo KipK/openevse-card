@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, OptionalEntity, SchemaItem } from './types';
-import { loadHaForm } from './utils/load-ha-form';
+import { loadHaComponents } from './utils/load-ha-components';
 import { mainSchema, optionalEntitySchema } from './ha-form-schema';
 import { localize } from './utils/translations';
 
@@ -68,9 +68,9 @@ class CustomCardEditor extends LitElement {
 
     override async firstUpdated(): Promise<void> {
         try {
-            await loadHaForm();
+            await loadHaComponents();
         } catch (error) {
-            console.error('Error loading ha-form:', error);
+            console.error('Error loading ha-components:', error);
         }
         this._lang = this.hass?.language || "en";
     }
