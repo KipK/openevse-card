@@ -30,35 +30,35 @@ class OverrideControls extends LitElement {
 
         return html`
             <div class="override-controls">
-                <div class="override-row">
-                    <div
-                        class="override-button ${overrideState === 'active' ? 'active' : ''}"
-                        data-option="active"
-                        @click=${() => this._handleButtonClick('active')}
-                    >
-                        <ha-icon
-                            icon="mdi:lightning-bolt"
-                            class="${overrideState === 'active' && chargingState === 'charging' ? 'charging' : ''}"
-                        ></ha-icon>
-                    </div>
-                    <div
-                        class="override-button ${overrideState === 'auto' ? 'active' : ''}"
-                        data-option="auto"
-                        @click=${() => this._handleButtonClick('auto')}
-                    >
-                        <ha-icon
-                            icon="mdi:robot"
-                            class="${overrideState === 'auto' && chargingState === 'charging' ? 'charging' : ''}"
-                        ></ha-icon>
-                    </div>
-                    <div
-                        class="override-button ${overrideState === 'disabled' ? 'active' : ''}"
-                        data-option="disabled"
-                        @click=${() => this._handleButtonClick('disabled')}
-                    >
-                        <ha-icon icon="mdi:cancel"></ha-icon>
-                    </div>
+            <div class="override-row">
+                <div
+                class="override-button ${overrideState === 'active' ? 'active' : ''}"
+                data-option="active"
+                @click=${() => this._handleButtonClick('active')}
+                >
+                <ha-icon
+                    icon="mdi:lightning-bolt"
+                    class="${overrideState === 'active' && chargingState === 'charging' ? 'charging' : ''}"
+                ></ha-icon>
                 </div>
+                <div
+                class="override-button ${overrideState === 'auto' ? 'active' : ''}"
+                data-option="auto"
+                @click=${() => this._handleButtonClick('auto')}
+                >
+                <ha-icon
+                    icon="mdi:robot"
+                    class="${overrideState === 'auto' && chargingState === 'charging' ? 'charging' : ''}"
+                ></ha-icon>
+                </div>
+                <div
+                class="override-button ${overrideState === 'disabled' ? 'active' : ''}"
+                data-option="disabled"
+                @click=${() => this._handleButtonClick('disabled')}
+                >
+                <ha-icon icon="mdi:cancel"></ha-icon>
+                </div>
+            </div>
             </div>
         `;
     }

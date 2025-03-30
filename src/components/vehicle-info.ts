@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit-element';
+import { LitElement, html, nothing } from 'lit-element';
 import { property } from 'lit/decorators.js';
 import { CardConfig, EntityState } from '../types';
 import './progress-bar';
@@ -38,7 +38,7 @@ class VehicleInfo extends LitElement {
                     <progress-bar
                         value=${Number(this.vehicleRangeEntity?.state)}
                         max_value=${this.config?.feat_max_range || 600}
-                        unit=${this.vehicleRangeEntity?.attributes.unit_of_measurement || ''}
+                        unit=${this.vehicleRangeEntity?.attributes.unit_of_measurement || nothing}
                         icon="mdi:map-marker-distance"
                     ></progress-bar>
                 `: ''}

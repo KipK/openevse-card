@@ -1,5 +1,5 @@
 
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css, nothing } from 'lit-element';
 import { property, state } from 'lit/decorators.js'; // Import state decorator
 import { Limit } from '../types';
 import { localize } from '../utils/translations';
@@ -349,7 +349,7 @@ class LimitComponent extends LitElement {
               ${this.limit.type === 'time' ? localize('time', this.language) + ': ' :
                 this.limit.type === 'energy' ? localize('energy', this.language) + ': ' :
                 this.limit.type === 'range' ? localize('range', this.language) + ': ' :
-                this.limit.type === 'soc' ? localize('battery', this.language) + ': ' : ''}
+                this.limit.type === 'soc' ? localize('battery', this.language) + ': ' : nothing}
             </span>
             <span class="limit-value">
               ${this.limit.type === 'time'
@@ -386,10 +386,10 @@ class LimitComponent extends LitElement {
                   <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>${localize('energy', this.language)}</option>
                   ${this.feat_soc ? html`
                     <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>${localize('battery', this.language)}</option>
-                    `: ''}
+                    `: nothing}
                   ${this.feat_range ? html`
                     <option value="range" ?selected=${this._selectedLimitType === 'range'}>${localize('range', this.language)}</option>
-                    `: ''}
+                    `: nothing}
               </select>
             </div>
           </div>

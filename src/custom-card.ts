@@ -1,4 +1,4 @@
-import { LitElement, html, PropertyValues } from 'lit-element';
+import { LitElement, html, PropertyValues, nothing } from 'lit-element';
 import { property, state } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, OptionalEntity, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Added EntityIdKey import
 import { cardStyles } from './styles';
@@ -361,7 +361,7 @@ class CustomCard extends LitElement {
                         ? html`<h1 class="card-header">
                     ${this.config.name || 'OpenEVSE'}
                     </h1>`
-                        : ''}
+                        : nothing}
             <div class="card-content">
                 <div class="evse-states">
                     <status-icons

@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit-element';
+import { LitElement, html, nothing } from 'lit-element';
 import { property } from 'lit/decorators.js';
 import { HomeAssistant, OptionalEntity } from '../types';
 import { cardStyles } from '../styles';
@@ -37,7 +37,7 @@ class OptionalEntities extends LitElement {
                                 : html`<div class="entity-icon"></div>`
                             }
                             <div class="entity-label">
-                                ${entity.name || entity.id || ""}
+                                ${entity.name || entity.id || nothing}
                             </div>
                         </div>
                         <div

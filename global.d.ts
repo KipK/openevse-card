@@ -1,4 +1,4 @@
-import { LitElement } from 'lit';
+import { LitElement, nothing } from 'lit';
 
 // Define a basic HomeAssistant interface
 // This can be expanded with more properties as needed (e.g., callService, localize, connection, etc.)
@@ -35,6 +35,7 @@ interface HaCard extends HTMLElement {
 
 interface HaIcon extends LitElement { // Assuming LitElement base for modern HA elements
     icon?: string;
+    class?: string;
 }
 
 interface HaIconButton extends LitElement { // Assuming LitElement base
@@ -47,7 +48,7 @@ interface HaForm extends LitElement { // Assuming LitElement base
     data?: Record<string, any>;
     schema?: readonly any[]; // Use specific schema type if available/needed (e.g., HaFormSchema[])
     computeLabel?: (schema: any) => string;
-    computeHelper?: (schema: any) => string;
+    computeHelper?: (schema: any) => string | typeof nothing;
     error?: Record<string, string>;
     disabled?: boolean;
 }

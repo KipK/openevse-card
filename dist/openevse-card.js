@@ -614,7 +614,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
           <div class="limit-badge">
             <ha-icon icon="${"time"===this.limit.type?"mdi:clock":"range"===this.limit.type?"mdi:map-marker-distance":"soc"===this.limit.type?"mdi:battery-medium":"mdi:lightning-bolt"}"></ha-icon>
             <span class="limit-type">
-              ${"time"===this.limit.type?ue("time",this.language)+": ":"energy"===this.limit.type?ue("energy",this.language)+": ":"range"===this.limit.type?ue("range",this.language)+": ":"soc"===this.limit.type?ue("battery",this.language)+": ":""}
+              ${"time"===this.limit.type?ue("time",this.language)+": ":"energy"===this.limit.type?ue("energy",this.language)+": ":"range"===this.limit.type?ue("range",this.language)+": ":"soc"===this.limit.type?ue("battery",this.language)+": ":U}
             </span>
             <span class="limit-value">
               ${"time"===this.limit.type?this._formatTimeValue(this.limit.value):this._formatValue(this.limit.value,this.limit.type)}
@@ -644,10 +644,10 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                   <option value="energy" ?selected=${"energy"===this._selectedLimitType}>${ue("energy",this.language)}</option>
                   ${this.feat_soc?q`
                     <option value="soc" ?selected=${"soc"===this._selectedLimitType}>${ue("battery",this.language)}</option>
-                    `:""}
+                    `:U}
                   ${this.feat_range?q`
                     <option value="range" ?selected=${"range"===this._selectedLimitType}>${ue("range",this.language)}</option>
-                    `:""}
+                    `:U}
               </select>
             </div>
           </div>
@@ -898,42 +898,42 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                     <progress-bar
                         value=${Number(this.vehicleRangeEntity?.state)}
                         max_value=${this.config?.feat_max_range||600}
-                        unit=${this.vehicleRangeEntity?.attributes.unit_of_measurement||""}
+                        unit=${this.vehicleRangeEntity?.attributes.unit_of_measurement||U}
                         icon="mdi:map-marker-distance"
                     ></progress-bar>
                 `:""}
             </div>
         `:q``}}Ce([ce({attribute:!1})],ze.prototype,"config",void 0),Ce([ce({attribute:!1})],ze.prototype,"vehicleBatteryLevelEntity",void 0),Ce([ce({attribute:!1})],ze.prototype,"vehicleRangeEntity",void 0),customElements.define("vehicle-info",ze);var je=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class Ae extends ne{static get styles(){return de}_handleButtonClick(e){const t=this.config?.override_entity;this.selectOverrideStateHandler&&"string"==typeof t&&t&&this.selectOverrideStateHandler(t,e)}render(){if(!this.config||!this.overrideEntity)return q``;const e=this.overrideEntity?.state,t=this.chargingStatusEntity?.state;return q`
             <div class="override-controls">
-                <div class="override-row">
-                    <div
-                        class="override-button ${"active"===e?"active":""}"
-                        data-option="active"
-                        @click=${()=>this._handleButtonClick("active")}
-                    >
-                        <ha-icon
-                            icon="mdi:lightning-bolt"
-                            class="${"active"===e&&"charging"===t?"charging":""}"
-                        ></ha-icon>
-                    </div>
-                    <div
-                        class="override-button ${"auto"===e?"active":""}"
-                        data-option="auto"
-                        @click=${()=>this._handleButtonClick("auto")}
-                    >
-                        <ha-icon
-                            icon="mdi:robot"
-                            class="${"auto"===e&&"charging"===t?"charging":""}"
-                        ></ha-icon>
-                    </div>
-                    <div
-                        class="override-button ${"disabled"===e?"active":""}"
-                        data-option="disabled"
-                        @click=${()=>this._handleButtonClick("disabled")}
-                    >
-                        <ha-icon icon="mdi:cancel"></ha-icon>
-                    </div>
+            <div class="override-row">
+                <div
+                class="override-button ${"active"===e?"active":""}"
+                data-option="active"
+                @click=${()=>this._handleButtonClick("active")}
+                >
+                <ha-icon
+                    icon="mdi:lightning-bolt"
+                    class="${"active"===e&&"charging"===t?"charging":""}"
+                ></ha-icon>
                 </div>
+                <div
+                class="override-button ${"auto"===e?"active":""}"
+                data-option="auto"
+                @click=${()=>this._handleButtonClick("auto")}
+                >
+                <ha-icon
+                    icon="mdi:robot"
+                    class="${"auto"===e&&"charging"===t?"charging":""}"
+                ></ha-icon>
+                </div>
+                <div
+                class="override-button ${"disabled"===e?"active":""}"
+                data-option="disabled"
+                @click=${()=>this._handleButtonClick("disabled")}
+                >
+                <ha-icon icon="mdi:cancel"></ha-icon>
+                </div>
+            </div>
             </div>
         `}}je([ce({attribute:!1})],Ae.prototype,"config",void 0),je([ce({attribute:!1})],Ae.prototype,"overrideEntity",void 0),je([ce({attribute:!1})],Ae.prototype,"chargingStatusEntity",void 0),je([ce({attribute:!1})],Ae.prototype,"selectOverrideStateHandler",void 0),customElements.define("override-controls",Ae);var Oe=function(e,t,i,s){for(var n,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s,a=e.length-1;a>=0;a--)(n=e[a])&&(o=(r<3?n(o):r>3?n(t,i,o):n(t,i))||o);return r>3&&o&&Object.defineProperty(t,i,o),o};class Le extends ne{constructor(){super(...arguments),this.entities=[]}static get styles(){return de}_handleEntityClick(e){this.showMoreInfoHandler&&e&&this.showMoreInfoHandler(e)}render(){return this.hass&&this.entities&&0!==this.entities.length?q`
             ${this.entities.map((e=>q`
@@ -946,7 +946,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                                     </div>
                                 `:q`<div class="entity-icon"></div>`}
                             <div class="entity-label">
-                                ${e.name||e.id||""}
+                                ${e.name||e.id||U}
                             </div>
                         </div>
                         <div
@@ -962,7 +962,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
         <ha-card>
             ${this.config.header?q`<h1 class="card-header">
                     ${this.config.name||"OpenEVSE"}
-                    </h1>`:""}
+                    </h1>`:U}
             <div class="card-content">
                 <div class="evse-states">
                     <status-icons
@@ -1103,7 +1103,7 @@ const oe={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:b},ae=(e=oe
                     .data=${this.config}
                     .schema=${t}
                     .computeLabel=${e=>e.label||e.name}
-                    .computeHelper=${e=>e.helper_text}
+                    .computeHelper=${e=>e.helper_text||U}
                     @value-changed=${this._handleConfigChange}
                 ></ha-form>
 

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, OptionalEntity, SchemaItem } from './types';
 import { loadHaComponents } from './utils/load-ha-components';
@@ -399,7 +399,7 @@ class CustomCardEditor extends LitElement {
                     .data=${this.config}
                     .schema=${schema}
                     .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
-                    .computeHelper=${(schema: SchemaItem) => schema.helper_text}
+                    .computeHelper=${(schema: SchemaItem) => schema.helper_text || nothing}
                     @value-changed=${this._handleConfigChange}
                 ></ha-form>
 
