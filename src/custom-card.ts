@@ -28,6 +28,11 @@ class CustomCard extends LitElement {
 
     constructor() {
         super();
+        this._showMoreInfo = this._showMoreInfo.bind(this);
+        this._convertTime = this._convertTime.bind(this);
+        this._selectOverrideState = this._selectOverrideState.bind(this);
+        this._setLimit = this._setLimit.bind(this);
+        this._delLimit = this._delLimit.bind(this);
     }
 
     override disconnectedCallback(): void {
@@ -371,7 +376,7 @@ class CustomCard extends LitElement {
                         .statusEntity=${statusEntity}
                         .vehicleConnectedEntity=${vehicleConnectedEntity}
                         .chargingStatusEntity=${chargingStatusEntity}
-                        .showMoreInfoHandler=${this._showMoreInfo.bind(this)}
+                        .showMoreInfoHandler=${this._showMoreInfo}
                     ></status-icons>
                     <status-heading
                         .statusEntity=${statusEntity}
@@ -388,8 +393,8 @@ class CustomCard extends LitElement {
                        .timeElapsedEntity=${timeElapsedEntity}
                        .localTimeElapsed=${this._localTimeElapsed}
                        .language=${this._lang}
-                       .showMoreInfoHandler=${this._showMoreInfo.bind(this)}
-                       .convertTimeHandler=${this._convertTime.bind(this)}
+                       .showMoreInfoHandler=${this._showMoreInfo}
+                       .convertTimeHandler=${this._convertTime}
                    ></info-grid>
                    <vehicle-info
                        .config=${this.config}
@@ -401,7 +406,7 @@ class CustomCard extends LitElement {
                       .config=${this.config}
                       .overrideEntity=${overrideEntity}
                       .chargingStatusEntity=${chargingStatusEntity}
-                      .selectOverrideStateHandler=${this._selectOverrideState.bind(this)}
+                      .selectOverrideStateHandler=${this._selectOverrideState}
                   ></override-controls>
                     <div class="container">
                         <evse-slider
@@ -419,8 +424,8 @@ class CustomCard extends LitElement {
                     <div class="container">
                         <limit-component
                             .limit=${this._limit as Limit}
-                            .setLimit=${this._setLimit.bind(this)}
-                            .delLimit=${this._delLimit.bind(this)}
+                            .setLimit=${this._setLimit}
+                            .delLimit=${this._delLimit}
                             .feat_soc=${this.config.feat_soc || false}
                             .feat_range=${this.config.feat_range || false}
                             .range_max_value=${Number(this.config.feat_max_range)}
@@ -433,7 +438,7 @@ class CustomCard extends LitElement {
                     <optional-entities
                         .hass=${this.hass}
                         .entities=${optionalEntities}
-                        .showMoreInfoHandler=${this._showMoreInfo.bind(this)}
+                        .showMoreInfoHandler=${this._showMoreInfo}
                     ></optional-entities>
             </div>
         </ha-card>
