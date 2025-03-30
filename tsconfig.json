@@ -25,7 +25,11 @@
     "plugins": [
       {
         "name": "ts-lit-plugin",
-        "strict": true
+        "strict": true,
+        "rules": {
+          "no-unknown-property": "off",
+          "no-missing-import": "off"
+        }
       }
     ],
     "types": ["mocha"]
