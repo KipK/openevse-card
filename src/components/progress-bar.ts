@@ -67,7 +67,6 @@ class ProgressBar extends LitElement {
         justify-content: center;
         color: white;
         font-weight: bold;
-        z-index: 10;
       }
     `;
   }

@@ -287,7 +287,7 @@ class CustomCard extends LitElement {
 
        _convertSeconds(sec: number): string {
         if (isNaN(sec) || sec < 0 || sec == undefined) {
-            return "00:00:00";
+            return "--:--:--";
         }
 
         const hours = Math.floor(sec / 3600);
