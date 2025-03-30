@@ -45,7 +45,8 @@ const REQUIRED_HA_COMPONENTS = [
     'ha-textfield',
     'ha-icon-picker',
     'ha-icon-button',
-    'ha-entity-picker'
+    'ha-entity-picker',
+    'ha-select'
 ];
 
 

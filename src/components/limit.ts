@@ -242,6 +242,7 @@ class LimitComponent extends LitElement {
   _handleTypeChange(e: Event): void {
     const target = e.target as HTMLSelectElement;
     this._selectedLimitType = target.value;
+    this._value = 0;    //reset value
     this.requestUpdate();
   }
 
@@ -381,16 +382,22 @@ class LimitComponent extends LitElement {
 
           <div class="form-row">
             <div class="select">
-              <select id="limit-type" @change=${this._handleTypeChange}>
-                  <option value="time" ?selected=${this._selectedLimitType === 'time'}>${localize('time', this.language)}</option>
-                  <option value="energy" ?selected=${this._selectedLimitType === 'energy'}>${localize('energy', this.language)}</option>
-                  ${this.feat_soc ? html`
-                    <option value="soc" ?selected=${this._selectedLimitType === 'soc'}>${localize('battery', this.language)}</option>
-                    `: nothing}
-                  ${this.feat_range ? html`
-                    <option value="range" ?selected=${this._selectedLimitType === 'range'}>${localize('range', this.language)}</option>
-                    `: nothing}
-              </select>
+              <ha-select
+                @selected=${this._handleTypeChange}
+                @closed=${(ev: Event) => ev.stopPropagation()}
+                fixedMenuPosition
+                naturalMenuWidth=false
+                .value=${this._selectedLimitType}
+              >
+                <ha-list-item value=${"time"}>${localize('time', this.language)}</ha-list-item>
+                <ha-list-item value=${"energy"}>${localize('energy', this.language)}</ha-list-item>
+                ${this.feat_soc ? html`
+                <ha-list-item value=${"soc"}>${localize('battery', this.language)}</ha-list-item>
+                `: nothing}
+                ${this.feat_range ? html`
+                <ha-list-item value=${"range"}>${localize('range', this.language)}</ha-list-item>
+                `: nothing}
+              </ha-select>
             </div>
           </div>
 
@@ -419,7 +426,7 @@ class LimitComponent extends LitElement {
               </div>
             </div>
           </div>
-          ` : ''}
+          ` : nothing}
           ${this._selectedLimitType !== 'time' ? html`
           <div class="form-row">
             <evse-slider
@@ -432,7 +439,7 @@ class LimitComponent extends LitElement {
               @value-changed=${this._handleSliderChange}
             ></evse-slider>
           </div>
-          `:''}
+          `:nothing}
 
             <div class="form-actions">
               <button class="btn btn-secondary" @click=${this._toggleLimitForm}>${localize('cancel', this.language)}</button>
