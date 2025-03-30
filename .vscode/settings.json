@@ -1,6 +1,0 @@
-{
-}{
-	"lit-plugin.rules.no-missing-import": "off",
-	"lit-plugin.rules.no-unknown-tag-name": "off",
-	"lit-plugin.rules.no-unknown-property": "off"
-}

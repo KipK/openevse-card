@@ -28,7 +28,8 @@
         "strict": true,
         "rules": {
           "no-unknown-property": "off",
-          "no-missing-import": "off"
+          "no-missing-import": "off",
+          "no-unknown-attribute": "off"
         }
       }
     ],
