@@ -250,13 +250,17 @@ export class LimitComponent extends LitElement {
 
   _handleHoursChange(e: Event): void {
     const target = e.target as HTMLInputElement;
-    this._hours = parseInt(target.value) || 0;
+    const value = target.value;
+    // Set to undefined if empty, otherwise parse the integer
+    this._hours = value === '' ? undefined : parseInt(value, 10);
     this.requestUpdate();
   }
 
   _handleMinutesChange(e: Event): void {
     const target = e.target as HTMLInputElement;
-    this._minutes = parseInt(target.value) || 0;
+    const value = target.value;
+    // Set to undefined if empty, otherwise parse the integer
+    this._minutes = value === '' ? undefined : parseInt(value, 10);
     this.requestUpdate();
   }
 
