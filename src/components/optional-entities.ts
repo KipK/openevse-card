@@ -1,9 +1,10 @@
 import { LitElement, html, nothing } from 'lit-element';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { HomeAssistant, OptionalEntity } from '../types';
 import { cardStyles } from '../styles';
 
-class OptionalEntities extends LitElement {
+@customElement('optional-entities')
+export class OptionalEntities extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
     @property({ attribute: false }) entities: OptionalEntity[] = [];
     @property({ attribute: false }) showMoreInfoHandler?: (entityId: string) => void;
@@ -52,7 +53,3 @@ class OptionalEntities extends LitElement {
         `;
     }
 }
-
-customElements.define('optional-entities', OptionalEntities);
-
-export { OptionalEntities };

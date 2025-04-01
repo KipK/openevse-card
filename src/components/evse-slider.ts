@@ -70,7 +70,7 @@ export class EVSESlider extends LitElement {
           .step=${this.step}
           .value=${this.value}
           .disabled=${this.disabled}
-          height="22"
+          height="15"
           color="var(--evse-slider-color)"
           @value-preview=${(e: CustomEvent) => this.value = e.detail.value}
           @value-changed=${(e: CustomEvent) => {

@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 
-class ProgressBar extends LitElement {
+@customElement('progress-bar')
+export class ProgressBar extends LitElement {
   @property({ type: String }) label: string = "";
   @property({ type: Number }) value: number = 0;
   @property({ type: String }) unit: string = "";
@@ -96,6 +97,3 @@ class ProgressBar extends LitElement {
     `;
   }
 }
-
-customElements.define('progress-bar', ProgressBar);
-export { ProgressBar };

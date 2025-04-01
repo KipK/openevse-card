@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit-element';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, EntityState } from '../types';
 import { cardStyles } from '../styles';
 
-class StatusIcons extends LitElement {
+@customElement('status-icons')
+export class StatusIcons extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
     @property({ attribute: false }) config?: CardConfig;
     @property({ attribute: false }) wifiSignalEntity?: EntityState | null;
@@ -84,7 +85,3 @@ class StatusIcons extends LitElement {
         `;
     }
 }
-
-customElements.define('status-icons', StatusIcons);
-
-export { StatusIcons };

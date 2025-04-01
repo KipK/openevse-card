@@ -1,12 +1,13 @@
 
 import { LitElement, html, css, nothing } from 'lit-element';
-import { property, state } from 'lit/decorators.js'; // Import state decorator
+import { property, state, customElement } from 'lit/decorators.js'; // Import state decorator
 import { Limit } from '../types';
 import { localize } from '../utils/translations';
 import './custom-slider';
 // Removed import for generic-slider
 
-class LimitComponent extends LitElement {
+@customElement('limit-component')
+export class LimitComponent extends LitElement {
   @property({ attribute: false }) limit?: Limit | null;
   @property({ attribute: false }) setLimit?: (type: string, value: number) => void;
   @property({ attribute: false }) delLimit?: () => void;
@@ -163,7 +164,7 @@ class LimitComponent extends LitElement {
        .form-actions {
         display: flex;
         justify-content: space-between;
-        margin-top: 16px;
+        margin-top: 25px;
       }
       .btn {
         padding: 8px 16px;
@@ -437,8 +438,6 @@ class LimitComponent extends LitElement {
                 </ha-textfield>
               </div>
             </div>
-            
-
           </div>
           ` : nothing}
           ${this._selectedLimitType !== 'time' ? html`
@@ -482,5 +481,3 @@ class LimitComponent extends LitElement {
     `;
    }
   }
-
-  customElements.define('limit-component', LimitComponent);

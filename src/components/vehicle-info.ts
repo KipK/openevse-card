@@ -1,10 +1,11 @@
 import { LitElement, html, nothing } from 'lit-element';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { CardConfig, EntityState } from '../types';
 import './progress-bar';
 import { cardStyles } from '../styles';
 
-class VehicleInfo extends LitElement {
+@customElement('vehicle-info')
+export class VehicleInfo extends LitElement {
     @property({ attribute: false }) config?: CardConfig;
     @property({ attribute: false }) vehicleBatteryLevelEntity?: EntityState | null;
     @property({ attribute: false }) vehicleRangeEntity?: EntityState | null;
@@ -46,7 +47,3 @@ class VehicleInfo extends LitElement {
         `;
     }
 }
-
-customElements.define('vehicle-info', VehicleInfo);
-
-export { VehicleInfo };

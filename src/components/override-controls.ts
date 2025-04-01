@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit-element';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { CardConfig, EntityState } from '../types';
 import { cardStyles } from '../styles';
 
-class OverrideControls extends LitElement {
+@customElement('override-controls')
+export class OverrideControls extends LitElement {
     @property({ attribute: false }) config?: CardConfig;
     @property({ attribute: false }) overrideEntity?: EntityState | null;
     @property({ attribute: false }) chargingStatusEntity?: EntityState | null;
@@ -63,7 +64,3 @@ class OverrideControls extends LitElement {
         `;
     }
 }
-
-customElements.define('override-controls', OverrideControls);
-
-export { OverrideControls };

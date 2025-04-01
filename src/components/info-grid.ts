@@ -1,10 +1,11 @@
 import { LitElement, html } from 'lit-element';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, EntityState } from '../types';
 import { localize } from '../utils/translations';
 import { cardStyles } from '../styles';
 
-class InfoGrid extends LitElement {
+@customElement('info-grid')
+export class InfoGrid extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
     @property({ attribute: false }) config?: CardConfig;
     @property({ attribute: false }) powerEntity?: EntityState | null;
@@ -107,7 +108,3 @@ class InfoGrid extends LitElement {
         `;
     }
 }
-
-customElements.define('info-grid', InfoGrid);
-
-export { InfoGrid };
