@@ -22,8 +22,8 @@ export class LimitComponent extends LitElement {
   // Internal state properties
   @state() private _showLimitForm: boolean = false;
   @state() private _selectedLimitType: string = 'time';
-  @state() private _hours: number = 0;
-  @state() private _minutes: number = 0;
+  @state() private _hours: number | undefined = undefined;
+  @state() private _minutes: number | undefined = undefined;
   @state() private _value: number = 0;
 
   constructor() {
@@ -235,8 +235,8 @@ export class LimitComponent extends LitElement {
   _toggleLimitForm(): void {
     this._showLimitForm = !this._showLimitForm;
     this._selectedLimitType = 'time';
-    this._hours = 0;
-    this._minutes = 0;
+    this._hours = undefined; // Reset to undefined
+    this._minutes = undefined; // Reset to undefined
     this._value = 0;
     this.requestUpdate();
   }
@@ -302,7 +302,10 @@ export class LimitComponent extends LitElement {
 
   _addLimit(): void {
     if (this._selectedLimitType === 'time') {
-      const totalMinutes = (this._hours * 60) + this._minutes;
+      // Treat undefined as 0 for calculation
+      const hours = this._hours ?? 0;
+      const minutes = this._minutes ?? 0;
+      const totalMinutes = (hours * 60) + minutes;
       if (totalMinutes > 0 && this.setLimit) {
         this.setLimit('time', totalMinutes);
       }
@@ -322,7 +325,10 @@ export class LimitComponent extends LitElement {
 
   _isAddButtonDisabled(): boolean {
     if (this._selectedLimitType === 'time') {
-      return this._hours === 0 && this._minutes === 0;
+      // Disable if hours or minutes are undefined or 0
+      const hours = this._hours ?? 0;
+      const minutes = this._minutes ?? 0;
+      return hours === 0 && minutes === 0;
     } else if (['energy', 'soc', 'range'].includes(this._selectedLimitType)) {
       return this._value === 0;
     }
@@ -409,7 +415,7 @@ export class LimitComponent extends LitElement {
                   id="hours"
                   type="number"
                   inputmode="numeric"
-                  .value=${String(this._hours)}
+                  .value=${this._hours === undefined ? '' : String(this._hours)}
                   .label=${localize('hours', this.language)}
                   name="hours"
                   @change=${this._handleHoursChange}
@@ -427,7 +433,7 @@ export class LimitComponent extends LitElement {
                   id="minutes"
                   type="number"
                   inputmode="numeric"
-                  .value=${String(this._minutes)}
+                  .value=${this._minutes === undefined ? '' : String(this._minutes)}
                   .label=${localize('minutes', this.language)}
                   name="minutes"
                   @change=${this._handleMinutesChange}
