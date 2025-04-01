@@ -3,7 +3,7 @@ import { LitElement, html, css, nothing } from 'lit-element';
 import { property, state } from 'lit/decorators.js'; // Import state decorator
 import { Limit } from '../types';
 import { localize } from '../utils/translations';
-import './evse-slider';
+import './custom-slider';
 // Removed import for generic-slider
 
 class LimitComponent extends LitElement {
@@ -443,15 +443,16 @@ class LimitComponent extends LitElement {
           ` : nothing}
           ${this._selectedLimitType !== 'time' ? html`
           <div class="form-row">
-            <evse-slider
+            <custom-slider
               .min=${0}
               .max=${this._selectedLimitType === 'range' ? this.range_max_value : this._selectedLimitType === 'energy' ? this.energy_max_value : 100}
               .step=${1}
               .value=${this._selectedLimitType === 'energy' ? Math.round(this._value / 1000) : this._value}
+              height="10"
+              .color=${"var(--text-primary-color)"}
               .unit=${this._selectedLimitType === 'range' ? this.range_unit : this._selectedLimitType === 'energy' ? 'kWh' : '%'}
-              label=""
               @value-changed=${this._handleSliderChange}
-            ></evse-slider>
+            ></custom-slider>
           </div>
           `:nothing}
 
