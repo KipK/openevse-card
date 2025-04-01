@@ -4,6 +4,7 @@ import { property, state } from 'lit/decorators.js'; // Import state decorator
 import { Limit } from '../types';
 import { localize } from '../utils/translations';
 import './evse-slider';
+// Removed import for generic-slider
 
 class LimitComponent extends LitElement {
   @property({ attribute: false }) limit?: Limit | null;
@@ -335,9 +336,7 @@ class LimitComponent extends LitElement {
     return [hours, mins, secs]
       .map(unit => String(unit).padStart(2, '0'))
       .join(':');
-   }
-
-   // Removed the _t method
+  }
 
    override render() {
     if (this.limit && this.limit.type) {
@@ -405,26 +404,41 @@ class LimitComponent extends LitElement {
           <div class="form-row">
             <div class="time-inputs">
               <div class="time-input">
-                <input
+                <ha-textfield
+                  id="hours"
                   type="number"
-                  min="0"
-                  max="23"
+                  inputmode="numeric"
                   .value=${String(this._hours)}
-                  @input=${this._handleHoursChange}
-                >
-                <label>${localize('hours', this.language)}</label>
+                  .label=${localize('hours', this.language)}
+                  name="hours"
+                  @change=${this._handleHoursChange}
+                  no-spinner
+                  min="0"
+                  maxlength="2"
+                  suffix=":"
+                  class="hasSuffix"
+
+                > 
+                </ha-textfield>
               </div>
               <div class="time-input">
-                <input
+                <ha-textfield
+                  id="minutes"
                   type="number"
-                  min="0"
-                  max="59"
+                  inputmode="numeric"
                   .value=${String(this._minutes)}
-                  @input=${this._handleMinutesChange}
-                >
-                <label>${localize('minutes', this.language)}</label>
+                  .label=${localize('minutes', this.language)}
+                  name="minutes"
+                  @change=${this._handleMinutesChange}
+                  no-spinner
+                  min="0"
+                  maxlength="2"
+                > 
+                </ha-textfield>
               </div>
             </div>
+            
+
           </div>
           ` : nothing}
           ${this._selectedLimitType !== 'time' ? html`
@@ -435,7 +449,7 @@ class LimitComponent extends LitElement {
               .step=${1}
               .value=${this._selectedLimitType === 'energy' ? Math.round(this._value / 1000) : this._value}
               .unit=${this._selectedLimitType === 'range' ? this.range_unit : this._selectedLimitType === 'energy' ? 'kWh' : '%'}
-              .label=${''}
+              label=""
               @value-changed=${this._handleSliderChange}
             ></evse-slider>
           </div>
