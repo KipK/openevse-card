@@ -45,9 +45,14 @@ export class OpenEVSESlider extends LitElement {
     private get _percentage() {
         const range = this.max - this.min;
         if (range === 0) {
-            return 0;
+            // If range is zero, the value is fixed. Place it visually at 5% (start of effective range)
+            return 5;
         }
-        return ((this._sliderValue - this.min) / range) * 100;
+        // Calculate the normalized value (0 to 1) within the min/max range
+        const normalizedValue = (this._sliderValue - this.min) / range;
+        // Scale this normalized value to the visual range (5% to 100%)
+        // The visual range spans 95% (100 - 5)
+        return 5 + (normalizedValue * 95);
     }
 
     @eventOptions({ passive: true })
@@ -55,6 +60,7 @@ export class OpenEVSESlider extends LitElement {
         if (this.disabled) return;
 
         this._dragging = true;
+        this.shadowRoot?.querySelector('.slider-wrapper')?.classList.add('dragging');
         this._updateSliderValue(e);
 
         window.addEventListener('mousemove', this._boundHandleSliderMove);
@@ -71,6 +77,7 @@ export class OpenEVSESlider extends LitElement {
 
     private _handleSliderEnd() {
         if (this._dragging) {
+            this.shadowRoot?.querySelector('.slider-wrapper')?.classList.remove('dragging');
             this._removeEventListeners();
 
             this.dispatchEvent(new CustomEvent('value-changed', {
@@ -106,11 +113,13 @@ export class OpenEVSESlider extends LitElement {
             x = (e as MouseEvent).clientX;
         }
 
-        // Calculate percentage along track
-        let percentage = (x - trackRect.left) / trackRect.width;
-        percentage = Math.min(Math.max(percentage, 0), 1);
+        // Calculate percentage along track, considering the 5% offset for the thumb
+        const effectiveTrackWidth = trackRect.width * 0.95; // Usable width is 95%
+        const effectiveTrackStart = trackRect.left + trackRect.width * 0.05; // Starts after 5%
+        let percentage = (x - effectiveTrackStart) / effectiveTrackWidth;
+        percentage = Math.min(Math.max(percentage, 0), 1); // Clamp between 0 and 1 for the effective range
 
-        // Calculate value with min/max/step constraints
+        // Calculate value with min/max/step constraints based on the effective percentage
         let value = this.min + percentage * (this.max - this.min);
         value = Math.round(value / this.step) * this.step;
         value = Math.min(Math.max(value, this.min), this.max);
@@ -141,6 +150,7 @@ export class OpenEVSESlider extends LitElement {
       background: color-mix(in srgb, var(--slider-color) 20%, transparent);
       box-shadow: var(--control-button-background, none);
       touch-action: none;
+      overflow: hidden;
     }
     
     .slider-knob {
@@ -161,6 +171,13 @@ export class OpenEVSESlider extends LitElement {
       opacity: 1;
     }
 
+    .slider-wrapper:hover .slider-track {
+      background: color-mix(in srgb, var(--slider-color) 60%, transparent);
+    }
+    .dragging .slider-track {
+      background: color-mix(in srgb, var(--slider-color) 60%, transparent);
+    }
+    
 
     .slider-badge {
 
@@ -182,16 +199,15 @@ export class OpenEVSESlider extends LitElement {
     .slider-thumb {
       position: absolute;
       height: 100%;
-      width: 5px;
-      background: color-mix(in srgb, var(--slider-color) 50%, transparent);
+      width: 5%;
+      background: var(--slider-color);
       left: calc(var(--slider-percentage) - 1px);
       opacity: 0;
-      transition: opacity 0.2s ease;
     }
 
     .slider-wrapper:hover .slider-thumb,
-    :host([_dragging]) .slider-thumb {
-      opacity: 0.7;
+    .slider-wrapper.dragging .slider-thumb {
+      opacity: 1;
     }
     
     :host([disabled]) .slider-wrapper {
@@ -228,17 +244,17 @@ export class OpenEVSESlider extends LitElement {
         >
           <div
             class="slider-track clickable"
-            style="width: ${this._percentage}%; border-radius: ${this._percentage === 100 ? '6px' : (this._percentage === 0 ? '0' : '6px 0 0 6px')}"
+            style="width: ${Math.max(5, this._percentage)}%; border-radius: ${this._percentage === 100 ? '6px' : (this._percentage === 0 ? '0' : '6px 0 0 6px')}"
           ></div>
         ${this.displayThumb ? html`
           <div
             class="slider-thumb"
-            style="left: calc(${this._percentage}% - 1px)"
+            style="left: calc(max(0%, ${this._percentage}% - 5%))"
           ></div>
         ` : ''}
           <div
             class="slider-knob"
-            style="left: calc(${this._percentage}% - 16px)"
+            style="left: calc(clamp(0%, ${this._percentage}%, 100%) - 16px)"
           ></div>
         </div>
       </div>
