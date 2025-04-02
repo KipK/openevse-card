@@ -66,8 +66,8 @@ export class ProgressBar extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-weight: bold;
+        color: var(--primary-text-color);
+        font-weight: normal;
       }
     `;
   }

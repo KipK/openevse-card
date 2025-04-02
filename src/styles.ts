@@ -251,6 +251,7 @@ const cardStyles = css`
             flex-direction: row;
             justify-content: space-around;
             gap: 12px;
+            color: var(--primary-text-color);
         }
         
     `;

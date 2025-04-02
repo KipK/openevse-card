@@ -430,10 +430,6 @@ class CustomCardEditor extends LitElement {
                         <ha-entity-picker
                             .hass="${this.hass}"
                             .includeDomains=${['sensor', 'binary_sensor']}
-                             .includeEntities=${[
-                                  ...(deviceEntities.sensor || []),
-                                  ...(deviceEntities.binary_sensor || [])
-                              ]}
                             @value-changed="${this._addOptionalEntity}"
                         ></ha-entity-picker>
                     </div>
