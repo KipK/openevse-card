@@ -455,6 +455,7 @@ class CustomCard extends LitElement {
                         ></evse-slider>
                     </div>
                     <!-- Limit -->
+                     ${this.config.limit_active_entity ? html`
                     <div class="container">
                         <limit-component
                             .limit=${this._limit as Limit}
@@ -468,6 +469,8 @@ class CustomCard extends LitElement {
                             .language=${this._lang}
                         ></limit-component>
                     </div>
+                            `: nothing}
+                    
                     <!-- End of Limit -->
                     <optional-entities
                         .hass=${this.hass}

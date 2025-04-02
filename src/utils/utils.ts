@@ -4,7 +4,6 @@ export const MIN_OPENEVSE_INTEGRATION_VERSION = '2.1.47';
 
 /**
  * Gets the installed version of an integration.
- * Credits: KipK
  * 
  * @param hass HomeAssistant instance.
  * @returns The integration version string if found, otherwise '0'.
