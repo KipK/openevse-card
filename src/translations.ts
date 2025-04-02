@@ -63,7 +63,9 @@ const translations =  {
         "select openevse_vehicle_battery_level entity": "Select openevse_vehicle_battery_level entity",
         "entity": "Entity",
         "name": "Name",
-        "icon": "Icon"
+        "icon": "Icon",
+        "warning": "Warning",
+        "integration_missing_or_outdated": "OpenEVSE integration not found or requires version {min_version} & higher."
     },
     "fr": {
         "disabled": "désactivé",
@@ -129,7 +131,9 @@ const translations =  {
         "select openevse_vehicle_battery_level entity": "Sélectionnez l'entité openevse_vehicle_battery_level",
         "entity": "Entité",
         "name": "Nom",
-        "icon": "Icône"
+        "icon": "Icône",
+        "warning": "Avertissement",
+        "integration_missing_or_outdated": "Intégration OpenEVSE non trouvée ou nécessite la version {min_version} ou supérieure."
     },
     "de": {
         "disabled": "deaktiviert",
@@ -195,7 +199,9 @@ const translations =  {
         "select openevse_vehicle_battery_level entity": "Wählen Sie die openevse_vehicle_battery_level Entität",
         "entity": "Entität",
         "name": "Name",
-        "icon": "Symbol"
+        "icon": "Symbol",
+        "warning": "Warnung",
+        "integration_missing_or_outdated": "OpenEVSE-Integration nicht gefunden oder erfordert Version {min_version} oder höher."
     },
     "es": {
         "disabled": "desactivado",
@@ -261,7 +267,9 @@ const translations =  {
         "select openevse_vehicle_battery_level entity": "Seleccione la entidad openevse_vehicle_battery_level",
         "entity": "Entidad",
         "name": "Nombre",
-        "icon": "Icono"
+        "icon": "Icono",
+        "warning": "Advertencia",
+        "integration_missing_or_outdated": "Integración OpenEVSE no encontrada o requiere la versión {min_version} o superior."
     }
 };
 

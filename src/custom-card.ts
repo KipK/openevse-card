@@ -4,6 +4,7 @@ import { HomeAssistant, CardConfig, OptionalEntity, CustomDetailEvent, Limit, En
 import { cardStyles } from './styles';
 import { localize } from './utils/translations';
 import { loadHaComponents } from './utils/load-ha-components';
+import { getIntegrationVersion, compareVersion, MIN_OPENEVSE_INTEGRATION_VERSION } from './utils/utils';
 import './components/evse-slider';
 import './components/limit';
 import './components/progress-bar';
@@ -25,6 +26,7 @@ class CustomCard extends LitElement {
     @state() private _isCharging: boolean = false;
     @state() private _limit?: Limit | null = null;
     @state() private _hasLimit?: boolean = false;
+    @state() private _integrationVersionOk: boolean | undefined = undefined; // Undefined initially, true/false after check
 
     constructor() {
         super();
@@ -50,6 +52,29 @@ class CustomCard extends LitElement {
             console.error('Error loading ha-components:', error);
         }
         this._lang = this.hass?.language || "en";
+
+        // Check OpenEVSE integration version
+        if (this.hass) {
+            try {
+                const installedVersion = await getIntegrationVersion(this.hass);
+                if (installedVersion === '0') {
+                    console.warn('OpenEVSE integration not found or version could not be determined.');
+                    this._integrationVersionOk = false;
+                } else {
+                    const comparison = compareVersion(installedVersion, MIN_OPENEVSE_INTEGRATION_VERSION);
+                    this._integrationVersionOk = comparison >= 0; // Version is OK if it's greater than or equal to min
+                    if (!this._integrationVersionOk) {
+                        console.warn(`OpenEVSE integration version ${installedVersion} is below the required minimum ${MIN_OPENEVSE_INTEGRATION_VERSION}.`);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking OpenEVSE integration version:', error);
+                this._integrationVersionOk = false; // Assume not OK if there's an error
+            }
+        } else {
+            console.warn('Hass object not available during firstUpdated for version check.');
+            this._integrationVersionOk = false; // Cannot check without hass
+        }
     }
 
     public getGridOptions() {
@@ -362,6 +387,14 @@ class CustomCard extends LitElement {
 
         return html`
         <ha-card>
+            ${this._integrationVersionOk === false
+                ? html`
+                    <ha-alert alert-type="warning" title="${localize('warning', this._lang)}">
+                        ${localize('integration_missing_or_outdated', this._lang)
+                            .replace('{min_version}', MIN_OPENEVSE_INTEGRATION_VERSION)}
+                    </ha-alert>
+                  `
+                : nothing}
             ${this.config.header
                         ? html`<h1 class="card-header">
                     ${this.config.name || 'OpenEVSE'}

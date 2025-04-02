@@ -1,6 +1,8 @@
 export interface HomeAssistant {
     states: Record<string, EntityState>;
     callService: (domain: string, service: string, data: Record<string, unknown>, target?: ServiceCallRequest["target"], notifyOnError?: boolean, returnResponse?: boolean) => Promise<ServiceCallResponse | void>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callWS: <T>(msg: { type: string; [key: string]: any }) => Promise<T>;
     formatEntityState: (entity: EntityState) => string;
     language: string;
     entities?: Record<string, RegistryEntity>;
