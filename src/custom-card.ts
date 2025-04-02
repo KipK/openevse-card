@@ -390,8 +390,9 @@ class CustomCard extends LitElement {
             ${this._integrationVersionOk === false
                 ? html`
                     <ha-alert alert-type="warning" title="${localize('warning', this._lang)}">
-                        ${localize('integration_missing_or_outdated', this._lang)
-                            .replace('{min_version}', MIN_OPENEVSE_INTEGRATION_VERSION)}
+                    ${localize('integration_missing_or_outdated', this._lang)
+                    .replace('{min_version}', MIN_OPENEVSE_INTEGRATION_VERSION)}
+                        Check <a href="https://github.com/firstof9/openevse">here</a>  
                     </ha-alert>
                   `
                 : nothing}
