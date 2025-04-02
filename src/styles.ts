@@ -61,7 +61,7 @@ const cardStyles = css`
             text-transform: uppercase;
         }
         .badge-charging {
-            background-color: yellow;
+            background-color: orange;
             color: black;
         }
         .badge-connected {
@@ -84,7 +84,7 @@ const cardStyles = css`
             color: var(--evse-active-color);
         }
         .charging {
-            color: yellow;
+            color: orange;
         }
         .disabled {
             color: var(--evse-disabled-color);
