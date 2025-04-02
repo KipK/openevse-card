@@ -27,7 +27,7 @@ export interface CardConfig {
     feat_max_range?: number,
     feat_max_energy?: number,
     device_id?: string;
-    optional_entities?: OptionalEntity[];
+    optional_entities?: string[]; // Changed from OptionalEntity[]
     override_entity?: string;
     status_entity?: string;
     power_entity?: string;
@@ -60,13 +60,7 @@ export type EntityIdKey =
     | 'vehicle_range_entity';
 
 
-export interface OptionalEntity {
-    id?: string;
-    name: string | null;
-    icon: string | null;
-    value: string | null;
-}
-
+// Removed OptionalEntity interface as it's no longer used directly in config
 export interface TranslationDict {
     [key: string]: {
         [key: string]: string;

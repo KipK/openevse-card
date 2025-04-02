@@ -1,12 +1,20 @@
 import { LitElement, html, nothing } from 'lit-element';
 import { property, customElement } from 'lit/decorators.js';
-import { HomeAssistant, OptionalEntity } from '../types';
+import { HomeAssistant } from '../types'; // Removed OptionalEntity import
+
+// Define the expected input structure based on custom-card.ts getOptionalEntities
+interface RenderedOptionalEntity {
+    name: string | null;
+    value: string | null;
+    icon: string | undefined;
+    id: string | undefined;
+}
 import { cardStyles } from '../styles';
 
 @customElement('optional-entities')
 export class OptionalEntities extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
-    @property({ attribute: false }) entities: OptionalEntity[] = [];
+    @property({ attribute: false }) entities: RenderedOptionalEntity[] = []; // Use the new interface
     @property({ attribute: false }) showMoreInfoHandler?: (entityId: string) => void;
 
     static override get styles() {

@@ -1,8 +1,10 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { HomeAssistant, CardConfig, OptionalEntity, SchemaItem } from './types';
+import { HomeAssistant, CardConfig, SchemaItem } from './types'; // Removed OptionalEntity
 import { loadHaComponents } from './utils/load-ha-components';
-import { mainSchema, optionalEntitySchema } from './ha-form-schema';
+import { mainSchema } from './ha-form-schema'; // Removed optionalEntitySchema
+import './components/multi-entity-selector'; // Import the new component
+import { MultiEntitiesChangedEvent, EntityConfig } from './components/multi-entity-selector'; // Import event type
 import { localize } from './utils/translations';
 
 // Editor for the card configuration
@@ -12,10 +14,10 @@ class CustomCardEditor extends LitElement {
 
     @state() private _lang?: string;
     @state() private _deviceIdChanged: boolean = false;
-    @state() private optionalEntities: OptionalEntity[] = [];
+    // Removed @state() private optionalEntities - will use this.config.optional_entities directly
     @state() private openEVSEEntities: Partial<CardConfig> = {};
     @state() private deviceEntitiesLoaded: boolean = false;
-    @state() private _entityPickerKey: number = 0;
+    // @state() private _entityPickerKey: number = 0; // Removed as it's no longer used
 
     static override get styles() {
         return css`
@@ -77,7 +79,7 @@ class CustomCardEditor extends LitElement {
 
     setConfig(config: CardConfig): void {
         this.config = config;
-        this.optionalEntities = config.optional_entities || [];
+        // this.optionalEntities = config.optional_entities || []; // Removed - handled by config directly
 
         // If device_id is already defined and we haven't loaded the entities yet
         if (config.device_id && this.hass && !this.deviceEntitiesLoaded) {
@@ -214,9 +216,10 @@ class CustomCardEditor extends LitElement {
     }
 
     _dispatchConfigChanged(updatedConfig: CardConfig): void {
+        // Ensure optional_entities from the main config update is preserved
         const newConfig = {
-            ...updatedConfig,
-            optional_entities: this.optionalEntities,
+            ...this.config, // Start with current config to keep existing optional_entities
+            ...updatedConfig, // Apply changes from the main form
         };
 
         // Update the local config object
@@ -234,73 +237,20 @@ class CustomCardEditor extends LitElement {
         );
     }
 
-    // Handling optional entities
-    _addOptionalEntity(ev: CustomEvent): void {
-        const entityId = (ev.target as HTMLInputElement)?.value;
-
-        if (entityId && !this.optionalEntities.some((e) => e.id === entityId)) {
-            // Get the default icon for the entity
-            const defaultIcon = typeof this.hass?.states[entityId]?.attributes?.icon === 'string' ? this.hass.states[entityId].attributes.icon : null;
-
-            this.optionalEntities = [
-                ...this.optionalEntities,
-                { id: entityId, name: null, icon: defaultIcon, value: null },
-            ];
-            this._fireConfigChanged({
-                ...this.config,
-                optional_entities: this.optionalEntities
-            });
-
-            this._entityPickerKey++;
-            // this.requestUpdate(); // Handled by @state
+    // New handler for changes from multi-entity-selector
+    _handleOptionalEntitiesChanged(ev: CustomEvent<MultiEntitiesChangedEvent>): void {
+        if (!this.config || !this.hass) {
+            return;
         }
-    }
-
-    _removeEntity(index: number): void {
-        this.optionalEntities = this.optionalEntities.filter((_, i) => i !== index);
-
-        this._fireConfigChanged({
-            ...this.config,
-            optional_entities: this.optionalEntities
-        });
-    }
-    _updateOptionalEntity(index: number, changedValues: Partial<OptionalEntity>): void {
-        // Create a copy of the current entity
-        const updatedEntity = { ...this.optionalEntities[index] };
-
-        // Iterate over the changed values and update the entity safely
-        for (const key in changedValues) {
-            if (Object.prototype.hasOwnProperty.call(changedValues, key)) {
-                const typedKey = key as keyof OptionalEntity;
-                const rawValue = changedValues[typedKey];
-
-                // Process the value based on the key
-                switch (typedKey) {
-                    case 'id':
-                        // ID is string | undefined. Convert empty string to undefined.
-                        updatedEntity.id = (rawValue === "" || rawValue === undefined) ? undefined : String(rawValue);
-                        break;
-                    case 'name':
-                    case 'icon':
-                        // Name and Icon are string | null. Convert empty string/undefined to null.
-                        updatedEntity[typedKey] = (rawValue === "" || rawValue === undefined) ? null : String(rawValue);
-                        break;
-                    // 'value' is not set via this form, so we don't handle it here.
-                }
-            }
-        }
-
-        // Update the entities array
-        this.optionalEntities = this.optionalEntities.map((entity, i) =>
-            i === index ? updatedEntity : entity
+        const newEntities = ev.detail.entities.map((conf: EntityConfig | string) =>
+            typeof conf === 'string' ? conf : conf.entity
         );
 
-        // Update the configuration and fire the event
         this._fireConfigChanged({
             ...this.config,
-            optional_entities: this.optionalEntities
+            optional_entities: newEntities,
         });
-       }
+    }
 
 
        // Check if all required entities have been found
@@ -354,7 +304,7 @@ class CustomCardEditor extends LitElement {
 
         // Create schema with entity lists and language
         const schema = mainSchema(deviceEntities, this._lang);
-        const optSchema = optionalEntitySchema(deviceEntities, this._lang);
+        // const optSchema = optionalEntitySchema(deviceEntities, this._lang); // Removed schema for old optional entities
         const missingEntities = this._getMissingEntities();
 
         return html`
@@ -404,35 +354,14 @@ class CustomCardEditor extends LitElement {
                 ></ha-form>
 
                 <!-- Additional entities -->
-                <div class="entities">
-                    <h3>${localize("additional entities", this._lang)}</h3>
-
-                    ${this.optionalEntities?.map((entity, index) => html`
-                        <div class="entity-row">
-                            <ha-form
-                                .hass=${this.hass}
-                                .data=${entity}
-                                .schema=${optSchema}
-                                .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
-                                @value-changed=${(ev: CustomEvent) => this._updateOptionalEntity(index, ev.detail.value)}
-                            ></ha-form>
-
-                            <div class="entity-actions">
-                                <ha-icon-button
-                                    .path=${"M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"}
-                                    @click=${() => this._removeEntity(index)}
-                                ></ha-icon-button>
-                            </div>
-                        </div>
-                    `)}
-
-                    <div class="add-entity">
-                        <ha-entity-picker
-                            .hass="${this.hass}"
-                            .includeDomains=${['sensor', 'binary_sensor']}
-                            @value-changed="${this._addOptionalEntity}"
-                        ></ha-entity-picker>
-                    </div>
+                <!-- Additional entities using multi-entity-selector -->
+                <div class="entity-section">
+                    <multi-entity-selector
+                        .hass=${this.hass}
+                        .label=${localize("additional entities", this._lang)}
+                        .config=${{ entities: this.config.optional_entities || [] }}
+                        @entities-changed=${this._handleOptionalEntitiesChanged}
+                    ></multi-entity-selector>
                 </div>
                 `}
             </div>

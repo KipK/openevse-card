@@ -1,6 +1,6 @@
 import { LitElement, html, PropertyValues, nothing } from 'lit-element';
 import { property, state } from 'lit/decorators.js';
-import { HomeAssistant, CardConfig, OptionalEntity, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Added EntityIdKey import
+import { HomeAssistant, CardConfig, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Removed OptionalEntity
 import { cardStyles } from './styles';
 import { localize } from './utils/translations';
 import { loadHaComponents } from './utils/load-ha-components';
@@ -364,17 +364,28 @@ class CustomCard extends LitElement {
         const vehicleRangeEntity = this._getEntityState('vehicle_range_entity');
 
 
-        const getOptionalEntities = (): OptionalEntity[] =>
-            this.config?.optional_entities?.map((entity) => {
+        // Define an interface for the processed optional entity data used by the component
+        interface RenderedOptionalEntity {
+            name: string | null;
+            value: string | null;
+            icon: string | undefined; // Icon can be undefined from state attributes
+            id: string | undefined;
+        }
+
+        const getOptionalEntities = (): RenderedOptionalEntity[] =>
+            this.config?.optional_entities?.map((entityId): RenderedOptionalEntity => { // Added return type annotation
+                const stateObj = this.hass?.states[entityId];
+                const attributes = stateObj?.attributes;
+
+                // Explicitly cast attributes to expected types
+                const friendlyName = attributes?.friendly_name as (string | undefined);
+                const icon = attributes?.icon as (string | undefined);
+
                 return {
-                    name: entity.name as string | null
-                        ? entity.name as string | null
-                        : entity.id ? this.hass?.states[entity.id]?.attributes.friendly_name as string | null : null,
-                    value: entity.id ? this.hass?.formatEntityState(
-                        this.hass.states[entity.id]
-                    ) ?? null : null,
-                    icon: entity.icon,
-                    id: entity.id ? entity.id : undefined,
+                    name: friendlyName ?? entityId, // Use friendlyName if available, else entityId
+                    value: stateObj ? this.hass?.formatEntityState(stateObj) ?? null : null,
+                    icon: icon, // Use casted icon
+                    id: entityId,
                 };
             }) ?? [];
 
