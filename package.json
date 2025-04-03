@@ -1,7 +1,6 @@
 {
     "name": "@kipk/openevse-card",
     "private": true,
-    "version": "1.0.2",
     "description": "OpenEVSE custom card for home assistant",
     "main": "openevse-card.js",
     "module": "openevse-card.js",
