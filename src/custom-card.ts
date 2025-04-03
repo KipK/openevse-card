@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, EntityConfig, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Added EntityConfig back
 import { cardStyles } from './styles';
 import { localize } from './utils/translations';
-import { loadHaComponents } from './utils/load-ha-components';
+import { loadHaComponents} from '@kipk/load-ha-components';
 import { getIntegrationVersion, compareVersion, MIN_OPENEVSE_INTEGRATION_VERSION } from './utils/utils';
 import './components/evse-slider';
 import './components/limit';
@@ -14,6 +14,23 @@ import './components/info-grid';
 import './components/vehicle-info';
 import './components/override-controls';
 import './components/optional-entities';
+
+const REQUIRED_HA_COMPONENTS = [
+    'ha-form',
+    'ha-icon',
+    'ha-icon-button',
+    'ha-selector',
+    'ha-textfield',
+    'ha-icon-picker',
+    'ha-icon-button',
+    'ha-entity-picker',
+    'ha-select',
+    'ha-dialog',
+    'ha-sortable',
+    'ha-svg-icon',
+    'ha-alert',
+    'mwc-button'
+];
 
 class CustomCard extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
@@ -47,7 +64,7 @@ class CustomCard extends LitElement {
 
     override async firstUpdated(): Promise<void> {
         try {
-            await loadHaComponents();
+            await loadHaComponents(REQUIRED_HA_COMPONENTS);
         } catch (error) {
             console.error('Error loading ha-components:', error);
         }
