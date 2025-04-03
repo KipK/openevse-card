@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { HomeAssistant, CardConfig, SchemaItem, EntityConfig } from './types';
 import { mainSchema } from './ha-form-schema';
 import { localize } from './utils/translations';
-import 'ha-multi-entity-selector';
+import '@kipk/ha-multi-entity-selector';
 // Import removed to avoid type conflicts
 
 // Editor for the card configuration
