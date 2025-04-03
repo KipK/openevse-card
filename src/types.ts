@@ -27,7 +27,7 @@ export interface EntityConfig {
     name?: string;
     icon?: string;
     // Add other common Lovelace row config properties if needed
-    [key: string]: any; // Allow other properties
+    [key: string]: unknown; // Allow other properties
 }
 
 export interface CardConfig {
