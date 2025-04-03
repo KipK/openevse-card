@@ -1,11 +1,10 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { HomeAssistant, CardConfig, SchemaItem } from './types'; // Removed OptionalEntity
+import { HomeAssistant, CardConfig, SchemaItem } from './types';
 import { loadHaComponents } from './utils/load-ha-components';
-import { mainSchema } from './ha-form-schema'; // Removed optionalEntitySchema
+import { mainSchema } from './ha-form-schema';
 import './components/multi-entity-selector'; // Import the new component
-import { MultiEntitiesChangedEvent, RequestEditDetailEvent } from './components/multi-entity-selector'; // Import event types
-import { EntityConfig } from './types'; // Import EntityConfig from types
+import { MultiEntitiesChangedEvent } from './components/multi-entity-selector'; // Import event types
 import { localize } from './utils/translations';
 
 // Editor for the card configuration
@@ -18,10 +17,6 @@ class CustomCardEditor extends LitElement {
     @state() private openEVSEEntities: Partial<CardConfig> = {};
     @state() private deviceEntitiesLoaded: boolean = false;
 
-    // State for the edit dialog
-    @state() private _editDialogOpen = false;
-    @state() private _editingEntityIndex: number | null = null;
-    @state() private _editingEntityData: Partial<EntityConfig> | null = null;
 
     static override get styles() {
         return css`
@@ -275,70 +270,6 @@ class CustomCardEditor extends LitElement {
         this._fireConfigChanged(this.config);
     }
 
-    // Opens the edit dialog
-    _handleRequestEditDetail(ev: CustomEvent<RequestEditDetailEvent>): void {
-        this._editingEntityIndex = ev.detail.index;
-        // Clone the config to avoid modifying the original directly in the form
-        // Ensure we have at least the entity ID if it's just a string originally
-        const originalConf = this.config.optional_entities?.[ev.detail.index];
-        const baseConfig = typeof originalConf === 'string' ? { entity: originalConf } : originalConf;
-        this._editingEntityData = { ...baseConfig, ...ev.detail.config }; // Merge base with event detail
-        this._editDialogOpen = true;
-    }
-
-    // Closes the edit dialog
-    _closeEditDialog(): void {
-        this._editDialogOpen = false;
-        this._editingEntityIndex = null;
-        this._editingEntityData = null;
-    }
-
-    // Updates the temporary editing data when the form changes
-    _handleEditDialogValueChanged(ev: CustomEvent): void {
-        if (!this._editingEntityData) return;
-        this._editingEntityData = { ...this._editingEntityData, ...ev.detail.value };
-    }
-
-    // Saves the changes from the edit dialog
-    _saveEditDialog(): void {
-        if (this._editingEntityIndex === null || !this._editingEntityData) return;
-
-        const currentOptionalEntities = [...(this.config.optional_entities || [])];
-        const originalEntityConf = currentOptionalEntities[this._editingEntityIndex];
-
-        // Ensure we have a valid array index
-        if (this._editingEntityIndex >= 0 && this._editingEntityIndex < currentOptionalEntities.length) {
-            let updatedEntityConf: EntityConfig;
-
-            // If the original was just a string, create a new object
-            if (typeof originalEntityConf === 'string') {
-                updatedEntityConf = {
-                    entity: originalEntityConf, // Keep the original entity ID
-                    ...this._editingEntityData // Apply changes (name, icon)
-                };
-            } else {
-                // If the original was an object, merge changes
-                updatedEntityConf = {
-                    ...originalEntityConf, // Keep existing properties
-                    ...this._editingEntityData // Apply changes from the dialog
-                };
-            }
-
-            // Remove empty name/icon properties if they were cleared in the dialog
-            if (updatedEntityConf.name === '') delete updatedEntityConf.name;
-            if (updatedEntityConf.icon === '') delete updatedEntityConf.icon;
-
-            // Update the array
-            currentOptionalEntities[this._editingEntityIndex] = updatedEntityConf;
-
-            // Update the main config and fire the event
-            this.config = { ...this.config, optional_entities: currentOptionalEntities };
-            this._fireConfigChanged(this.config);
-        }
-
-        this._closeEditDialog(); // Close the dialog after saving
-    }
-
 
 
        // Check if all required entities have been found
@@ -360,15 +291,6 @@ class CustomCardEditor extends LitElement {
         });
        }
 
-       // Schema for the edit dialog form
-       _getEditDialogSchema(): SchemaItem[] {
-           // Use optional: true for name and icon as they might not be set
-           return [
-               { name: "name", selector: { text: {} }, label: localize("name", this._lang) }, // Removed optional: true
-               { name: "icon", selector: { icon: {} }, label: localize("icon", this._lang) }, // Removed optional: true
-               // Entity ID is not editable here
-           ];
-       }
 
        override render() {
         if (!this.hass) {
@@ -457,43 +379,11 @@ class CustomCardEditor extends LitElement {
                         .label=${localize("additional entities", this._lang)}
                         .entities=${this.config.optional_entities || []}
                         @entities-changed=${this._handleOptionalEntitiesChanged}
-                        @request-edit-detail=${this._handleRequestEditDetail}
+                        .language=${this._lang}
                     ></multi-entity-selector>
                 </div>
                 `}
             </div>
-
-            <!-- Edit Dialog -->
-            ${this._editDialogOpen ? html`
-               <ha-dialog
-                   open
-                   @closed=${this._closeEditDialog}
-                   .heading=${localize("edit optional entity", this._lang)}
-               >
-                   <div class="dialog-content">
-                       <ha-form
-                           .hass=${this.hass}
-                           .data=${this._editingEntityData ?? {}} // Pass empty object if null
-                           .schema=${this._getEditDialogSchema()}
-                           .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
-                           @value-changed=${this._handleEditDialogValueChanged}
-                       ></ha-form>
-                   </div>
-                   <mwc-button
-                       slot="secondaryAction"
-                       @click=${this._closeEditDialog}
-                   >
-                       ${localize("cancel", this._lang)}
-                   </mwc-button>
-                   <mwc-button
-                       slot="primaryAction"
-                       @click=${this._saveEditDialog}
-                       .disabled=${!this._editingEntityData}
-                   >
-                       ${localize("save", this._lang)}
-                   </mwc-button>
-               </ha-dialog>
-            ` : ''}
           `;
        }
       }

@@ -65,6 +65,8 @@ const translations =  {
         "name": "Name",
         "icon": "Icon",
         "warning": "Warning",
+        "edit optional entity": "Edit Optional Entity",
+        "save": "Save",
         "integration_missing_or_outdated": "OpenEVSE integration not found or requires version {min_version} & higher."
     },
     "fr": {
@@ -133,6 +135,8 @@ const translations =  {
         "name": "Nom",
         "icon": "Icône",
         "warning": "Avertissement",
+        "edit optional entity": "Modifier l'entité optionnelle",
+        "save": "Enregistrer",
         "integration_missing_or_outdated": "Intégration OpenEVSE non trouvée ou nécessite la version {min_version} ou supérieure."
     },
     "de": {
@@ -201,6 +205,8 @@ const translations =  {
         "name": "Name",
         "icon": "Symbol",
         "warning": "Warnung",
+        "edit optional entity": "Optionale Entität bearbeiten",
+        "save": "Speichern",
         "integration_missing_or_outdated": "OpenEVSE-Integration nicht gefunden oder erfordert Version {min_version} oder höher."
     },
     "es": {
@@ -269,6 +275,8 @@ const translations =  {
         "name": "Nombre",
         "icon": "Icono",
         "warning": "Advertencia",
+        "edit optional entity": "Editar entidad opcional",
+        "save": "Guardar",
         "integration_missing_or_outdated": "Integración OpenEVSE no encontrada o requiere la versión {min_version} o superior."
     }
 };

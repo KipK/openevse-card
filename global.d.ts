@@ -62,6 +62,38 @@ interface HaEntityPicker extends LitElement { // Assuming LitElement base
     // Add allowCustomEntity, domainFilter, etc. if used
 }
 
+interface HaDialog extends LitElement {
+    open?: boolean;
+    heading?: string;
+    hideActions?: boolean;
+}
+
+interface HaSortable extends LitElement {
+    handleSelector?: string;
+}
+
+interface HaSvgIcon extends LitElement {
+    path?: string;
+}
+
+// Using type intersection to avoid conflicts with HTMLElement properties
+type HaAlert = HTMLElement & {
+    type?: 'info' | 'warning' | 'error' | 'success';
+    title?: string;
+    dismissable?: boolean;
+};
+
+type MwcButton = HTMLElement & {
+    raised?: boolean;
+    unelevated?: boolean;
+    outlined?: boolean;
+    dense?: boolean;
+    disabled?: boolean;
+    icon?: string;
+    label?: string;
+    trailingIcon?: boolean;
+};
+
 // Define types for the custom elements of *this* card project
 // Using LitElement as a base. Ideally, each component would export its own class type.
 interface EvseSlider extends LitElement { /* Add specific properties/methods if known */ }
@@ -77,8 +109,18 @@ interface ProgressBar extends LitElement { /* Add specific properties/methods if
 
 declare global {
     interface HTMLElementTagNameMap {
+        // ha components loaded
         'ha-card': HaCard;
         'ha-icon': HaIcon;
+        'ha-form': HaForm;
+        'ha-icon-button': HaIconButton;
+        'ha-entity-picker': HaEntityPicker;
+        'ha-dialog': HaDialog;
+        'ha-sortable': HaSortable;
+        'ha-svg-icon': HaSvgIcon;
+        'ha-alert': HaAlert;
+        'mwc-button': MwcButton;
+        // custom components from this project
         'evse-slider': EvseSlider;
         'status-icons': StatusIcons;
         'status-heading': StatusHeading;
@@ -88,9 +130,6 @@ declare global {
         'limit-component': LimitComponent;
         'optional-entities': OptionalEntities;
         'progress-bar': ProgressBar;
-        'ha-form': HaForm;
-        'ha-icon-button': HaIconButton;
-        'ha-entity-picker': HaEntityPicker;
     }
 }
 

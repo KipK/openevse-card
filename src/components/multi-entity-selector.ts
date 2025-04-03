@@ -2,14 +2,12 @@ import { LitElement, html, css, TemplateResult, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { mdiClose, mdiDrag, mdiPencil } from "@mdi/js";
-import { HomeAssistant, EntityConfig } from '../types';
+import { HomeAssistant, EntityConfig, SchemaItem } from '../types';
+import { localize } from '../utils/translations';
 
 // Assuming necessary HA components are available globally or imported elsewhere
 // Need ha-sortable, ha-entity-picker, ha-icon-button, ha-svg-icon
-// import 'home-assistant-frontend/src/components/ha-sortable';
-// import 'home-assistant-frontend/src/components/entity/ha-entity-picker';
-// import 'home-assistant-frontend/src/components/ha-icon-button';
-// import 'home-assistant-frontend/src/components/ha-svg-icon';
+
 
 // Define the event detail structure for changes
 export interface MultiEntitiesChangedEvent {
@@ -28,8 +26,14 @@ export class MultiEntitySelector extends LitElement {
   // Public property to receive the configuration array
   @property({ attribute: false }) public entities?: (string | EntityConfig)[];
   @property() public label?: string; // Optional label for the component
+  @property({ attribute: false }) public language?: string; // Language for localization
 
   @state() private _entities: EntityConfig[] = []; // Internal state using EntityConfig
+  
+  // State for the edit dialog
+  @state() private _editDialogOpen = false;
+  @state() private _editingEntityIndex: number | null = null;
+  @state() private _editingEntityData: Partial<EntityConfig> | null = null;
 
   // For repeat directive
   private _entityKeys = new WeakMap<EntityConfig, string>();
@@ -61,9 +65,6 @@ export class MultiEntitySelector extends LitElement {
     // Reset keys map whenever config is processed
     this._entityKeys = new WeakMap<EntityConfig, string>();
   }
-
-  // Removed setConfig method - configuration is now passed via the 'entities' property
-
 
   protected override render(): TemplateResult | typeof nothing {
     if (!this.hass) {
@@ -125,6 +126,38 @@ export class MultiEntitySelector extends LitElement {
         .hass=${this.hass}
         @value-changed=${this._addEntity}
       ></ha-entity-picker>
+
+      <!-- Edit Dialog -->
+      ${this._editDialogOpen ? html`
+        <ha-dialog
+          open
+          @closed=${this._closeEditDialog}
+          .heading=${localize("edit optional entity", this.language || "en")}
+        >
+          <div class="dialog-content">
+            <ha-form
+              .hass=${this.hass}
+              .data=${this._editingEntityData ?? {}} 
+              .schema=${this._getEditDialogSchema()}
+              .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
+              @value-changed=${this._handleEditDialogValueChanged}
+            ></ha-form>
+          </div>
+          <mwc-button
+            slot="secondaryAction"
+            @click=${this._closeEditDialog}
+          >
+            ${localize("cancel", this.language || "en")}
+          </mwc-button>
+          <mwc-button
+            slot="primaryAction"
+            @click=${this._saveEditDialog}
+            .disabled=${!this._editingEntityData}
+          >
+            ${localize("save", this.language || "en")}
+          </mwc-button>
+        </ha-dialog>
+      ` : ''}
     `;
   }
 
@@ -191,18 +224,62 @@ export class MultiEntitySelector extends LitElement {
     this._valueChanged();
   }
 
-  // Fires event to signal request for detailed editing
+  // Opens the edit dialog directly instead of dispatching an event
   private _editRow(ev: CustomEvent): void {
     const index = (ev.currentTarget as any).index;
-    const event = new CustomEvent<RequestEditDetailEvent>('request-edit-detail', {
-        detail: { index: index, config: this._entities[index] },
-        bubbles: true,
-        composed: true,
-    });
-    this.dispatchEvent(event);
-    // Note: The parent component (e.g., custom-card-editor) needs to listen for this
-    // and open a dialog/form to edit the details (name, icon, etc.) of this._entities[index].
-    // After editing, the parent should update the config and pass it back down.
+    this._editingEntityIndex = index;
+    // Clone the config to avoid modifying the original directly in the form
+    const entityConf = this._entities[index];
+    this._editingEntityData = { ...entityConf };
+    this._editDialogOpen = true;
+  }
+
+  // Closes the edit dialog
+  private _closeEditDialog(): void {
+    this._editDialogOpen = false;
+    this._editingEntityIndex = null;
+    this._editingEntityData = null;
+  }
+
+  // Updates the temporary editing data when the form changes
+  private _handleEditDialogValueChanged(ev: CustomEvent): void {
+    if (!this._editingEntityData) return;
+    this._editingEntityData = { ...this._editingEntityData, ...ev.detail.value };
+  }
+
+  // Saves the changes from the edit dialog
+  private _saveEditDialog(): void {
+    if (this._editingEntityIndex === null || !this._editingEntityData) return;
+
+    const newEntities = [...this._entities];
+    const originalEntityConf = newEntities[this._editingEntityIndex];
+
+    // Create updated entity config
+    const updatedEntityConf: EntityConfig = {
+      ...originalEntityConf, // Keep existing properties
+      ...this._editingEntityData // Apply changes from the dialog
+    };
+
+    // Remove empty name/icon properties if they were cleared in the dialog
+    if (updatedEntityConf.name === '') delete updatedEntityConf.name;
+    if (updatedEntityConf.icon === '') delete updatedEntityConf.icon;
+
+    // Update the array
+    newEntities[this._editingEntityIndex] = updatedEntityConf;
+    this._entities = newEntities;
+    this._valueChanged();
+
+    this._closeEditDialog(); // Close the dialog after saving
+  }
+
+  // Schema for the edit dialog form
+  private _getEditDialogSchema(): SchemaItem[] {
+    // Use optional: true for name and icon as they might not be set
+    return [
+      { name: "name", selector: { text: {} }, label: localize("name", this.language || "en") },
+      { name: "icon", selector: { icon: {} }, label: localize("icon", this.language || "en") },
+      // Entity ID is not editable here
+    ];
   }
 
   private _valueChanged(): void {
@@ -222,6 +299,15 @@ export class MultiEntitySelector extends LitElement {
       gap: 8px;
       margin-bottom: 12px;
     }
+    /* Dialog styles */
+    .dialog-content {
+      padding: 16px;
+    }
+    ha-dialog {
+      /* Prevent dialog from overlapping app header */
+      --dialog-surface-position: static;
+      --dialog-z-index: 5;
+    }
     .entity-row {
       display: flex;
       align-items: center;
@@ -239,9 +325,6 @@ export class MultiEntitySelector extends LitElement {
         flex-grow: 1;
         display: flex;
         flex-direction: column; /* Stack picker and secondary info */
-    }
-    .entity-info ha-entity-picker {
-        /* Picker takes available space */
     }
     .secondary {
         font-size: 0.8em;
@@ -263,9 +346,6 @@ export class MultiEntitySelector extends LitElement {
     }
     .remove-icon {
        color: var(--error-color);
-    }
-    .edit-icon {
-        /* Standard secondary color */
     }
     h3 {
         margin-bottom: 8px;

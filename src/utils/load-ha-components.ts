@@ -46,7 +46,12 @@ const REQUIRED_HA_COMPONENTS = [
     'ha-icon-picker',
     'ha-icon-button',
     'ha-entity-picker',
-    'ha-select'
+    'ha-select',
+    'ha-dialog',
+    'ha-sortable',
+    'ha-svg-icon',
+    'ha-alert',
+    'mwc-button'
 ];
 
 
