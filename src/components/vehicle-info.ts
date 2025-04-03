@@ -47,3 +47,9 @@ export class VehicleInfo extends LitElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "vehicle-info": VehicleInfo;
+    }
+}

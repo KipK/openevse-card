@@ -61,3 +61,9 @@ export class OptionalEntities extends LitElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "optional-entities": OptionalEntities;
+    }
+}

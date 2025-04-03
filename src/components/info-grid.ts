@@ -108,3 +108,9 @@ export class InfoGrid extends LitElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "info-grid": InfoGrid;
+    }
+}

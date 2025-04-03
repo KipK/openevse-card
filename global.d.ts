@@ -24,9 +24,6 @@ interface HassEntity {
   };
 }
 
-
-// custom-card-helpers might be useful for config/editor types, but not directly for element types here.
-
 // Define interfaces for standard HA elements used in this project
 // These provide basic structure; more properties might be needed depending on usage.
 interface HaCard extends HTMLElement {
@@ -134,19 +131,6 @@ type MwcButton = HTMLElement & {
     trailingIcon?: boolean;
 };
 
-// Define types for the custom elements of *this* card project
-// Using LitElement as a base. Ideally, each component would export its own class type.
-interface EvseSlider extends LitElement { /* Add specific properties/methods if known */ }
-interface StatusIcons extends LitElement { /* Add specific properties/methods if known */ }
-interface StatusHeading extends LitElement { /* Add specific properties/methods if known */ }
-interface InfoGrid extends LitElement { /* Add specific properties/methods if known */ }
-interface VehicleInfo extends LitElement { /* Add specific properties/methods if known */ }
-interface OverrideControls extends LitElement { /* Add specific properties/methods if known */ }
-interface LimitComponent extends LitElement { /* Add specific properties/methods if known */ }
-interface OptionalEntities extends LitElement { /* Add specific properties/methods if known */ }
-interface ProgressBar extends LitElement { /* Add specific properties/methods if known */ }
-
-
 declare global {
     interface HTMLElementTagNameMap {
         // ha components loaded
@@ -165,16 +149,6 @@ declare global {
         'ha-list-item': HaListItem;
         'ha-textfield': HaTextfield;
         'mwc-button': MwcButton;
-        // custom components from this project
-        'evse-slider': EvseSlider;
-        'status-icons': StatusIcons;
-        'status-heading': StatusHeading;
-        'info-grid': InfoGrid;
-        'vehicle-info': VehicleInfo;
-        'override-controls': OverrideControls;
-        'limit-component': LimitComponent;
-        'optional-entities': OptionalEntities;
-        'progress-bar': ProgressBar;
     }
 }
 

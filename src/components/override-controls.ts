@@ -64,3 +64,9 @@ export class OverrideControls extends LitElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "override-controls": OverrideControls;
+    }
+}

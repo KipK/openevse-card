@@ -35,3 +35,9 @@ export class StatusHeading extends LitElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "status-heading": StatusHeading;
+    }
+}

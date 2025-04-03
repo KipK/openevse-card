@@ -490,4 +490,10 @@ export class LimitComponent extends LitElement {
       </div>
     `;
    }
+}
+  
+declare global {
+  interface HTMLElementTagNameMap {
+    "limit-component": LimitComponent;
   }
+}

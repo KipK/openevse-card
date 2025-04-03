@@ -86,3 +86,9 @@ export class EVSESlider extends LitElement {
     `;
     }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "evse-slider": EVSESlider;
+  }
+}

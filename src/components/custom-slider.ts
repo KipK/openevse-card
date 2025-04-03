@@ -2,7 +2,7 @@ import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state, eventOptions } from 'lit/decorators.js';
 
 @customElement('custom-slider')
-export class OpenEVSESlider extends LitElement {
+export class CustomSlider extends LitElement {
     @property({ type: Number }) min = 0;
     @property({ type: Number }) max = 32;
     @property({ type: Number }) step = 1;
@@ -260,4 +260,10 @@ export class OpenEVSESlider extends LitElement {
       </div>
     `;
     }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "custom-slider": CustomSlider;
+  }
 }

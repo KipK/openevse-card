@@ -85,3 +85,9 @@ export class StatusIcons extends LitElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "status-icons": StatusIcons;
+    }
+}
