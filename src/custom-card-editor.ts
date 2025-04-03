@@ -1,11 +1,10 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { HomeAssistant, CardConfig, SchemaItem } from './types';
-import { loadHaComponents } from './utils/load-ha-components';
+import { HomeAssistant, CardConfig, SchemaItem, EntityConfig } from './types';
 import { mainSchema } from './ha-form-schema';
-import './components/multi-entity-selector'; // Import the new component
-import { MultiEntitiesChangedEvent } from './components/multi-entity-selector'; // Import event types
 import { localize } from './utils/translations';
+import 'ha-multi-entity-selector';
+// Import removed to avoid type conflicts
 
 // Editor for the card configuration
 class CustomCardEditor extends LitElement {
@@ -78,11 +77,6 @@ class CustomCardEditor extends LitElement {
       }
 
    override async firstUpdated(): Promise<void> {
-       try {
-           await loadHaComponents();
-        } catch (error) {
-            console.error('Error loading ha-components:', error);
-        }
         this._lang = this.hass?.language || "en";
     }
 
@@ -258,12 +252,12 @@ class CustomCardEditor extends LitElement {
     }
 
     // Handler for changes from multi-entity-selector (list order, additions, removals, entity ID changes)
-    _handleOptionalEntitiesChanged(ev: CustomEvent<MultiEntitiesChangedEvent>): void {
+    _handleOptionalEntitiesChanged(ev: CustomEvent): void {
         if (!this.config || !this.hass) {
             return;
         }
         // The event detail contains the full EntityConfig objects
-        const newEntities = ev.detail.entities;
+        const newEntities = ev.detail.entities as EntityConfig[];
 
         // Update the config and fire the change event
         this.config = { ...this.config, optional_entities: newEntities };
@@ -376,10 +370,9 @@ class CustomCardEditor extends LitElement {
                 <div class="entity-section">
                     <multi-entity-selector
                         .hass=${this.hass}
-                        .label=${localize("additional entities", this._lang)}
                         .entities=${this.config.optional_entities || []}
+                        label=${localize("additional entities", this._lang)}
                         @entities-changed=${this._handleOptionalEntitiesChanged}
-                        .language=${this._lang}
                     ></multi-entity-selector>
                 </div>
                 `}
