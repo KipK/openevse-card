@@ -4,7 +4,8 @@ import { HomeAssistant, CardConfig, SchemaItem } from './types'; // Removed Opti
 import { loadHaComponents } from './utils/load-ha-components';
 import { mainSchema } from './ha-form-schema'; // Removed optionalEntitySchema
 import './components/multi-entity-selector'; // Import the new component
-import { MultiEntitiesChangedEvent, EntityConfig } from './components/multi-entity-selector'; // Import event type
+import { MultiEntitiesChangedEvent, RequestEditDetailEvent } from './components/multi-entity-selector'; // Import event types
+import { EntityConfig } from './types'; // Import EntityConfig from types
 import { localize } from './utils/translations';
 
 // Editor for the card configuration
@@ -14,10 +15,13 @@ class CustomCardEditor extends LitElement {
 
     @state() private _lang?: string;
     @state() private _deviceIdChanged: boolean = false;
-    // Removed @state() private optionalEntities - will use this.config.optional_entities directly
     @state() private openEVSEEntities: Partial<CardConfig> = {};
     @state() private deviceEntitiesLoaded: boolean = false;
-    // @state() private _entityPickerKey: number = 0; // Removed as it's no longer used
+
+    // State for the edit dialog
+    @state() private _editDialogOpen = false;
+    @state() private _editingEntityIndex: number | null = null;
+    @state() private _editingEntityData: Partial<EntityConfig> | null = null;
 
     static override get styles() {
         return css`
@@ -61,16 +65,26 @@ class CustomCardEditor extends LitElement {
           background-color: var(--warning-color);
           color: var(--text-primary-color);
       }
+      /* Dialog styles */
+      .dialog-content {
+          padding: 16px;
+      }
+      ha-dialog {
+          /* Prevent dialog from overlapping app header */
+          --dialog-surface-position: static;
+          --dialog-z-index: 5;
+      }
+      /* Removed duplicate dialog styles */
     `;
-    }
+   }
 
-    constructor() {
-        super();
-       }
+   constructor() {
+       super();
+      }
 
-    override async firstUpdated(): Promise<void> {
-        try {
-            await loadHaComponents();
+   override async firstUpdated(): Promise<void> {
+       try {
+           await loadHaComponents();
         } catch (error) {
             console.error('Error loading ha-components:', error);
         }
@@ -78,12 +92,23 @@ class CustomCardEditor extends LitElement {
     }
 
     setConfig(config: CardConfig): void {
-        this.config = config;
-        // this.optionalEntities = config.optional_entities || []; // Removed - handled by config directly
+        // Convert old optional_entities format ({id: ...}) to new ({entity: ...})
+        const optionalEntities = (config.optional_entities || []).map(entityConf => {
+            if (typeof entityConf === 'object' && entityConf !== null && entityConf.id && !entityConf.entity) {
+                // Destructure to separate 'id' and capture the rest
+                const { id, ...rest } = entityConf;
+                // Create the new object using 'entity: id' and the rest, effectively removing 'id'
+                return { ...rest, entity: id };
+            }
+            // Return strings or objects already using 'entity' as is
+            return entityConf;
+        });
+
+        this.config = { ...config, optional_entities: optionalEntities };
 
         // If device_id is already defined and we haven't loaded the entities yet
-        if (config.device_id && this.hass && !this.deviceEntitiesLoaded) {
-            this._loadDeviceEntities(config.device_id);
+        if (this.config.device_id && this.hass && !this.deviceEntitiesLoaded) {
+            this._loadDeviceEntities(this.config.device_id);
         }
     }
 
@@ -237,20 +262,83 @@ class CustomCardEditor extends LitElement {
         );
     }
 
-    // New handler for changes from multi-entity-selector
+    // Handler for changes from multi-entity-selector (list order, additions, removals, entity ID changes)
     _handleOptionalEntitiesChanged(ev: CustomEvent<MultiEntitiesChangedEvent>): void {
         if (!this.config || !this.hass) {
             return;
         }
-        const newEntities = ev.detail.entities.map((conf: EntityConfig | string) =>
-            typeof conf === 'string' ? conf : conf.entity
-        );
+        // The event detail contains the full EntityConfig objects
+        const newEntities = ev.detail.entities;
 
-        this._fireConfigChanged({
-            ...this.config,
-            optional_entities: newEntities,
-        });
+        // Update the config and fire the change event
+        this.config = { ...this.config, optional_entities: newEntities };
+        this._fireConfigChanged(this.config);
     }
+
+    // Opens the edit dialog
+    _handleRequestEditDetail(ev: CustomEvent<RequestEditDetailEvent>): void {
+        this._editingEntityIndex = ev.detail.index;
+        // Clone the config to avoid modifying the original directly in the form
+        // Ensure we have at least the entity ID if it's just a string originally
+        const originalConf = this.config.optional_entities?.[ev.detail.index];
+        const baseConfig = typeof originalConf === 'string' ? { entity: originalConf } : originalConf;
+        this._editingEntityData = { ...baseConfig, ...ev.detail.config }; // Merge base with event detail
+        this._editDialogOpen = true;
+    }
+
+    // Closes the edit dialog
+    _closeEditDialog(): void {
+        this._editDialogOpen = false;
+        this._editingEntityIndex = null;
+        this._editingEntityData = null;
+    }
+
+    // Updates the temporary editing data when the form changes
+    _handleEditDialogValueChanged(ev: CustomEvent): void {
+        if (!this._editingEntityData) return;
+        this._editingEntityData = { ...this._editingEntityData, ...ev.detail.value };
+    }
+
+    // Saves the changes from the edit dialog
+    _saveEditDialog(): void {
+        if (this._editingEntityIndex === null || !this._editingEntityData) return;
+
+        const currentOptionalEntities = [...(this.config.optional_entities || [])];
+        const originalEntityConf = currentOptionalEntities[this._editingEntityIndex];
+
+        // Ensure we have a valid array index
+        if (this._editingEntityIndex >= 0 && this._editingEntityIndex < currentOptionalEntities.length) {
+            let updatedEntityConf: EntityConfig;
+
+            // If the original was just a string, create a new object
+            if (typeof originalEntityConf === 'string') {
+                updatedEntityConf = {
+                    entity: originalEntityConf, // Keep the original entity ID
+                    ...this._editingEntityData // Apply changes (name, icon)
+                };
+            } else {
+                // If the original was an object, merge changes
+                updatedEntityConf = {
+                    ...originalEntityConf, // Keep existing properties
+                    ...this._editingEntityData // Apply changes from the dialog
+                };
+            }
+
+            // Remove empty name/icon properties if they were cleared in the dialog
+            if (updatedEntityConf.name === '') delete updatedEntityConf.name;
+            if (updatedEntityConf.icon === '') delete updatedEntityConf.icon;
+
+            // Update the array
+            currentOptionalEntities[this._editingEntityIndex] = updatedEntityConf;
+
+            // Update the main config and fire the event
+            this.config = { ...this.config, optional_entities: currentOptionalEntities };
+            this._fireConfigChanged(this.config);
+        }
+
+        this._closeEditDialog(); // Close the dialog after saving
+    }
+
 
 
        // Check if all required entities have been found
@@ -272,7 +360,15 @@ class CustomCardEditor extends LitElement {
         });
        }
 
-       // Removed the _t method
+       // Schema for the edit dialog form
+       _getEditDialogSchema(): SchemaItem[] {
+           // Use optional: true for name and icon as they might not be set
+           return [
+               { name: "name", selector: { text: {} }, label: localize("name", this._lang) }, // Removed optional: true
+               { name: "icon", selector: { icon: {} }, label: localize("icon", this._lang) }, // Removed optional: true
+               // Entity ID is not editable here
+           ];
+       }
 
        override render() {
         if (!this.hass) {
@@ -359,12 +455,45 @@ class CustomCardEditor extends LitElement {
                     <multi-entity-selector
                         .hass=${this.hass}
                         .label=${localize("additional entities", this._lang)}
-                        .config=${{ entities: this.config.optional_entities || [] }}
+                        .entities=${this.config.optional_entities || []}
                         @entities-changed=${this._handleOptionalEntitiesChanged}
+                        @request-edit-detail=${this._handleRequestEditDetail}
                     ></multi-entity-selector>
                 </div>
                 `}
             </div>
+
+            <!-- Edit Dialog -->
+            ${this._editDialogOpen ? html`
+               <ha-dialog
+                   open
+                   @closed=${this._closeEditDialog}
+                   .heading=${localize("edit optional entity", this._lang)}
+               >
+                   <div class="dialog-content">
+                       <ha-form
+                           .hass=${this.hass}
+                           .data=${this._editingEntityData ?? {}} // Pass empty object if null
+                           .schema=${this._getEditDialogSchema()}
+                           .computeLabel=${(schema: SchemaItem) => schema.label || schema.name}
+                           @value-changed=${this._handleEditDialogValueChanged}
+                       ></ha-form>
+                   </div>
+                   <mwc-button
+                       slot="secondaryAction"
+                       @click=${this._closeEditDialog}
+                   >
+                       ${localize("cancel", this._lang)}
+                   </mwc-button>
+                   <mwc-button
+                       slot="primaryAction"
+                       @click=${this._saveEditDialog}
+                       .disabled=${!this._editingEntityData}
+                   >
+                       ${localize("save", this._lang)}
+                   </mwc-button>
+               </ha-dialog>
+            ` : ''}
           `;
        }
       }

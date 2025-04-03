@@ -1,6 +1,6 @@
 import { LitElement, html, PropertyValues, nothing } from 'lit-element';
 import { property, state } from 'lit/decorators.js';
-import { HomeAssistant, CardConfig, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Removed OptionalEntity
+import { HomeAssistant, CardConfig, EntityConfig, CustomDetailEvent, Limit, EntityState, EntityIdKey } from './types'; // Added EntityConfig back
 import { cardStyles } from './styles';
 import { localize } from './utils/translations';
 import { loadHaComponents } from './utils/load-ha-components';
@@ -367,27 +367,42 @@ class CustomCard extends LitElement {
         // Define an interface for the processed optional entity data used by the component
         interface RenderedOptionalEntity {
             name: string | null;
-            value: string | null;
-            icon: string | undefined; // Icon can be undefined from state attributes
+            value: string | null; // Re-added value property
+            icon: string | undefined;
             id: string | undefined;
         }
 
         const getOptionalEntities = (): RenderedOptionalEntity[] =>
-            this.config?.optional_entities?.map((entityId): RenderedOptionalEntity => { // Added return type annotation
+            this.config?.optional_entities?.map((entityConf): RenderedOptionalEntity => {
+                let entityId: string | undefined;
+                let configObject: EntityConfig | null = null;
+
+                if (typeof entityConf === 'string') {
+                    entityId = entityConf;
+                } else if (typeof entityConf === 'object' && entityConf !== null) {
+                    // Handle old format { id: ..., name: ..., icon: ... }
+                    // and new format { entity: ..., name: ..., icon: ... }
+                    entityId = entityConf.entity ?? entityConf.id; // Prioritize 'entity', fallback to 'id'
+                    configObject = entityConf;
+                }
+
+                // If no valid entityId could be determined, return invalid config (without value)
+                if (!entityId || typeof entityId !== 'string') {
+                    return { name: 'Invalid Config', value: null, icon: undefined, id: undefined }; // Re-added value: null
+                }
+
                 const stateObj = this.hass?.states[entityId];
                 const attributes = stateObj?.attributes;
-
-                // Explicitly cast attributes to expected types
                 const friendlyName = attributes?.friendly_name as (string | undefined);
-                const icon = attributes?.icon as (string | undefined);
+                const stateIcon = attributes?.icon as (string | undefined);
 
                 return {
-                    name: friendlyName ?? entityId, // Use friendlyName if available, else entityId
-                    value: stateObj ? this.hass?.formatEntityState(stateObj) ?? null : null,
-                    icon: icon, // Use casted icon
+                    name: configObject?.name ?? friendlyName ?? entityId,
+                    value: stateObj ? this.hass?.formatEntityState(stateObj) ?? null : null, // Re-added value mapping
+                    icon: configObject?.icon ?? stateIcon,
                     id: entityId,
                 };
-            }) ?? [];
+            })?.filter(entity => entity.id !== undefined) ?? []; // Filter out any invalid entries
 
         // wifiIcon function removed as it's now in status-icons component
 

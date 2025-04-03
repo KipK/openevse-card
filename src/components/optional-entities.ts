@@ -5,7 +5,7 @@ import { HomeAssistant } from '../types'; // Removed OptionalEntity import
 // Define the expected input structure based on custom-card.ts getOptionalEntities
 interface RenderedOptionalEntity {
     name: string | null;
-    value: string | null;
+    value: string | null; // Re-added value property
     icon: string | undefined;
     id: string | undefined;
 }
@@ -53,7 +53,7 @@ export class OptionalEntities extends LitElement {
                             class="entity-value clickable"
                             @click=${() => this._handleEntityClick(entity.id)}
                         >
-                            ${entity.value || ""}
+                            ${entity.value ?? ""} <!-- Display the value again -->
                         </div>
                     </div>
                 </div>

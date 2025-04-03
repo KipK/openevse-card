@@ -19,6 +19,17 @@ export interface RegistryEntity {
     original_name?: string;
 }
 
+// Define a base interface for entity configurations in Lovelace rows
+// Based on LovelaceRowConfig from HA frontend types
+export interface EntityConfig {
+    type?: string; // For special row types, not used in this selector yet
+    entity?: string; // Standard entity ID
+    name?: string;
+    icon?: string;
+    // Add other common Lovelace row config properties if needed
+    [key: string]: any; // Allow other properties
+}
+
 export interface CardConfig {
     header?: boolean;
     name?: string;
@@ -27,7 +38,7 @@ export interface CardConfig {
     feat_max_range?: number,
     feat_max_energy?: number,
     device_id?: string;
-    optional_entities?: string[]; // Changed from OptionalEntity[]
+    optional_entities?: (string | EntityConfig)[]; // Allow strings or full config objects
     override_entity?: string;
     status_entity?: string;
     power_entity?: string;
@@ -60,7 +71,8 @@ export type EntityIdKey =
     | 'vehicle_range_entity';
 
 
-// Removed OptionalEntity interface as it's no longer used directly in config
+// Keep RenderedOptionalEntity definition if still used by optional-entities.ts component
+// (We'll check this component later)
 export interface TranslationDict {
     [key: string]: {
         [key: string]: string;
