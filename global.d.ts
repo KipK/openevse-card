@@ -76,6 +76,46 @@ interface HaSvgIcon extends LitElement {
     path?: string;
 }
 
+interface HaSelector extends LitElement {
+    hass?: HomeAssistant;
+    selector?: Record<string, any>;
+    value?: any;
+    label?: string;
+    helper?: string;
+    disabled?: boolean;
+    required?: boolean;
+}
+
+interface HaIconPicker extends LitElement {
+    value?: string;
+    label?: string;
+    placeholder?: string;
+    disabled?: boolean;
+}
+
+interface HaSelect extends LitElement {
+    value?: string;
+    fixedMenuPosition?: boolean;
+    naturalMenuWidth?: boolean;
+}
+
+interface HaListItem extends LitElement {
+    value?: string;
+}
+
+// Using type intersection for HaTextfield to avoid conflicts with LitElement properties
+type HaTextfield = LitElement & {
+    type?: string;
+    inputmode?: string;
+    value?: string;
+    label?: string;
+    name?: string;
+    min?: string;
+    maxlength?: string;
+    suffix?: string;
+    noSpinner?: boolean;
+};
+
 // Using type intersection to avoid conflicts with HTMLElement properties
 type HaAlert = HTMLElement & {
     type?: 'info' | 'warning' | 'error' | 'success';
@@ -119,6 +159,11 @@ declare global {
         'ha-sortable': HaSortable;
         'ha-svg-icon': HaSvgIcon;
         'ha-alert': HaAlert;
+        'ha-selector': HaSelector;
+        'ha-icon-picker': HaIconPicker;
+        'ha-select': HaSelect;
+        'ha-list-item': HaListItem;
+        'ha-textfield': HaTextfield;
         'mwc-button': MwcButton;
         // custom components from this project
         'evse-slider': EvseSlider;
