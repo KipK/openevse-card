@@ -382,7 +382,9 @@ class CustomCard extends LitElement {
                 } else if (typeof entityConf === 'object' && entityConf !== null) {
                     // Handle old format { id: ..., name: ..., icon: ... }
                     // and new format { entity: ..., name: ..., icon: ... }
-                    entityId = entityConf.entity ?? entityConf.id; // Prioritize 'entity', fallback to 'id'
+                    const entity = entityConf.entity as string | undefined;
+                    const id = entityConf.id as string | undefined;
+                    entityId = entity ?? id; // Prioritize 'entity', fallback to 'id'
                     configObject = entityConf;
                 }
 

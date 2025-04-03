@@ -91,7 +91,15 @@ class CustomCardEditor extends LitElement {
             }
             // Return strings or objects already using 'entity' as is
             return entityConf;
-        });
+        }).filter(entityConf => {
+            // Filter out any invalid configurations
+            if (typeof entityConf === 'string') return true;
+            if (typeof entityConf === 'object' && entityConf !== null && 
+                (typeof entityConf.entity === 'string' || entityConf.entity === undefined)) {
+                return true;
+            }
+            return false;
+        }) as (string | EntityConfig)[];
 
         this.config = { ...config, optional_entities: optionalEntities };
 
