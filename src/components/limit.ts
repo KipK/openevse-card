@@ -549,19 +549,19 @@ export class LimitComponent extends LitElement {
                             : nothing}
 
                         <div class="form-actions">
-                            <button
-                                class="btn btn-secondary"
+                            <mwc-button
+                                slot="secondaryAction"
                                 @click=${this._toggleLimitForm}
                             >
-                                ${localize('cancel', this.language)}
-                            </button>
-                            <button
-                                class="btn btn-primary"
-                                ?disabled=${this._isAddButtonDisabled()}
+                                 ${localize('cancel', this.language)}
+                            </mwc-button>
+                            <mwc-button
+                                slot="primaryAction"
                                 @click=${this._addLimit}
+                                .disabled=${this._isAddButtonDisabled()}
                             >
                                 ${localize('add limit', this.language)}
-                            </button>
+                            </mwc-button>
                         </div>
                     </div>
                 </div>

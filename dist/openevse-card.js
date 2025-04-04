@@ -808,19 +808,19 @@ const rt=t=>(e,i)=>{void 0!==i?i.addInitializer((()=>{customElements.define(t,e)
                               `:q}
 
                         <div class="form-actions">
-                            <button
-                                class="btn btn-secondary"
+                            <mwc-button
+                                slot="secondaryAction"
                                 @click=${this._toggleLimitForm}
                             >
-                                ${ut("cancel",this.language)}
-                            </button>
-                            <button
-                                class="btn btn-primary"
-                                ?disabled=${this._isAddButtonDisabled()}
+                                 ${ut("cancel",this.language)}
+                            </mwc-button>
+                            <mwc-button
+                                slot="primaryAction"
                                 @click=${this._addLimit}
+                                .disabled=${this._isAddButtonDisabled()}
                             >
                                 ${ut("add limit",this.language)}
-                            </button>
+                            </mwc-button>
                         </div>
                     </div>
                 </div>
