@@ -6,8 +6,8 @@
     "module": "openevse-card.js",
     "type": "module",
     "scripts": {
-        "deploy": "npm run build && npm run copy",
-        "copy": "scp -P 2222 ./dist/*.js root@homeassistant.local:/homeassistant/www/community/openevse-card/",
+        "deploy": "npm run build && npm run copy && npm run build",
+        "copy": "gzip -f ./dist/openevse-card.js && scp -P 2222 dist/openevse-card.js.gz root@homeassistant.local:/homeassistant/www/community/openevse-card/",
         "build": "tsc && rollup -c",
         "build:watch": "tsc --watch",
         "clean": "rimraf my-element.{d.ts,d.ts.map,js,js.map} test/my-element.{d.ts,d.ts.map,js,js.map} test/my-element_test.{d.ts,d.ts.map,js,js.map}",
@@ -15,7 +15,7 @@
         "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\" --ignore-path ./.eslintignore --write",
         "analyze": "cem analyze --litelement --globs \"src/**/*.ts\"",
         "analyze:watch": "cem analyze --litelement --globs \"src/**/*.ts\" --watch",
-        "checksize": "rollup -c ; cat my-element.bundled.js | gzip -9 | wc -c ; rm my-element.bundled.js"
+        "checksize": "rollup -c ; cat dist/openevse-card.js | gzip -9 | wc -c ; rm dist/openevse-card.js"
     },
     "keywords": [
         "web-components",
