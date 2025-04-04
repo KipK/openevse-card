@@ -43,6 +43,16 @@ export class LimitComponent extends LitElement {
                 justify-content: center;
                 margin: 10px 0;
             }
+            ha-dialog {
+                /* Prevent dialog from overlapping app header */
+                --dialog-surface-position: static;
+                --dialog-z-index: 5;  
+            }
+             .dialog-content {
+                padding: 16px 16px 8px 16px; /* Reduced bottom padding */
+                width: 350px; /* Set fixed width */
+                box-sizing: border-box; /* Include padding in width calculation */
+            }
             .new-limit-btn {
                 background-color: var(--primary-color);
                 color: var(--text-primary-color);
@@ -60,38 +70,14 @@ export class LimitComponent extends LitElement {
             .new-limit-btn:hover {
                 background-color: var(--dark-primary-color);
             }
-            .modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 999;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .limit-form {
-                background-color: var(--card-background-color);
-                border-radius: var(--evse-border-radius);
-                box-shadow: var(--evse-shadow);
-                padding: 16px;
-                width: 90%;
-                max-width: 350px;
-                margin: 0 auto;
-                z-index: 1000;
-            }
-            .form-header {
-                font-size: 18px;
-                font-weight: 500;
-                margin-bottom: 26px;
-                text-align: center;
-            }
             .form-row {
                 display: flex;
                 flex-direction: column;
                 margin-bottom: 25px;
+                align-self: center;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
             }
             .form-row label {
                 flex: 1;
@@ -153,6 +139,9 @@ export class LimitComponent extends LitElement {
             }
             .slider-container {
                 padding: 8px 0;
+            }
+            .slider-input {
+                width: 60%;
             }
             .slider-value {
                 text-align: center;
@@ -232,12 +221,22 @@ export class LimitComponent extends LitElement {
         `;
     }
 
-    _toggleLimitForm(): void {
-        this._showLimitForm = !this._showLimitForm;
+    // Renamed function to explicitly open the dialog
+    _openDialog(): void {
+        this._showLimitForm = true;
+        // Reset form state when opening
         this._selectedLimitType = 'time';
-        this._hours = undefined; // Reset to undefined
-        this._minutes = undefined; // Reset to undefined
+        this._hours = undefined;
+        this._minutes = undefined;
         this._value = 0;
+        this.requestUpdate();
+    }
+
+    // New function to explicitly close the dialog
+    _closeDialog(): void {
+        this._showLimitForm = false;
+        // Optionally reset form state on close/cancel if desired
+        // (Currently reset in _openDialog)
         this.requestUpdate();
     }
 
@@ -354,228 +353,186 @@ export class LimitComponent extends LitElement {
     }
 
     override render() {
-        if (this.limit && this.limit.type) {
-            // Display existing limit as a badge
-            return html`
-                <div class="limit-container">
-                    <div class="limit-badge">
-                        <ha-icon
-                            icon="${this.limit.type === 'time'
-                                ? 'mdi:clock'
-                                : this.limit.type === 'range'
-                                ? 'mdi:map-marker-distance'
-                                : this.limit.type === 'soc'
-                                ? 'mdi:battery-medium'
-                                : 'mdi:lightning-bolt'}"
-                        ></ha-icon>
-                        <span class="limit-type">
-                            ${this.limit.type === 'time'
-                                ? localize('time', this.language) + ': '
-                                : this.limit.type === 'energy'
-                                ? localize('energy', this.language) + ': '
-                                : this.limit.type === 'range'
-                                ? localize('range', this.language) + ': '
-                                : this.limit.type === 'soc'
-                                ? localize('battery', this.language) + ': '
-                                : nothing}
-                        </span>
-                        <span class="limit-value">
-                            ${this.limit.type === 'time'
-                                ? this._formatTimeValue(this.limit.value)
-                                : this._formatValue(
-                                      this.limit.value,
-                                      this.limit.type
-                                  )}
-                        </span>
-                        <ha-icon
-                            class="close-icon"
-                            icon="mdi:close"
-                            @click=${this._removeLimit}
-                        ></ha-icon>
-                    </div>
-                </div>
-            `;
-        }
-
-        if (this._showLimitForm) {
-            // Display limit form in modal overlay
-            return html`
-                <div class="limit-container">
-                    <button
-                        class="new-limit-btn"
-                        @click=${this._toggleLimitForm}
-                    >
-                        <ha-icon icon="mdi:plus"></ha-icon>
-                        ${localize('new limit', this.language)}
-                    </button>
-                </div>
-                <div class="modal-overlay">
-                    <div class="limit-form">
-                        <div class="form-header">
-                            ${localize('add charging limit', this.language)}
-                        </div>
-
-                        <div class="form-row">
-                            <div class="select">
-                                <ha-select
-                                    @selected=${this._handleTypeChange}
-                                    @closed=${(ev: Event) =>
-                                        ev.stopPropagation()}
-                                    fixedMenuPosition
-                                    naturalMenuWidth="false"
-                                    .value=${this._selectedLimitType}
-                                >
-                                    <ha-list-item value=${'time'}
-                                        >${localize(
-                                            'time',
-                                            this.language
-                                        )}</ha-list-item
-                                    >
-                                    <ha-list-item value=${'energy'}
-                                        >${localize(
-                                            'energy',
-                                            this.language
-                                        )}</ha-list-item
-                                    >
-                                    ${this.feat_soc
-                                        ? html`
-                                              <ha-list-item value=${'soc'}
-                                                  >${localize(
-                                                      'battery',
-                                                      this.language
-                                                  )}</ha-list-item
-                                              >
-                                          `
-                                        : nothing}
-                                    ${this.feat_range
-                                        ? html`
-                                              <ha-list-item value=${'range'}
-                                                  >${localize(
-                                                      'range',
-                                                      this.language
-                                                  )}</ha-list-item
-                                              >
-                                          `
-                                        : nothing}
-                                </ha-select>
-                            </div>
-                        </div>
-
-                        ${this._selectedLimitType === 'time'
-                            ? html`
-                                  <div class="form-row">
-                                      <div class="time-inputs">
-                                          <div class="time-input">
-                                              <ha-textfield
-                                                  id="hours"
-                                                  type="number"
-                                                  inputmode="numeric"
-                                                  .value=${this._hours ===
-                                                  undefined
-                                                      ? ''
-                                                      : String(this._hours)}
-                                                  .label=${localize(
-                                                      'hours',
-                                                      this.language
-                                                  )}
-                                                  name="hours"
-                                                  @change=${this
-                                                      ._handleHoursChange}
-                                                  no-spinner
-                                                  min="0"
-                                                  maxlength="2"
-                                                  suffix=":"
-                                                  class="hasSuffix"
-                                              >
-                                              </ha-textfield>
-                                          </div>
-                                          <div class="time-input">
-                                              <ha-textfield
-                                                  id="minutes"
-                                                  type="number"
-                                                  inputmode="numeric"
-                                                  .value=${this._minutes ===
-                                                  undefined
-                                                      ? ''
-                                                      : String(this._minutes)}
-                                                  .label=${localize(
-                                                      'minutes',
-                                                      this.language
-                                                  )}
-                                                  name="minutes"
-                                                  @change=${this
-                                                      ._handleMinutesChange}
-                                                  no-spinner
-                                                  min="0"
-                                                  maxlength="2"
-                                              >
-                                              </ha-textfield>
-                                          </div>
-                                      </div>
-                                  </div>
-                              `
-                            : nothing}
-                        ${this._selectedLimitType !== 'time'
-                            ? html`
-                                  <div class="form-row">
-                                      <custom-slider
-                                          .min=${0}
-                                          .max=${this._selectedLimitType ===
-                                          'range'
-                                              ? this.range_max_value
-                                              : this._selectedLimitType ===
-                                                'energy'
-                                              ? this.energy_max_value
-                                              : 100}
-                                          .step=${1}
-                                          .value=${this._selectedLimitType ===
-                                          'energy'
-                                              ? Math.round(this._value / 1000)
-                                              : this._value}
-                                          height="10"
-                                          .color=${'var(--text-primary-color)'}
-                                          .unit=${this._selectedLimitType ===
-                                          'range'
-                                              ? this.range_unit
-                                              : this._selectedLimitType ===
-                                                'energy'
-                                              ? 'kWh'
-                                              : '%'}
-                                          @value-changed=${this
-                                              ._handleSliderChange}
-                                      ></custom-slider>
-                                  </div>
-                              `
-                            : nothing}
-
-                        <div class="form-actions">
-                            <mwc-button
-                                slot="secondaryAction"
-                                @click=${this._toggleLimitForm}
-                            >
-                                 ${localize('cancel', this.language)}
-                            </mwc-button>
-                            <mwc-button
-                                slot="primaryAction"
-                                @click=${this._addLimit}
-                                .disabled=${this._isAddButtonDisabled()}
-                            >
-                                ${localize('add limit', this.language)}
-                            </mwc-button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Display "New Limit" button
         return html`
             <div class="limit-container">
-                <button class="new-limit-btn" @click=${this._toggleLimitForm}>
-                    <ha-icon icon="mdi:plus"></ha-icon>
-                    ${localize('new limit', this.language)}
-                </button>
+                ${this.limit && this.limit.type
+                ? // Display existing limit as a badge
+                  html`
+                      <div class="limit-badge">
+                          <ha-icon
+                              icon="${this.limit.type === 'time'
+                                  ? 'mdi:clock'
+                                  : this.limit.type === 'range'
+                                    ? 'mdi:map-marker-distance'
+                                    : this.limit.type === 'soc'
+                                      ? 'mdi:battery-medium'
+                                      : 'mdi:lightning-bolt'}"
+                          ></ha-icon>
+                          <span class="limit-type">
+                              ${this.limit.type === 'time'
+                                  ? localize('time', this.language) + ': '
+                                  : this.limit.type === 'energy'
+                                    ? localize('energy', this.language) + ': '
+                                    : this.limit.type === 'range'
+                                      ? localize('range', this.language) + ': '
+                                      : this.limit.type === 'soc'
+                                        ? localize('battery', this.language) + ': '
+                                        : nothing}
+                          </span>
+                          <span class="limit-value">
+                              ${this.limit.type === 'time'
+                                  ? this._formatTimeValue(this.limit.value)
+                                  : this._formatValue(
+                                        this.limit.value,
+                                        this.limit.type
+                                    )}
+                          </span>
+                          <ha-icon
+                              class="close-icon"
+                              icon="mdi:close"
+                              @click=${this._removeLimit}
+                          ></ha-icon>
+                      </div>
+                  `
+                : // Display "New Limit" button
+                  html`
+                      <button class="new-limit-btn" @click=${this._openDialog}>
+                          <ha-icon icon="mdi:plus"></ha-icon>
+                          ${localize('new limit', this.language)}
+                      </button>
+                  `}
             </div>
+
+            <!-- Dialog is always rendered, visibility controlled by ?open -->
+            <ha-dialog
+                ?open=${this._showLimitForm}
+                @closed=${this._closeDialog}
+                .heading=${localize('add charging limit', this.language)}
+            >
+                <div class="dialog-content">
+                    <div class="form-row">
+                        <div class="select">
+                            <ha-select
+                                @selected=${this._handleTypeChange}
+                                @closed=${(ev: Event) => ev.stopPropagation()}
+                                fixedMenuPosition
+                                naturalMenuWidth="false"
+                                .value=${this._selectedLimitType}
+                            >
+                                <ha-list-item value=${'time'}
+                                    >${localize('time', this.language)}</ha-list-item
+                                >
+                                <ha-list-item value=${'energy'}
+                                    >${localize('energy', this.language)}</ha-list-item
+                                >
+                                ${this.feat_soc
+                                    ? html`
+                                          <ha-list-item value=${'soc'}
+                                              >${localize('battery', this.language)}</ha-list-item
+                                          >
+                                      `
+                                    : nothing}
+                                ${this.feat_range
+                                    ? html`
+                                          <ha-list-item value=${'range'}
+                                              >${localize('range', this.language)}</ha-list-item
+                                          >
+                                      `
+                                    : nothing}
+                            </ha-select>
+                        </div>
+                    </div>
+
+                    ${this._selectedLimitType === 'time'
+                        ? html`
+                              <div class="form-row">
+                                  <div class="time-inputs">
+                                      <div class="time-input">
+                                          <ha-textfield
+                                              id="hours"
+                                              type="number"
+                                              inputmode="numeric"
+                                              .value=${this._hours === undefined
+                                                  ? ''
+                                                  : String(this._hours)}
+                                              .label=${localize('hours', this.language)}
+                                              name="hours"
+                                              @change=${this._handleHoursChange}
+                                              no-spinner
+                                              min="0"
+                                              maxlength="2"
+                                              suffix=":"
+                                              class="hasSuffix"
+                                          >
+                                          </ha-textfield>
+                                      </div>
+                                      <div class="time-input">
+                                          <ha-textfield
+                                              id="minutes"
+                                              type="number"
+                                              inputmode="numeric"
+                                              .value=${this._minutes === undefined
+                                                  ? ''
+                                                  : String(this._minutes)}
+                                              .label=${localize('minutes', this.language)}
+                                              name="minutes"
+                                              @change=${this._handleMinutesChange}
+                                              no-spinner
+                                              min="0"
+                                              maxlength="2"
+                                          >
+                                          </ha-textfield>
+                                      </div>
+                                  </div>
+                              </div>
+                          `
+                        : nothing}
+                    ${this._selectedLimitType !== 'time'
+                        ? html`
+                            <div class="form-row">
+                                <div class="slider-input">
+                                    <custom-slider
+                                      .min=${0}
+                                      .max=${this._selectedLimitType === 'range'
+                                          ? this.range_max_value
+                                          : this._selectedLimitType === 'energy'
+                                            ? this.energy_max_value
+                                            : 100}
+                                      .step=${1}
+                                      .value=${this._selectedLimitType === 'energy'
+                                          ? Math.round(this._value / 1000)
+                                          : this._value}
+                                      height="10"
+                                      .color=${'var(--text-primary-color)'}
+                                      .unit=${this._selectedLimitType === 'range'
+                                          ? this.range_unit
+                                          : this._selectedLimitType === 'energy'
+                                            ? 'kWh'
+                                            : '%'}
+                                      @value-changed=${this._handleSliderChange}
+                                    ></custom-slider>
+                              </div>
+                            </div>
+                          `
+                        : nothing}
+
+                    <div class="form-actions">
+                        <mwc-button
+                            slot="secondaryAction"
+                            @click=${this._closeDialog}
+                        >
+                             ${localize('cancel', this.language)}
+                        </mwc-button>
+                        <mwc-button
+                            slot="primaryAction"
+                            @click=${this._addLimit}
+                            .disabled=${this._isAddButtonDisabled()}
+                        >
+                            ${localize('add limit', this.language)}
+                        </mwc-button>
+                    </div>
+                </div>
+            </ha-dialog>
         `;
     }
 }
