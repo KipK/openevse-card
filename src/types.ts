@@ -1,8 +1,15 @@
 export interface HomeAssistant {
     states: Record<string, EntityState>;
-    callService: (domain: string, service: string, data: Record<string, unknown>, target?: ServiceCallRequest["target"], notifyOnError?: boolean, returnResponse?: boolean) => Promise<ServiceCallResponse | void>;
+    callService: (
+        domain: string,
+        service: string,
+        data: Record<string, unknown>,
+        target?: ServiceCallRequest['target'],
+        notifyOnError?: boolean,
+        returnResponse?: boolean
+    ) => Promise<ServiceCallResponse | void>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callWS: <T>(msg: { type: string; [key: string]: any }) => Promise<T>;
+    callWS: <T>(msg: {type: string; [key: string]: any}) => Promise<T>;
     formatEntityState: (entity: EntityState) => string;
     language: string;
     entities?: Record<string, RegistryEntity>;
@@ -33,10 +40,10 @@ export interface EntityConfig {
 export interface CardConfig {
     header?: boolean;
     name?: string;
-    feat_soc?: boolean,
-    feat_range?: boolean,
-    feat_max_range?: number,
-    feat_max_energy?: number,
+    feat_soc?: boolean;
+    feat_range?: boolean;
+    feat_max_range?: number;
+    feat_max_energy?: number;
     device_id?: string;
     optional_entities?: (string | EntityConfig)[]; // Allow strings or full config objects
     override_entity?: string;
@@ -69,7 +76,6 @@ export type EntityIdKey =
     | 'limit_active_entity'
     | 'vehicle_battery_level_entity'
     | 'vehicle_range_entity';
-
 
 // Keep RenderedOptionalEntity definition if still used by optional-entities.ts component
 // (We'll check this component later)

@@ -1,17 +1,17 @@
-import { LitElement, html, css, PropertyValues } from 'lit';
-import { customElement, property, state, eventOptions } from 'lit/decorators.js';
+import {LitElement, html, css, PropertyValues} from 'lit';
+import {customElement, property, state, eventOptions} from 'lit/decorators.js';
 
 @customElement('custom-slider')
 export class CustomSlider extends LitElement {
-    @property({ type: Number }) min = 0;
-    @property({ type: Number }) max = 32;
-    @property({ type: Number }) step = 1;
-    @property({ type: Number }) value = 0;
-    @property({ type: Boolean }) disabled = false;
-    @property({ type: Number }) height = 22;
-    @property({ type: String }) color = 'var(--primary-color, #03a9f4)';
-    @property({ type: Boolean, attribute: 'display-thumb' }) displayThumb = true;
-    @property({ type: String }) unit = '';
+    @property({type: Number}) min = 0;
+    @property({type: Number}) max = 32;
+    @property({type: Number}) step = 1;
+    @property({type: Number}) value = 0;
+    @property({type: Boolean}) disabled = false;
+    @property({type: Number}) height = 22;
+    @property({type: String}) color = 'var(--primary-color, #03a9f4)';
+    @property({type: Boolean, attribute: 'display-thumb'}) displayThumb = true;
+    @property({type: String}) unit = '';
 
     @state() private _sliderValue = 0;
     @state() private _dragging = false;
@@ -52,15 +52,17 @@ export class CustomSlider extends LitElement {
         const normalizedValue = (this._sliderValue - this.min) / range;
         // Scale this normalized value to the visual range (5% to 100%)
         // The visual range spans 95% (100 - 5)
-        return 5 + (normalizedValue * 95);
+        return 5 + normalizedValue * 95;
     }
 
-    @eventOptions({ passive: true })
+    @eventOptions({passive: true})
     private _handleSliderStart(e: MouseEvent | TouchEvent) {
         if (this.disabled) return;
 
         this._dragging = true;
-        this.shadowRoot?.querySelector('.slider-wrapper')?.classList.add('dragging');
+        this.shadowRoot
+            ?.querySelector('.slider-wrapper')
+            ?.classList.add('dragging');
         this._updateSliderValue(e);
 
         window.addEventListener('mousemove', this._boundHandleSliderMove);
@@ -77,14 +79,18 @@ export class CustomSlider extends LitElement {
 
     private _handleSliderEnd() {
         if (this._dragging) {
-            this.shadowRoot?.querySelector('.slider-wrapper')?.classList.remove('dragging');
+            this.shadowRoot
+                ?.querySelector('.slider-wrapper')
+                ?.classList.remove('dragging');
             this._removeEventListeners();
 
-            this.dispatchEvent(new CustomEvent('value-changed', {
-                detail: { value: this._sliderValue },
-                bubbles: true,
-                composed: true
-            }));
+            this.dispatchEvent(
+                new CustomEvent('value-changed', {
+                    detail: {value: this._sliderValue},
+                    bubbles: true,
+                    composed: true,
+                })
+            );
 
             setTimeout(() => {
                 this._dragging = false;
@@ -126,100 +132,112 @@ export class CustomSlider extends LitElement {
 
         // Update state and emit preview event
         this._sliderValue = Number(value.toFixed(2));
-        this.dispatchEvent(new CustomEvent('value-preview', {
-            detail: { value: this._sliderValue },
-            bubbles: true,
-            composed: true
-        }));
+        this.dispatchEvent(
+            new CustomEvent('value-preview', {
+                detail: {value: this._sliderValue},
+                bubbles: true,
+                composed: true,
+            })
+        );
         this.requestUpdate();
     }
 
     static override styles = css`
-    :host {
-      display: block;
-      width: 100%;
-    }
-    
-    .slider-wrapper {
-      position: relative;
-      height: var(--slider-height, 22px);
-      width: 100%;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      background: color-mix(in srgb, var(--slider-color) 20%, transparent);
-      box-shadow: var(--control-button-background, none);
-      touch-action: none;
-      overflow: hidden;
-    }
-    
-    .slider-knob {
-      position: absolute;
-      height: 32px;
-      width: 32px;
-      border-radius: 50%;
-      background: transparent;
-      z-index: 1;
-      cursor: pointer;
-    }
-    
-    .slider-track {
-      position: absolute;
-      height: 100%;
-      border-radius: 6px 0 0 6px;
-      background: var(--slider-color);
-      opacity: 1;
-    }
+        :host {
+            display: block;
+            width: 100%;
+        }
 
-    .slider-wrapper:hover .slider-track {
-      background: color-mix(in srgb, var(--slider-color) 60%, transparent);
-    }
-    .dragging .slider-track {
-      background: color-mix(in srgb, var(--slider-color) 60%, transparent);
-    }
-    
+        .slider-wrapper {
+            position: relative;
+            height: var(--slider-height, 22px);
+            width: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            background: color-mix(
+                in srgb,
+                var(--slider-color) 20%,
+                transparent
+            );
+            box-shadow: var(--control-button-background, none);
+            touch-action: none;
+            overflow: hidden;
+        }
 
-    .slider-badge {
+        .slider-knob {
+            position: absolute;
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            background: transparent;
+            z-index: 1;
+            cursor: pointer;
+        }
 
-      padding: 4px 8px;
-      border-radius: 4px;
+        .slider-track {
+            position: absolute;
+            height: 100%;
+            border-radius: 6px 0 0 6px;
+            background: var(--slider-color);
+            opacity: 1;
+        }
 
-      margin-left: 8px;
-      white-space: nowrap;
-      align-self: center;
-    }
+        .slider-wrapper:hover .slider-track {
+            background: color-mix(
+                in srgb,
+                var(--slider-color) 60%,
+                transparent
+            );
+        }
+        .dragging .slider-track {
+            background: color-mix(
+                in srgb,
+                var(--slider-color) 60%,
+                transparent
+            );
+        }
 
-    .slider-container {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
-    }
-    
-    .slider-thumb {
-      position: absolute;
-      height: 100%;
-      width: 5%;
-      background: var(--slider-color);
-      left: calc(var(--slider-percentage) - 1px);
-      opacity: 0;
-    }
+        .slider-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
 
-    .slider-wrapper:hover .slider-thumb,
-    .slider-wrapper.dragging .slider-thumb {
-      opacity: 1;
-    }
-    
-    :host([disabled]) .slider-wrapper {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    :host([disabled]) .slider-track, 
-    :host([disabled]) .slider-knob {
-      cursor: not-allowed;
-    }
-  `;
+            margin-left: 8px;
+            white-space: nowrap;
+            align-self: center;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .slider-thumb {
+            position: absolute;
+            height: 100%;
+            width: 5%;
+            background: var(--slider-color);
+            left: calc(var(--slider-percentage) - 1px);
+            opacity: 0;
+        }
+
+        .slider-wrapper:hover .slider-thumb,
+        .slider-wrapper.dragging .slider-thumb {
+            opacity: 1;
+        }
+
+        :host([disabled]) .slider-wrapper {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        :host([disabled]) .slider-track,
+        :host([disabled]) .slider-knob {
+            cursor: not-allowed;
+        }
+    `;
 
     private _formatValue(val: number): string {
         return this.step < 1 ? val.toFixed(1) : val.toFixed(0);
@@ -227,43 +245,61 @@ export class CustomSlider extends LitElement {
 
     override render() {
         return html`
-      <div class="slider-container">
-        ${this.unit ? html`
-          <div class="slider-badge" style="color: ${this.color}">
-            ${this._formatValue(this._sliderValue)} ${this.unit}
-          </div>
-        ` : ''}
-        <div class="slider-wrapper"
-        @mousedown=${this._handleSliderStart}
-        @touchstart=${this._handleSliderStart}
-        style="
+            <div class="slider-container">
+                ${this.unit
+                    ? html`
+                          <div
+                              class="slider-badge"
+                              style="color: ${this.color}"
+                          >
+                              ${this._formatValue(this._sliderValue)}
+                              ${this.unit}
+                          </div>
+                      `
+                    : ''}
+                <div
+                    class="slider-wrapper"
+                    @mousedown=${this._handleSliderStart}
+                    @touchstart=${this._handleSliderStart}
+                    style="
           --slider-height: ${this.height}px;
           --slider-color: ${this.color};
           --slider-percentage: ${this._percentage}%;
         "
-        >
-          <div
-            class="slider-track clickable"
-            style="width: ${Math.max(5, this._percentage)}%; border-radius: ${this._percentage === 100 ? '6px' : (this._percentage === 0 ? '0' : '6px 0 0 6px')}"
-          ></div>
-        ${this.displayThumb ? html`
-          <div
-            class="slider-thumb"
-            style="left: calc(max(0%, ${this._percentage}% - 5%))"
-          ></div>
-        ` : ''}
-          <div
-            class="slider-knob"
-            style="left: calc(clamp(0%, ${this._percentage}%, 100%) - 16px)"
-          ></div>
-        </div>
-      </div>
-    `;
+                >
+                    <div
+                        class="slider-track clickable"
+                        style="width: ${Math.max(
+                            5,
+                            this._percentage
+                        )}%; border-radius: ${this._percentage === 100
+                            ? '6px'
+                            : this._percentage === 0
+                            ? '0'
+                            : '6px 0 0 6px'}"
+                    ></div>
+                    ${this.displayThumb
+                        ? html`
+                              <div
+                                  class="slider-thumb"
+                                  style="left: calc(max(0%, ${this
+                                      ._percentage}% - 5%))"
+                              ></div>
+                          `
+                        : ''}
+                    <div
+                        class="slider-knob"
+                        style="left: calc(clamp(0%, ${this
+                            ._percentage}%, 100%) - 16px)"
+                    ></div>
+                </div>
+            </div>
+        `;
     }
 }
 
 declare global {
-  interface HTMLElementTagNameMap {
-    "custom-slider": CustomSlider;
-  }
+    interface HTMLElementTagNameMap {
+        'custom-slider': CustomSlider;
+    }
 }

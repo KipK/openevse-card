@@ -11,10 +11,7 @@
         "ecmaVersion": 2020,
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint",
-        "lit"
-    ],
+    "plugins": ["@typescript-eslint", "lit"],
     "env": {
         "browser": true
     },
@@ -36,17 +33,13 @@
     },
     "overrides": [
         {
-            "files": [
-                "rollup.config.js"
-            ],
+            "files": ["rollup.config.js"],
             "env": {
                 "node": true
             }
         },
         {
-            "files": [
-                "*_test.ts"
-            ],
+            "files": ["*_test.ts"],
             "rules": {
                 "@typescript-eslint/no-explicit-any": "off"
             }

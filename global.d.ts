@@ -1,27 +1,27 @@
-import { LitElement, nothing } from 'lit';
+import {LitElement, nothing} from 'lit';
 
 // Define a basic HomeAssistant interface
 // This can be expanded with more properties as needed (e.g., callService, localize, connection, etc.)
 interface HomeAssistant {
-  states: { [entity_id: string]: HassEntity };
-  // Add other common properties/methods if known to be used
-  // callService: (domain: string, service: string, serviceData?: object) => Promise<void>;
-  // localize: (key: string, ...args: any[]) => string;
-  // etc.
+    states: {[entity_id: string]: HassEntity};
+    // Add other common properties/methods if known to be used
+    // callService: (domain: string, service: string, serviceData?: object) => Promise<void>;
+    // localize: (key: string, ...args: any[]) => string;
+    // etc.
 }
 
 // Define a basic HassEntity interface (replace with a more specific one if available)
 interface HassEntity {
-  entity_id: string;
-  state: string;
-  attributes: Record<string, any>;
-  last_changed: string;
-  last_updated: string;
-  context: {
-    id: string;
-    parent_id?: string;
-    user_id?: string;
-  };
+    entity_id: string;
+    state: string;
+    attributes: Record<string, any>;
+    last_changed: string;
+    last_updated: string;
+    context: {
+        id: string;
+        parent_id?: string;
+        user_id?: string;
+    };
 }
 
 // Define interfaces for standard HA elements used in this project
@@ -30,17 +30,20 @@ interface HaCard extends HTMLElement {
     header?: string;
 }
 
-interface HaIcon extends LitElement { // Assuming LitElement base for modern HA elements
+interface HaIcon extends LitElement {
+    // Assuming LitElement base for modern HA elements
     icon?: string;
     class?: string;
 }
 
-interface HaIconButton extends LitElement { // Assuming LitElement base
+interface HaIconButton extends LitElement {
+    // Assuming LitElement base
     icon?: string;
     path?: string; // For MDI icons
 }
 
-interface HaForm extends LitElement { // Assuming LitElement base
+interface HaForm extends LitElement {
+    // Assuming LitElement base
     hass?: HomeAssistant;
     data?: Record<string, any>;
     schema?: readonly any[]; // Use specific schema type if available/needed (e.g., HaFormSchema[])
@@ -50,7 +53,8 @@ interface HaForm extends LitElement { // Assuming LitElement base
     disabled?: boolean;
 }
 
-interface HaEntityPicker extends LitElement { // Assuming LitElement base
+interface HaEntityPicker extends LitElement {
+    // Assuming LitElement base
     hass?: HomeAssistant;
     value?: string;
     label?: string;
