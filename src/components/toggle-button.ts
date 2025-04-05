@@ -33,22 +33,31 @@ export class ToggleButton extends LitElement {
         this._isHovering = false;
     }
 
+    override connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('mouseover', this._handleMouseOver);
+        this.addEventListener('mouseout', this._handleMouseOut);
+    }
+
+    override disconnectedCallback() {
+        super.disconnectedCallback();
+        this.removeEventListener('mouseover', this._handleMouseOver);
+        this.removeEventListener('mouseout', this._handleMouseOut);
+    }
+ 
     static override styles = css`
         :host {
-            display: inline-flex; 
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
             border: 1px solid var(--divider-color);
             border-radius: 10px;
-            padding: 8px; 
+            padding: 8px;
             box-sizing: border-box;
-            background-color: transparent; 
         }
         ha-icon {
-            transition: color 0.2s ease-in-out;
-            --mdc-icon-size: 25px; 
+            --mdc-icon-size: 25px;
         }
     `;
 
@@ -57,38 +66,39 @@ export class ToggleButton extends LitElement {
         const showState1Icon = this._isHovering ? !isState1 : isState1;
 
         const icon = showState1Icon ? this.iconState1 : this.iconState2;
-        const color = showState1Icon ? this.colorState1 : this.colorState2;
-        const title = isState1 ? this.titleState1 : this.titleState2; // Title always reflects current state
+        const title = isState1 ? this.titleState1 : this.titleState2; //
 
         // Apply hover effect styles directly
 		const bgColor = isState1 ? this.colorState1 : this.colorState2; // Color of the *next* state on hover
 		const hoverColor = isState1 ? this.colorState2 : this.colorState1; // Color of the *next* state on hover
-		const hostStyles = `
+		const iconSize = this.width * 0.7 ; // Adjust icon size based on width
+        const hostStyles = `
 			:host {
 				background-color: ${bgColor}; 
 				border-color: var(--divider-color);
 			}
             :host(:hover) {
-                background-color: var(--primary-text-color);
+                background-color: transparent;
             }
             :host(:hover) ha-icon {
 				color: ${hoverColor};
             }
 			:host ha-icon {
-				color: ${color};
+				color: var(--primary-text-color);
             }
+             ha-icon {
+            --mdc-icon-size: ${iconSize};
+            }   
         `;
 
         return html`
             <style>
                 ${hostStyles}
             </style>
-			<div 
+			<div
 				class="toggle-button"
-				style="width:${this.width}px; 
+				style="width:${this.width}px;
 				height: ${this.width}px;"
-				@mouseover=${this._handleMouseOver}
-				@mouseout=${this._handleMouseOut}
 				@click=${this._handleClick}
 			>
 				<ha-icon

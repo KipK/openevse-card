@@ -598,18 +598,20 @@ class CustomCard extends LitElement {
                             .selectOverrideStateHandler=${this._selectOverrideState}
                         ></override-controls>
                         ${divertActiveEntity && divertModeEntity ? html`
-                            <toggle-button
-                                .hass=${this.hass}
-                                .currentState=${divertModeEntity.state}
-                                .state1Value=${'fast'}
-                                .state2Value=${'eco'}
-                                .iconState1=${'mdi:solar-panel'}
-                                .colorState1=${'var(--evse-active-color)'}
-                                .iconState2=${'mdi:transmission-tower-export'}
-                                .colorState2=${'var(--evse-auto-color)'} 
-                                .width=${25}
-                                .clickHandler=${() => this._toggleDivertMode(divertModeEntity.state == 'fast' ? 'eco' : 'fast')}
-                            ></toggle-button>
+                        <toggle-button
+                            .hass=${this.hass}
+                            .currentState=${divertModeEntity.state}
+                            .state1Value=${'eco'}
+                            .state2Value=${'fast'}
+                            .iconState1=${'mdi:solar-panel'}
+                            .colorState1=${'var(--evse-active-color)'}
+                            .iconState2=${'mdi:transmission-tower-export'}
+                            .colorState2=${'var(--evse-auto-color)'}
+                            .titleState1=${localize('eco', this._lang)}
+                            .titleState2=${localize('fast', this._lang)}
+                            .width=${25}
+                            .clickHandler=${() => this._toggleDivertMode(divertModeEntity.state == 'fast' ? 'eco' : 'fast')}
+                        ></toggle-button>
                         ` : nothing}
                     </div>
                     <div class="container">
