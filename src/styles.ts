@@ -177,56 +177,6 @@ const cardStyles = css`
     .override-button.active.charging {
         color: yellow;
     }
-    .divert-button {
-        position: absolute;
-        right: 0px;
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background-color: transparent;
-        padding: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-        color: var(--primary-text-color);
-        font-size: 0.8em;
-        border: 1px solid var(--divider-color);
-        border-radius: 8px;
-        width: 20px; 
-        height: 20px; 
-    }
-    .divert-button[data-option="fast"] {
-        background-color: transparent;
-    }
-    .divert-button[data-option="eco"] {
-        background: var(--evse-active-color);
-    }
-    .divert-button:hover[data-option="fast"] {
-        background: var(--evse-auto-color);
-    }
-    .divert-button:hover[data-option="eco"] {
-        background: transparent;
-    }
-    .divert-button ha-icon {
-        --mdc-icon-size: 20px;
-        color: var(--evse-active-color);
-    }
-    .divert-button[data-option="eco"] ha-icon {
-        --mdc-icon-size: 22px;
-        color: var(--primary-text-color);
-    }
-    .divert-button:hover[data-option="eco"] ha-icon {
-        --mdc-icon-size: 22px;
-        color: var(--evse-active-color);
-    }
-    .divert-button[data-option="fast"] ha-icon {
-        --mdc-icon-size: 22px;
-        color: var(--evse-auto-color);
-    }
-    .divert-button:hover[data-option="fast"] ha-icon {
-        --mdc-icon-size: 22px;
-        color: var(--primary-text-color);
-    }    
         
     .entity-row {
         display: flex;

@@ -26,7 +26,7 @@ import './components/info-grid';
 import './components/vehicle-info';
 import './components/override-controls';
 import './components/optional-entities';
-
+import './components/toggle-button'; // Import the new component
 const REQUIRED_HA_COMPONENTS = [
     'ha-form',
     'ha-icon',
@@ -298,12 +298,12 @@ class CustomCard extends LitElement {
             });
         }
     }
-    _toggleDivertMode():void {
-        if (this.hass) {
-            const option = this.config?.divert_mode_entity && this.hass.states[this.config.divert_mode_entity]?.state === 'eco' ? 'fast' : 'eco';
+    // Adjusted _toggleDivertMode to accept the next state from the button
+    _toggleDivertMode(nextState: string | number | boolean): void {
+        if (this.hass && this.config?.divert_mode_entity) {
             this.hass.callService('select', 'select_option', {
-                entity_id: this.config?.divert_mode_entity,
-                option: option,
+                entity_id: this.config.divert_mode_entity,
+                option: nextState.toString(), // Pass the next state determined by the button
             });
         }
     }
@@ -598,16 +598,18 @@ class CustomCard extends LitElement {
                             .selectOverrideStateHandler=${this._selectOverrideState}
                         ></override-controls>
                         ${divertActiveEntity && divertModeEntity ? html`
-                            
-                            <div class="divert-button"
-                                data-option=${divertModeEntity.state || 'fast'}
-                                @click=${this._toggleDivertMode}
-                                >
-                                <ha-icon
-                                    class="divert-icon"
-                                    icon=${divertModeEntity.state == 'eco' ? "mdi:solar-panel":"mdi:transmission-tower-export"}
-                                ></ha-icon>
-                            </div>
+                            <toggle-button
+                                .hass=${this.hass}
+                                .currentState=${divertModeEntity.state}
+                                .state1Value=${'fast'}
+                                .state2Value=${'eco'}
+                                .iconState1=${'mdi:solar-panel'}
+                                .colorState1=${'var(--evse-active-color)'}
+                                .iconState2=${'mdi:transmission-tower-export'}
+                                .colorState2=${'var(--evse-auto-color)'} 
+                                .width=${25}
+                                .clickHandler=${() => this._toggleDivertMode(divertModeEntity.state == 'fast' ? 'eco' : 'fast')}
+                            ></toggle-button>
                         ` : nothing}
                     </div>
                     <div class="container">
