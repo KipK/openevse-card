@@ -298,6 +298,15 @@ class CustomCard extends LitElement {
             });
         }
     }
+    _toggleDivertMode():void {
+        if (this.hass) {
+            const option = this.config?.divert_mode_entity && this.hass.states[this.config.divert_mode_entity]?.state === 'eco' ? 'fast' : 'eco';
+            this.hass.callService('select', 'select_option', {
+                entity_id: this.config?.divert_mode_entity,
+                option: option,
+            });
+        }
+    }
     // Call service to get limit
     async _getLimit(): Promise<Limit | null> {
         if (!this.hass) return null;
@@ -592,11 +601,11 @@ class CustomCard extends LitElement {
                             
                             <div class="divert-button"
                                 data-option=${divertModeEntity.state || 'fast'}
-                                @click=${() => alert('Divert button clicked')}
+                                @click=${this._toggleDivertMode}
                                 >
                                 <ha-icon
                                     class="divert-icon"
-                                    icon="mdi:solar-panel"
+                                    icon=${divertModeEntity.state == 'eco' ? "mdi:solar-panel":"mdi:transmission-tower-export"}
                                 ></ha-icon>
                             </div>
                         ` : nothing}

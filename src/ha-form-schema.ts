@@ -215,7 +215,7 @@ export const mainSchema = memoizeOne(
             ),
             createEntitySelectorSchema(
                 'divert_mode_entity',
-                'binary_sensor',
+                'select',
                 'divert mode',
                 'select openevse_divert_mode',
                 false,

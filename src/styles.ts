@@ -178,10 +178,8 @@ const cardStyles = css`
         color: yellow;
     }
     .divert-button {
-        position: absolute; /* Position relative to the container */
-        right: 10px; /* Align to the right edge of the container */
-        top: 50%; /* Center vertically */
-        transform: translateY(-50%); /* Adjust vertical centering */
+        position: absolute;
+        right: 0px;
         display: inline-flex;
         flex-direction: column;
         align-items: center;
@@ -194,8 +192,8 @@ const cardStyles = css`
         font-size: 0.8em;
         border: 1px solid var(--divider-color);
         border-radius: 8px;
-        width: 25px; 
-        height: 25px; 
+        width: 20px; 
+        height: 20px; 
     }
     .divert-button[data-option="fast"] {
         background-color: transparent;
@@ -204,7 +202,7 @@ const cardStyles = css`
         background: var(--evse-active-color);
     }
     .divert-button:hover[data-option="fast"] {
-        background: var(--evse-active-color);
+        background: var(--evse-auto-color);
     }
     .divert-button:hover[data-option="eco"] {
         background: transparent;
@@ -223,13 +221,12 @@ const cardStyles = css`
     }
     .divert-button[data-option="fast"] ha-icon {
         --mdc-icon-size: 22px;
-        color: var(--evse-active-color);
+        color: var(--evse-auto-color);
     }
     .divert-button:hover[data-option="fast"] ha-icon {
         --mdc-icon-size: 22px;
         color: var(--primary-text-color);
-    }
-        
+    }    
         
     .entity-row {
         display: flex;
