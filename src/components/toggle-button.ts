@@ -56,7 +56,7 @@ export class ToggleButton extends LitElement {
         const isState1 = this.currentState === this.state1Value;
         const showState1Icon = this._isHovering ? !isState1 : isState1;
 
-        const icon = 	 ? this.iconState1 : this.iconState2;
+        const icon = showState1Icon ? this.iconState1 : this.iconState2;
         const color = showState1Icon ? this.colorState1 : this.colorState2;
         const title = isState1 ? this.titleState1 : this.titleState2; // Title always reflects current state
 
