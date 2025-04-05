@@ -57,6 +57,9 @@ export interface CardConfig {
     time_elapsed_entity?: string;
     wifi_signal_strength_entity?: string;
     limit_active_entity?: string;
+    divert_active_entity?: string;
+    divert_mode_entity?: string;
+    pv_charge_rate_entity?: string;
     vehicle_battery_level_entity?: string;
     vehicle_range_entity?: string;
 }
@@ -74,6 +77,9 @@ export type EntityIdKey =
     | 'time_elapsed_entity'
     | 'wifi_signal_strength_entity'
     | 'limit_active_entity'
+    | 'divert_active_entity'
+    | 'divert_mode_entity'
+    | 'pv_charge_rate_entity'
     | 'vehicle_battery_level_entity'
     | 'vehicle_range_entity';
 

@@ -205,6 +205,33 @@ export const mainSchema = memoizeOne(
                 lang
             ),
             createEntitySelectorSchema(
+                'divert_active_entity',
+                'binary_sensor',
+                'divert active',
+                'select openevse_divert_active entity',
+                false,
+                deviceEntities,
+                lang
+            ),
+            createEntitySelectorSchema(
+                'divert_mode_entity',
+                'binary_sensor',
+                'divert mode',
+                'select openevse_divert_mode',
+                false,
+                deviceEntities,
+                lang
+            ),
+            createEntitySelectorSchema(
+                'pv_charge_rate_entity',
+                'sensor',
+                'Divert pv charge rate',
+                'select openevse_pv_charge_rate entity',
+                false,
+                deviceEntities,
+                lang
+            ),
+            createEntitySelectorSchema(
                 'vehicle_range_entity',
                 'sensor',
                 'vehicle range',

@@ -265,6 +265,9 @@ class CustomCard extends LitElement {
             time_elapsed_entity: '',
             wifi_signal_strength_entity: '',
             limit_active_entity: '',
+            divert_active_entity: '',
+            divert_mode_entity: '',
+            pv_charge_rate_entity: '',
             vehicle_battery_level_entity: '',
             vehicle_range_entity: '',
             optional_entities: [],
@@ -447,6 +450,9 @@ class CustomCard extends LitElement {
         const wifiSignalEntity = this._getEntityState(
             'wifi_signal_strength_entity'
         );
+        const divertActiveEntity = this._getEntityState('divert_active_entity');
+        const divertModeEntity = this._getEntityState('divert_mode_entity');
+        const pvChargeRateEntity = this._getEntityState('pv_charge_rate_entity');
         const vehicleBatteryLevelEntity = this._getEntityState(
             'vehicle_battery_level_entity'
         );
@@ -596,14 +602,14 @@ class CustomCard extends LitElement {
                             'number'
                                 ? chargeRateEntity.attributes.step
                                 : 1}
-                            .value=${Number(chargeRateEntity?.state || 0)}
+                            .value=${Number(divertActiveEntity?.state == 'on' && divertModeEntity?.state == 'eco' ? pvChargeRateEntity?.state :  chargeRateEntity?.state || 0)}
                             .unit=${typeof chargeRateEntity?.attributes
                                 .unit_of_measurement === 'string'
                                 ? chargeRateEntity.attributes
                                       .unit_of_measurement
                                 : 'A'}
                             .label=${localize('charge rate', this._lang)}
-                            .disabled=${!chargeRateEntity}
+                            .disabled=${!chargeRateEntity || (divertActiveEntity?.state == 'on' && divertModeEntity?.state == 'eco')}
                             @value-changed=${this._updateSlider}
                         ></evse-slider>
                     </div>

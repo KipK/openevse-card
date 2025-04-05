@@ -3,7 +3,6 @@ import {property, state, customElement} from 'lit/decorators.js'; // Import stat
 import {Limit} from '../types';
 import {localize} from '../utils/translations';
 import './custom-slider';
-// Removed import for generic-slider
 
 @customElement('limit-component')
 export class LimitComponent extends LitElement {
@@ -46,12 +45,11 @@ export class LimitComponent extends LitElement {
             ha-dialog {
                 /* Prevent dialog from overlapping app header */
                 --dialog-surface-position: static;
-                --dialog-z-index: 5;  
+                --dialog-z-index: 5;
             }
              .dialog-content {
-                padding: 16px 16px 8px 16px; /* Reduced bottom padding */
-                width: 350px; /* Set fixed width */
-                box-sizing: border-box; /* Include padding in width calculation */
+                padding: 16px 16px 8px 16px; 
+                box-sizing: border-box;
             }
             .new-limit-btn {
                 background-color: var(--primary-color);
@@ -113,7 +111,7 @@ export class LimitComponent extends LitElement {
                 justify-content: center;
                 text-align: center;
                 gap: 8px;
-                width: 60%;
+                width: 250px;
             }
             .time-input {
                 flex: 1;
@@ -123,7 +121,7 @@ export class LimitComponent extends LitElement {
             }
             .time-input input {
                 width: 70%;
-                padding: 8px;
+             
                 border: 1px solid var(--divider-color);
                 border-radius: 4px;
                 background-color: var(--primary-background-color);
@@ -141,19 +139,13 @@ export class LimitComponent extends LitElement {
                 padding: 8px 0;
             }
             .slider-input {
-                width: 60%;
+                width: 80%;
             }
             .slider-value {
                 text-align: center;
                 font-size: 16px;
                 font-weight: 500;
                 margin-bottom: 0px;
-            }
-            /* Removed .limit-slider and related thumb styles */
-            .form-actions {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 25px;
             }
             .btn {
                 padding: 8px 16px;
@@ -221,7 +213,6 @@ export class LimitComponent extends LitElement {
         `;
     }
 
-    // Renamed function to explicitly open the dialog
     _openDialog(): void {
         this._showLimitForm = true;
         // Reset form state when opening
@@ -232,25 +223,21 @@ export class LimitComponent extends LitElement {
         this.requestUpdate();
     }
 
-    // New function to explicitly close the dialog
     _closeDialog(): void {
         this._showLimitForm = false;
-        // Optionally reset form state on close/cancel if desired
-        // (Currently reset in _openDialog)
         this.requestUpdate();
     }
 
     _handleTypeChange(e: Event): void {
         const target = e.target as HTMLSelectElement;
         this._selectedLimitType = target.value;
-        this._value = 0; //reset value
+        this._value = 0;
         this.requestUpdate();
     }
 
     _handleHoursChange(e: Event): void {
         const target = e.target as HTMLInputElement;
         const value = target.value;
-        // Set to undefined if empty, otherwise parse the integer
         this._hours = value === '' ? undefined : parseInt(value, 10);
         this.requestUpdate();
     }
@@ -258,7 +245,6 @@ export class LimitComponent extends LitElement {
     _handleMinutesChange(e: Event): void {
         const target = e.target as HTMLInputElement;
         const value = target.value;
-        // Set to undefined if empty, otherwise parse the integer
         this._minutes = value === '' ? undefined : parseInt(value, 10);
         this.requestUpdate();
     }
@@ -443,95 +429,90 @@ export class LimitComponent extends LitElement {
                         </div>
                     </div>
 
-                    ${this._selectedLimitType === 'time'
-                        ? html`
-                              <div class="form-row">
-                                  <div class="time-inputs">
-                                      <div class="time-input">
-                                          <ha-textfield
-                                              id="hours"
-                                              type="number"
-                                              inputmode="numeric"
-                                              .value=${this._hours === undefined
-                                                  ? ''
-                                                  : String(this._hours)}
-                                              .label=${localize('hours', this.language)}
-                                              name="hours"
-                                              @change=${this._handleHoursChange}
-                                              no-spinner
-                                              min="0"
-                                              maxlength="2"
-                                              suffix=":"
-                                              class="hasSuffix"
-                                          >
-                                          </ha-textfield>
-                                      </div>
-                                      <div class="time-input">
-                                          <ha-textfield
-                                              id="minutes"
-                                              type="number"
-                                              inputmode="numeric"
-                                              .value=${this._minutes === undefined
-                                                  ? ''
-                                                  : String(this._minutes)}
-                                              .label=${localize('minutes', this.language)}
-                                              name="minutes"
-                                              @change=${this._handleMinutesChange}
-                                              no-spinner
-                                              min="0"
-                                              maxlength="2"
-                                          >
-                                          </ha-textfield>
-                                      </div>
-                                  </div>
-                              </div>
-                          `
-                        : nothing}
-                    ${this._selectedLimitType !== 'time'
-                        ? html`
-                            <div class="form-row">
-                                <div class="slider-input">
-                                    <custom-slider
-                                      .min=${0}
-                                      .max=${this._selectedLimitType === 'range'
-                                          ? this.range_max_value
-                                          : this._selectedLimitType === 'energy'
-                                            ? this.energy_max_value
-                                            : 100}
-                                      .step=${1}
-                                      .value=${this._selectedLimitType === 'energy'
-                                          ? Math.round(this._value / 1000)
-                                          : this._value}
-                                      height="10"
-                                      .color=${'var(--text-primary-color)'}
-                                      .unit=${this._selectedLimitType === 'range'
-                                          ? this.range_unit
-                                          : this._selectedLimitType === 'energy'
-                                            ? 'kWh'
-                                            : '%'}
-                                      @value-changed=${this._handleSliderChange}
-                                    ></custom-slider>
-                              </div>
+                    ${this._selectedLimitType === 'time' ? html`
+                    <div class="form-row">
+                        <div class="time-inputs">
+                            <div class="time-input">
+                                <ha-textfield
+                                    id="hours"
+                                    type="number"
+                                    inputmode="numeric"
+                                    .value=${this._hours === undefined
+                                        ? ''
+                                        : String(this._hours)}
+                                    .label=${localize('hours', this.language)}
+                                    name="hours"
+                                    @change=${this._handleHoursChange}
+                                    no-spinner
+                                    min="0"
+                                    maxlength="2"
+                                    suffix=":"
+                                    class="hasSuffix"
+                                >
+                                </ha-textfield>
                             </div>
-                          `
-                        : nothing}
-
-                    <div class="form-actions">
-                        <mwc-button
-                            slot="secondaryAction"
-                            @click=${this._closeDialog}
-                        >
-                             ${localize('cancel', this.language)}
-                        </mwc-button>
-                        <mwc-button
-                            slot="primaryAction"
-                            @click=${this._addLimit}
-                            .disabled=${this._isAddButtonDisabled()}
-                        >
-                            ${localize('add limit', this.language)}
-                        </mwc-button>
+                            <div class="time-input">
+                                <ha-textfield
+                                    id="minutes"
+                                    type="number"
+                                    inputmode="numeric"
+                                    .value=${this._minutes === undefined
+                                        ? ''
+                                        : String(this._minutes)}
+                                    .label=${localize('minutes', this.language)}
+                                    name="minutes"
+                                    @change=${this._handleMinutesChange}
+                                    no-spinner
+                                    min="0"
+                                    maxlength="2"
+                                >
+                                </ha-textfield>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    `
+                    : nothing}
+                    ${this._selectedLimitType !== 'time' ? html`
+                    <div class="form-row">
+                        <div class="slider-input">
+                            <custom-slider
+                                .min=${0}
+                                .max=${this._selectedLimitType === 'range'
+                                    ? this.range_max_value
+                                    : this._selectedLimitType === 'energy'
+                                    ? this.energy_max_value
+                                    : 100}
+                                .step=${1}
+                                .value=${this._selectedLimitType === 'energy'
+                                    ? Math.round(this._value / 1000)
+                                    : this._value}
+                                height="10"
+                                .color=${'var(--text-primary-color)'}
+                                .unit=${this._selectedLimitType === 'range'
+                                    ? this.range_unit
+                                    : this._selectedLimitType === 'energy'
+                                    ? 'kWh'
+                                    : '%'}
+                                @value-changed=${this._handleSliderChange}
+                            ></custom-slider>
+                        </div>
+                    </div>
+                    `
+                    : nothing}
+                </div> 
+                <mwc-button
+                    slot="secondaryAction"
+                    @click=${this._closeDialog}
+                >
+                        ${localize('cancel', this.language)}
+                </mwc-button>
+                <mwc-button
+                    slot="primaryAction"
+                    @click=${this._addLimit}
+                    .disabled=${this._isAddButtonDisabled()}
+                >
+                    ${localize('add limit', this.language)}
+                </mwc-button>
             </ha-dialog>
         `;
     }

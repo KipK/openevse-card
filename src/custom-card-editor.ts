@@ -203,7 +203,22 @@ class CustomCardEditor extends LitElement {
             limit_active_entity: {
                 names: ['limit_active'],
                 domains: ['binary_sensor'],
-                preferredPattern: 'sensor.openevse_limit_active',
+                preferredPattern: 'binary_sensor.openevse_limit_active',
+            },
+            divert_active_entity: {
+                names: ['divert_active'],
+                domains: ['binary_sensor'],
+                preferredPattern: 'binary_sensor.openevse_divert_active',
+            },
+            divert_mode_entity: {
+                names: ['divert_mode'],
+                domains: ['sensor'],
+                preferredPattern: 'sensor.openevse_divert_mode',
+            },
+            pv_charge_rate_entity: {
+                names: ['pv_charge_rate'],
+                domains: ['sensor'],
+                preferredPattern: 'sensor.openevse_pv_charge_rate',
             },
             vehicle_battery_level_entity: {
                 names: ['vehicle_battery_level'],
@@ -359,6 +374,9 @@ class CustomCardEditor extends LitElement {
             'time_elapsed_entity',
             'wifi_signal_strength_entity',
             'limit_active_entity',
+            'divert_active_entity',
+            'divert_mode_entity',
+            'pv_charge_rate_entity',
             'vehicle_range_entity',
             'vehicle_battery_level_entity',
         ];
@@ -488,8 +506,6 @@ class CustomCardEditor extends LitElement {
                                   schema.helper_text || nothing}
                               @value-changed=${this._handleConfigChange}
                           ></ha-form>
-
-                          <!-- Additional entities -->
                           <!-- Additional entities using multi-entity-selector -->
                           <div class="entity-section">
                               <multi-entity-selector

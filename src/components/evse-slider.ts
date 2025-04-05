@@ -9,7 +9,7 @@ export class EVSESlider extends LitElement {
     @property({type: Number}) step = 1;
     @property({type: Number}) value = 0;
     @property({type: String}) unit = 'A';
-    @property({type: Boolean}) disabled = false;
+    @property({type: Boolean, reflect: true}) disabled = false;
     @property({type: String}) label = 'Charge Rate';
 
     private _formatValue(val: number): string {

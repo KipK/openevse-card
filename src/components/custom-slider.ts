@@ -7,7 +7,7 @@ export class CustomSlider extends LitElement {
     @property({type: Number}) max = 32;
     @property({type: Number}) step = 1;
     @property({type: Number}) value = 0;
-    @property({type: Boolean}) disabled = false;
+    @property({type: Boolean, reflect: true}) disabled = false;
     @property({type: Number}) height = 22;
     @property({type: String}) color = 'var(--primary-color, #03a9f4)';
     @property({type: Boolean, attribute: 'display-thumb'}) displayThumb = true;
