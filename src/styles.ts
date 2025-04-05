@@ -98,19 +98,26 @@ const cardStyles = css`
     .disabled {
         color: var(--evse-disabled-color);
     }
-
     .override-controls {
         display: flex;
         justify-content: center;
         align-items: center;
     }
     .override-row {
-        width: auto;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        width: 100%;
+    }
+    .override-container { /* Added container styles */
+        position: relative; /* Needed for absolute positioning of children */
+        display: flex;
+        justify-content: center; /* Center the main override controls */
+        align-items: center;
         margin-bottom: 16px;
         margin-top: 10px;
-        align-items: center;
+        width: 100%; /* Ensure container takes full width */
     }
     .override-button {
         flex: 1;
@@ -170,10 +177,60 @@ const cardStyles = css`
     .override-button.active.charging {
         color: yellow;
     }
-    .override-button ha-icon {
-        margin-bottom: 4px;
-        --mdc-icon-size: 35px;
+    .divert-button {
+        position: absolute; /* Position relative to the container */
+        right: 10px; /* Align to the right edge of the container */
+        top: 50%; /* Center vertically */
+        transform: translateY(-50%); /* Adjust vertical centering */
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        padding: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: var(--primary-text-color);
+        font-size: 0.8em;
+        border: 1px solid var(--divider-color);
+        border-radius: 8px;
+        width: 25px; 
+        height: 25px; 
     }
+    .divert-button[data-option="fast"] {
+        background-color: transparent;
+    }
+    .divert-button[data-option="eco"] {
+        background: var(--evse-active-color);
+    }
+    .divert-button:hover[data-option="fast"] {
+        background: var(--evse-active-color);
+    }
+    .divert-button:hover[data-option="eco"] {
+        background: transparent;
+    }
+    .divert-button ha-icon {
+        --mdc-icon-size: 20px;
+        color: var(--evse-active-color);
+    }
+    .divert-button[data-option="eco"] ha-icon {
+        --mdc-icon-size: 22px;
+        color: var(--primary-text-color);
+    }
+    .divert-button:hover[data-option="eco"] ha-icon {
+        --mdc-icon-size: 22px;
+        color: var(--evse-active-color);
+    }
+    .divert-button[data-option="fast"] ha-icon {
+        --mdc-icon-size: 22px;
+        color: var(--evse-active-color);
+    }
+    .divert-button:hover[data-option="fast"] ha-icon {
+        --mdc-icon-size: 22px;
+        color: var(--primary-text-color);
+    }
+        
+        
     .entity-row {
         display: flex;
         justify-content: space-between;

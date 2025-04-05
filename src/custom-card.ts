@@ -581,13 +581,26 @@ class CustomCard extends LitElement {
                         .vehicleBatteryLevelEntity=${vehicleBatteryLevelEntity}
                         .vehicleRangeEntity=${vehicleRangeEntity}
                     ></vehicle-info>
-
-                    <override-controls
-                        .config=${this.config}
-                        .overrideEntity=${overrideEntity}
-                        .chargingStatusEntity=${chargingStatusEntity}
-                        .selectOverrideStateHandler=${this._selectOverrideState}
-                    ></override-controls>
+                    <div class="override-container">
+                        <override-controls
+                            .config=${this.config}
+                            .overrideEntity=${overrideEntity}
+                            .chargingStatusEntity=${chargingStatusEntity}
+                            .selectOverrideStateHandler=${this._selectOverrideState}
+                        ></override-controls>
+                        ${divertActiveEntity && divertModeEntity ? html`
+                            
+                            <div class="divert-button"
+                                data-option=${divertModeEntity.state || 'fast'}
+                                @click=${() => alert('Divert button clicked')}
+                                >
+                                <ha-icon
+                                    class="divert-icon"
+                                    icon="mdi:solar-panel"
+                                ></ha-icon>
+                            </div>
+                        ` : nothing}
+                    </div>
                     <div class="container">
                         <evse-slider
                             .min=${typeof chargeRateEntity?.attributes.min ===
