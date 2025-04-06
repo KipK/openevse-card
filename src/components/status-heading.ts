@@ -28,10 +28,8 @@ export class StatusHeading extends LitElement {
                 : 'badge-active';
 
         return html`
-            <div class="status-heading">
-                <div class="status-badge ${badgeClass}">
-                    ${localize(chargingState || '', this.language)}
-                </div>
+            <div class="status-badge ${badgeClass}">
+                ${localize(chargingState || '', this.language)}
             </div>
         `;
     }

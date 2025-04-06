@@ -37,6 +37,8 @@ const cardStyles = css`
         background: transparent;
         padding-bottom: 20px;
         border-radius: 16px;
+        align-items: center;
+
     }
     .status-icons {
         border-radius: 8px;
@@ -51,22 +53,13 @@ const cardStyles = css`
     .wifi-icon {
         color: var(--info-color);
     }
-    .status-heading {
-        padding: 8px 8px 0;
-        font-size: var(--ha-card-header-font-size, 18px);
-        font-weight: var(--ha-card-header-font-weight, 400);
-        line-height: 1;
-    }
-    .status-container {
-        display: flex;
-        align-items: center;
-    }
     .status-badge {
         font-size: 14px;
         border-radius: 4px;
         background-color: white;
         padding: 6px;
         padding-bottom: 4px;
+        line-height: 1;
         text-transform: uppercase;
     }
     .badge-charging {

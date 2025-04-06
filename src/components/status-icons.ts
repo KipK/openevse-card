@@ -88,7 +88,7 @@ export class StatusIcons extends LitElement {
                           <div
                               class="status-icon clickable"
                               @click=${() =>
-                                  this._handleWifiClick} // Use bound method
+                                  this._handleWifiClick}
                           >
                               <ha-icon
                                   icon="${this._wifiIcon(wifiDbi)}"
@@ -100,7 +100,7 @@ export class StatusIcons extends LitElement {
 
                 <div
                     class="status-icon clickable"
-                    @click=${this._handleStatusClick} // Use bound method
+                    @click=${this._handleStatusClick}
                 >
                     <ha-icon
                         icon="${statusState === 'active'
@@ -118,7 +118,7 @@ export class StatusIcons extends LitElement {
 
                 <div
                     class="status-icon clickable"
-                    @click=${this._handleVehicleClick} // Use bound method
+                    @click=${this._handleVehicleClick}
                 >
                     <ha-icon
                         icon="${vehicleConnectedState === 'off'

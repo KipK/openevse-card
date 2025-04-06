@@ -82,7 +82,7 @@ export class InfoGrid extends LitElement {
                               </div>
                               <div
                                   class="grid-item-value clickable"
-                                  @click=${this._handlePowerClick} // Use bound method
+                                  @click=${this._handlePowerClick}
                               >
                                   ${this.hass.formatEntityState(
                                       this.powerEntity
@@ -104,7 +104,7 @@ export class InfoGrid extends LitElement {
                               </div>
                               <div
                                   class="grid-item-value clickable"
-                                  @click=${this._handleCurrentClick} // Use bound method
+                                  @click=${this._handleCurrentClick}
                               >
                                   ${this.hass.formatEntityState(
                                       this.currentEntity
@@ -127,7 +127,7 @@ export class InfoGrid extends LitElement {
                                   </div>
                                   <div
                                       class="grid-item-value clickable"
-                                      @click=${this._handleSessionClick} // Use bound method
+                                      @click=${this._handleSessionClick}
                                   >
                                       ${this.hass.formatEntityState(
                                           this.sessionEnergyEntity
@@ -142,7 +142,7 @@ export class InfoGrid extends LitElement {
                                   </div>
                                   <div class="grid-item-value">0 kWh</div>
                               </div>
-                          ` // Added newline before backtick
+                          ` 
                 }
                 ${this.timeElapsedEntity
                     ? html`

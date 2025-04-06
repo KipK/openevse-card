@@ -8,6 +8,7 @@ import {
     Limit,
     EntityState,
     EntityIdKey,
+    ServiceCallResponse,
 } from './types';
 import {cardStyles} from './styles';
 import {localize} from './utils/translations';
@@ -292,7 +293,7 @@ class CustomCard extends LitElement {
         return 3;
     }
 
-    private _callService(domain: string, service: string, data: Record<string, any>, options: {awaitResponse?: boolean} = {}): Promise<any> | void {
+    private _callService(domain: string, service: string, data: Record<string, unknown>, options: {awaitResponse?: boolean} = {}): Promise<unknown> | void {
         if (!this.hass) return;
         try {
             return this.hass.callService(
@@ -327,7 +328,7 @@ class CustomCard extends LitElement {
             entity_id: this.config?.divert_mode_entity, // config check still needed for safety
             option: nextState,
         });
-    };
+    }
 
     async _getLimit(): Promise<Limit | null> {
         if (!this.hass) return null;
@@ -337,7 +338,7 @@ class CustomCard extends LitElement {
                 'get_limit',
                 { device_id: this.config?.device_id },
                 { awaitResponse: true }
-            ) as any;
+            ) as ServiceCallResponse;
             return response?.response ? (response.response as unknown as Limit) : null;
         } catch (error) {
             console.error('Error while getting limit', error);
@@ -508,6 +509,8 @@ class CustomCard extends LitElement {
                          ${divertActiveEntity?.state == 'on' && divertModeEntity ? html`
                         <toggle-button
                                 .hass=${this.hass}
+                                .label=${divertModeEntity.state == 'eco' ? localize('eco', this._lang) : localize('fast', this._lang)}
+                                .heigth=${25}
                                 .currentState=${divertModeEntity.state}
                                 .state1Value=${'eco'}
                                 .state2Value=${'fast'}
@@ -517,7 +520,6 @@ class CustomCard extends LitElement {
                                 .colorState2=${'var(--evse-auto-color)'}
                                 .titleState1=${localize('switch to fast mode', this._lang)}
                                 .titleState2=${localize('switch to eco mode', this._lang)}
-                                .width=${34}
                                 .clickHandler=${this._toggleDivertMode}
                             ></toggle-button>
                             `:nothing}

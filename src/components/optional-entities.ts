@@ -14,7 +14,7 @@ import {cardStyles} from '../styles';
 @customElement('optional-entities')
 export class OptionalEntities extends LitElement {
     @property({attribute: false}) hass?: HomeAssistant;
-    @property({attribute: false}) entities: RenderedOptionalEntity[] = []; // Use the new interface
+    @property({attribute: false}) entities: RenderedOptionalEntity[] = [];
     @property({attribute: false}) showMoreInfoHandler?: (
         entityId: string
     ) => void;
@@ -23,7 +23,6 @@ export class OptionalEntities extends LitElement {
         return cardStyles;
     }
 
-    // Modified to be an event handler
     private _handleEntityClick(event: MouseEvent) {
         const target = event.target as HTMLElement;
         // Find the closest clickable element with the data attribute
@@ -40,7 +39,6 @@ export class OptionalEntities extends LitElement {
             return html``;
         }
 
-        // Add the single listener to a wrapper div
         return html`
             <div @click=${this._handleEntityClick}>
                 ${this.entities.map(
@@ -63,7 +61,7 @@ export class OptionalEntities extends LitElement {
                             </div>
                                 <div
                                     class="entity-value clickable"
-                                    data-entity-id=${entity.id ?? ''} // Add data attribute
+                                    data-entity-id=${entity.id ?? ''}
                                 >
                                     ${entity.value ?? ''}
                             </div>

@@ -4,6 +4,7 @@ import { HomeAssistant } from '../types'; // Assuming types are needed, adjust i
 
 export class ToggleButton extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
+    @property({ type: String }) label: string  = 'Label';
     @property({ type: String }) state1Value: string | number | boolean = 'off';
     @property({ type: String }) state2Value: string | number | boolean = 'on';
     @property({ type: String }) currentState: string | number | boolean = this.state1Value;
@@ -14,7 +15,7 @@ export class ToggleButton extends LitElement {
     @property({ type: String }) colorState2: string = 'var(--primary-color)';
     @property({ type: String }) titleState1: string = 'State 1';
 	@property({ type: String }) titleState2: string = 'State 2';
-    @property({ type: Number }) width: number = 20;
+    @property({ type: Number }) heigth: number = 20;
     
     override connectedCallback() {
         super.connectedCallback();
@@ -42,14 +43,21 @@ export class ToggleButton extends LitElement {
             cursor: pointer;
             border: 1px solid var(--divider-color);
             border-radius: 6px;
-            padding: 8px;
             box-sizing: border-box;
+            padding: 6px;
+            padding-bottom: 4px;
+            font-weight: var(--ha-card-header-font-weight, 400);
+            line-height: 1;
+        }
+        .label {
+            margin-left: 5px;
+            color: var(--primary-text-color);
         }
 
-        .hover-icon {
+        .hover-icon, .hover-label {
             display: none;
         }
-        .current-icon {
+        .current-icon, .current-label {
             display: inline;
         }
 
@@ -57,11 +65,11 @@ export class ToggleButton extends LitElement {
             :host(:hover) {
                 background-color: transparent !important;
             }
-            :host(:hover) .hover-icon {
+            :host(:hover) .hover-icon, :host(:hover) .hover-label {
                 display: inline;
                 color: var(--hover-color) !important;
             }
-            :host(:hover) .current-icon {
+            :host(:hover) .current-icon, :host(:hover) .current-label {
                 display: none;
             }
         }
@@ -74,7 +82,7 @@ export class ToggleButton extends LitElement {
         const hoverIcon = isEco ? this.iconState2 : this.iconState1;
         const hoverColor = isEco ? this.colorState2 : this.colorState1;
         const title = isEco ? this.titleState1 : this.titleState2;
-        const iconSize = this.width * 0.7;
+        const iconSize = this.heigth * 0.7;
 
         const hostStyles = `
             :host {
@@ -84,8 +92,8 @@ export class ToggleButton extends LitElement {
                 --hover-color: ${hoverColor};
                 background-color: ${color};
                 border-color: var(--divider-color);
-                width:${this.width}px;
-                height:${this.width}px;
+                height:${this.heigth}px;
+                font-size: var(${this.heigth*0,7}px, 20px);
             }
             :host ha-icon {
                 color: var(--primary-text-color);
@@ -115,6 +123,8 @@ export class ToggleButton extends LitElement {
                 .icon=${hoverIcon}
                 .title=${title}
             ></ha-icon>
+            <span class='label current-label'>${this.currentState}</span>
+            <span class='label hover-label'>${this.currentState ==  this.state1Value ? this.state2Value:this.state1Value}</span>
         `;
     }
 }

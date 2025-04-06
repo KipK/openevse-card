@@ -15,7 +15,6 @@ export class OverrideControls extends LitElement {
 
     constructor() {
         super();
-        // Bind the new click handlers
         this._handleActiveClick = this._handleActiveClick.bind(this);
         this._handleAutoClick = this._handleAutoClick.bind(this);
         this._handleDisabledClick = this._handleDisabledClick.bind(this);
@@ -77,7 +76,7 @@ export class OverrideControls extends LitElement {
                             ? 'active'
                             : ''}"
                         data-option="active"
-                        @click=${this._handleActiveClick} // Use bound method
+                        @click=${this._handleActiveClick}
                     >
                         <ha-icon
                             icon="mdi:lightning-bolt"
@@ -92,7 +91,7 @@ export class OverrideControls extends LitElement {
                             ? 'active'
                             : ''}"
                         data-option="auto"
-                        @click=${this._handleAutoClick} // Use bound method
+                        @click=${this._handleAutoClick}
                     >
                         <ha-icon
                             icon="mdi:robot"
@@ -107,7 +106,7 @@ export class OverrideControls extends LitElement {
                             ? 'active'
                             : ''}"
                         data-option="disabled"
-                        @click=${this._handleDisabledClick} // Use bound method
+                        @click=${this._handleDisabledClick}
                     >
                         <ha-icon icon="mdi:cancel"></ha-icon>
                     </div>
