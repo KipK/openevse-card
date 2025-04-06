@@ -13,18 +13,51 @@ export class OverrideControls extends LitElement {
         option: string | number
     ) => void;
 
+    constructor() {
+        super();
+        // Bind the new click handlers
+        this._handleActiveClick = this._handleActiveClick.bind(this);
+        this._handleAutoClick = this._handleAutoClick.bind(this);
+        this._handleDisabledClick = this._handleDisabledClick.bind(this);
+    }
+
     static override get styles() {
         return cardStyles;
     }
 
-    private _handleButtonClick(option: string) {
+    // Specific handler for 'active' button
+    private _handleActiveClick() {
         const entityId = this.config?.override_entity;
         if (
             this.selectOverrideStateHandler &&
             typeof entityId === 'string' &&
             entityId
         ) {
-            this.selectOverrideStateHandler(entityId, option);
+            this.selectOverrideStateHandler(entityId, 'active');
+        }
+    }
+
+    // Specific handler for 'auto' button
+    private _handleAutoClick() {
+        const entityId = this.config?.override_entity;
+        if (
+            this.selectOverrideStateHandler &&
+            typeof entityId === 'string' &&
+            entityId
+        ) {
+            this.selectOverrideStateHandler(entityId, 'auto');
+        }
+    }
+
+    // Specific handler for 'disabled' button
+    private _handleDisabledClick() {
+        const entityId = this.config?.override_entity;
+        if (
+            this.selectOverrideStateHandler &&
+            typeof entityId === 'string' &&
+            entityId
+        ) {
+            this.selectOverrideStateHandler(entityId, 'disabled');
         }
     }
 
@@ -44,7 +77,7 @@ export class OverrideControls extends LitElement {
                             ? 'active'
                             : ''}"
                         data-option="active"
-                        @click=${() => this._handleButtonClick('active')}
+                        @click=${this._handleActiveClick} // Use bound method
                     >
                         <ha-icon
                             icon="mdi:lightning-bolt"
@@ -59,7 +92,7 @@ export class OverrideControls extends LitElement {
                             ? 'active'
                             : ''}"
                         data-option="auto"
-                        @click=${() => this._handleButtonClick('auto')}
+                        @click=${this._handleAutoClick} // Use bound method
                     >
                         <ha-icon
                             icon="mdi:robot"
@@ -74,7 +107,7 @@ export class OverrideControls extends LitElement {
                             ? 'active'
                             : ''}"
                         data-option="disabled"
-                        @click=${() => this._handleButtonClick('disabled')}
+                        @click=${this._handleDisabledClick} // Use bound method
                     >
                         <ha-icon icon="mdi:cancel"></ha-icon>
                     </div>

@@ -66,6 +66,7 @@ class CustomCard extends LitElement {
         this._selectOverrideState = this._selectOverrideState.bind(this);
         this._setLimit = this._setLimit.bind(this);
         this._delLimit = this._delLimit.bind(this);
+        this._toggleDivertMode = this._toggleDivertMode.bind(this); // Bind the method
     }
 
     override disconnectedCallback(): void {
@@ -314,11 +315,17 @@ class CustomCard extends LitElement {
         });
     };
 
-    _toggleDivertMode = (nextState: string | number | boolean): void => {
-        if (!this.config?.divert_mode_entity) return;
+    // Modified: Reads state internally
+    _toggleDivertMode(): void {
+        const divertModeEntity = this._getEntityState('divert_mode_entity');
+        if (!divertModeEntity) return;
+
+        const currentState = divertModeEntity.state;
+        const nextState = currentState === 'fast' ? 'eco' : 'fast';
+
         this._callService('select', 'select_option', {
-            entity_id: this.config.divert_mode_entity,
-            option: nextState.toString(),
+            entity_id: this.config?.divert_mode_entity, // config check still needed for safety
+            option: nextState,
         });
     };
 
@@ -498,6 +505,22 @@ class CustomCard extends LitElement {
                             .chargingStatusEntity=${chargingStatusEntity}
                             .showMoreInfoHandler=${this._showMoreInfo}
                         ></status-icons>
+                         ${divertActiveEntity?.state == 'on' && divertModeEntity ? html`
+                        <toggle-button
+                                .hass=${this.hass}
+                                .currentState=${divertModeEntity.state}
+                                .state1Value=${'eco'}
+                                .state2Value=${'fast'}
+                                .iconState1=${'mdi:solar-panel'}
+                                .colorState1=${'var(--evse-active-color)'}
+                                .iconState2=${'mdi:transmission-tower-export'}
+                                .colorState2=${'var(--evse-auto-color)'}
+                                .titleState1=${localize('switch to fast mode', this._lang)}
+                                .titleState2=${localize('switch to eco mode', this._lang)}
+                                .width=${34}
+                                .clickHandler=${this._toggleDivertMode}
+                            ></toggle-button>
+                            `:nothing}
                         <status-heading
                             .statusEntity=${statusEntity}
                             .chargingStatusEntity=${chargingStatusEntity}
@@ -532,20 +555,7 @@ class CustomCard extends LitElement {
                         </div>
                         ${divertActiveEntity?.state == 'on' && divertModeEntity ? html`
                         <div class="divert-toggle">
-                            <toggle-button
-                                .hass=${this.hass}
-                                .currentState=${divertModeEntity.state}
-                                .state1Value=${'eco'}
-                                .state2Value=${'fast'}
-                                .iconState1=${'mdi:solar-panel'}
-                                .colorState1=${'var(--evse-active-color)'}
-                                .iconState2=${'mdi:transmission-tower-export'}
-                                .colorState2=${'var(--evse-auto-color)'}
-.titleState1=${localize('switch to fast mode', this._lang)}
-.titleState2=${localize('switch to eco mode', this._lang)}
-                                .width=${20}
-                                .clickHandler=${() => this._toggleDivertMode(divertModeEntity.state == 'fast' ? 'eco' : 'fast')}
-                            ></toggle-button>
+                            
                         </div>
                         ` : nothing}
                     </div>

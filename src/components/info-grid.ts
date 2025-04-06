@@ -19,12 +19,45 @@ export class InfoGrid extends LitElement {
     ) => void;
     @property({attribute: false}) convertTimeHandler?: (time: number) => string;
 
+    constructor() {
+        super();
+        // Bind the new click handlers
+        this._handlePowerClick = this._handlePowerClick.bind(this);
+        this._handleCurrentClick = this._handleCurrentClick.bind(this);
+        this._handleSessionClick = this._handleSessionClick.bind(this);
+    }
+
     static override get styles() {
         return cardStyles;
     }
 
-    private _handleItemClick(entityIdKey: keyof CardConfig) {
-        const entityId = this.config?.[entityIdKey];
+    // Specific handler for Power item
+    private _handlePowerClick() {
+        const entityId = this.config?.power_entity;
+        if (
+            this.showMoreInfoHandler &&
+            typeof entityId === 'string' &&
+            entityId
+        ) {
+            this.showMoreInfoHandler(entityId);
+        }
+    }
+
+    // Specific handler for Current item
+    private _handleCurrentClick() {
+        const entityId = this.config?.current_entity;
+        if (
+            this.showMoreInfoHandler &&
+            typeof entityId === 'string' &&
+            entityId
+        ) {
+            this.showMoreInfoHandler(entityId);
+        }
+    }
+
+    // Specific handler for Session item
+    private _handleSessionClick() {
+        const entityId = this.config?.session_energy_entity;
         if (
             this.showMoreInfoHandler &&
             typeof entityId === 'string' &&
@@ -49,8 +82,7 @@ export class InfoGrid extends LitElement {
                               </div>
                               <div
                                   class="grid-item-value clickable"
-                                  @click=${() =>
-                                      this._handleItemClick('power_entity')}
+                                  @click=${this._handlePowerClick} // Use bound method
                               >
                                   ${this.hass.formatEntityState(
                                       this.powerEntity
@@ -72,8 +104,7 @@ export class InfoGrid extends LitElement {
                               </div>
                               <div
                                   class="grid-item-value clickable"
-                                  @click=${() =>
-                                      this._handleItemClick('current_entity')}
+                                  @click=${this._handleCurrentClick} // Use bound method
                               >
                                   ${this.hass.formatEntityState(
                                       this.currentEntity
@@ -96,10 +127,7 @@ export class InfoGrid extends LitElement {
                                   </div>
                                   <div
                                       class="grid-item-value clickable"
-                                      @click=${() =>
-                                          this._handleItemClick(
-                                              'session_energy_entity'
-                                          )}
+                                      @click=${this._handleSessionClick} // Use bound method
                                   >
                                       ${this.hass.formatEntityState(
                                           this.sessionEnergyEntity

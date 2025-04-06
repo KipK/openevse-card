@@ -23,7 +23,13 @@ export class OptionalEntities extends LitElement {
         return cardStyles;
     }
 
-    private _handleEntityClick(entityId?: string) {
+    // Modified to be an event handler
+    private _handleEntityClick(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        // Find the closest clickable element with the data attribute
+        const clickableElement = target.closest('.clickable[data-entity-id]') as HTMLElement | null;
+        const entityId = clickableElement?.dataset.entityId;
+
         if (this.showMoreInfoHandler && entityId) {
             this.showMoreInfoHandler(entityId);
         }
@@ -34,13 +40,15 @@ export class OptionalEntities extends LitElement {
             return html``;
         }
 
+        // Add the single listener to a wrapper div
         return html`
-            ${this.entities.map(
-                (entity) => html`
-                    <div class="other-entities-container">
-                        <div class="entity-row">
-                            <div class="entity-title">
-                                ${entity.icon != null
+            <div @click=${this._handleEntityClick}>
+                ${this.entities.map(
+                    (entity) => html`
+                        <div class="other-entities-container">
+                            <div class="entity-row">
+                                <div class="entity-title">
+                                    ${entity.icon != null
                                     ? html`
                                           <div class="entity-icon">
                                               <ha-icon
@@ -53,18 +61,17 @@ export class OptionalEntities extends LitElement {
                                     ${entity.name || entity.id || nothing}
                                 </div>
                             </div>
-                            <div
-                                class="entity-value clickable"
-                                @click=${() =>
-                                    this._handleEntityClick(entity.id)}
-                            >
-                                ${entity.value ?? ''}
-                                <!-- Display the value again -->
+                                <div
+                                    class="entity-value clickable"
+                                    data-entity-id=${entity.id ?? ''} // Add data attribute
+                                >
+                                    ${entity.value ?? ''}
                             </div>
                         </div>
                     </div>
                 `
-            )}
+                )}
+            </div>
         `;
     }
 }

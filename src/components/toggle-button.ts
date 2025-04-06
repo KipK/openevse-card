@@ -14,7 +14,17 @@ export class ToggleButton extends LitElement {
     @property({ type: String }) colorState2: string = 'var(--primary-color)';
     @property({ type: String }) titleState1: string = 'State 1';
 	@property({ type: String }) titleState2: string = 'State 2';
-	@property({ type: Number }) width: number = 20;
+    @property({ type: Number }) width: number = 20;
+    
+    override connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('click', this._handleClick);
+    }
+
+    override disconnectedCallback() {
+        super.disconnectedCallback();
+        this.removeEventListener('click', this._handleClick);
+    }
 
     private _handleClick() {
         const nextState = this.currentState === this.state1Value ? this.state2Value : this.state1Value;
@@ -31,12 +41,9 @@ export class ToggleButton extends LitElement {
             justify-content: center;
             cursor: pointer;
             border: 1px solid var(--divider-color);
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 8px;
             box-sizing: border-box;
-        }
-        ha-icon {
-            --mdc-icon-size: 25px;
         }
 
         .hover-icon {
@@ -77,12 +84,12 @@ export class ToggleButton extends LitElement {
                 --hover-color: ${hoverColor};
                 background-color: ${color};
                 border-color: var(--divider-color);
+                width:${this.width}px;
+                height:${this.width}px;
             }
             :host ha-icon {
                 color: var(--primary-text-color);
-            }
-            ha-icon {
-                --mdc-icon-size: ${iconSize};
+                --mdc-icon-size: ${iconSize}px;
             }
             @media (hover: hover) {
                 :host(:hover) {
@@ -98,22 +105,16 @@ export class ToggleButton extends LitElement {
             <style>
                 ${hostStyles}
             </style>
-            <div
-                class="toggle-button"
-                style="width:${this.width}px; height:${this.width}px;"
-                @click=${this._handleClick}
-            >
-                <ha-icon
-                    class="current-icon"
-                    .icon=${icon}
-                    .title=${title}
-                ></ha-icon>
-                <ha-icon
-                    class="hover-icon"
-                    .icon=${hoverIcon}
-                    .title=${title}
-                ></ha-icon>
-            </div>
+            <ha-icon
+                class="current-icon"
+                .icon=${icon}
+                .title=${title}
+            ></ha-icon>
+            <ha-icon
+                class="hover-icon"
+                .icon=${hoverIcon}
+                .title=${title}
+            ></ha-icon>
         `;
     }
 }
