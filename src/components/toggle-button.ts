@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { HomeAssistant } from '../types'; // Assuming types are needed, adjust if not
 
 export class ToggleButton extends LitElement {
@@ -16,8 +16,6 @@ export class ToggleButton extends LitElement {
 	@property({ type: String }) titleState2: string = 'State 2';
 	@property({ type: Number }) width: number = 20;
 
-    @state() private _isHovering: boolean = false;
-
     private _handleClick() {
         const nextState = this.currentState === this.state1Value ? this.state2Value : this.state1Value;
         if (this.clickHandler) {
@@ -25,25 +23,6 @@ export class ToggleButton extends LitElement {
         }
     }
 
-    private _handleMouseOver() {
-        this._isHovering = true;
-    }
-
-    private _handleMouseOut() {
-        this._isHovering = false;
-    }
-
-    override connectedCallback() {
-        super.connectedCallback();
-        this.addEventListener('mouseover', this._handleMouseOver);
-        this.addEventListener('mouseout', this._handleMouseOut);
-    }
-
-    override disconnectedCallback() {
-        super.disconnectedCallback();
-        this.removeEventListener('mouseover', this._handleMouseOver);
-        this.removeEventListener('mouseout', this._handleMouseOut);
-    }
  
     static override styles = css`
         :host {
@@ -52,60 +31,89 @@ export class ToggleButton extends LitElement {
             justify-content: center;
             cursor: pointer;
             border: 1px solid var(--divider-color);
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 8px;
             box-sizing: border-box;
         }
         ha-icon {
             --mdc-icon-size: 25px;
         }
+
+        .hover-icon {
+            display: none;
+        }
+        .current-icon {
+            display: inline;
+        }
+
+        @media (hover: hover) {
+            :host(:hover) {
+                background-color: transparent !important;
+            }
+            :host(:hover) .hover-icon {
+                display: inline;
+                color: var(--hover-color) !important;
+            }
+            :host(:hover) .current-icon {
+                display: none;
+            }
+        }
     `;
 
     override render() {
-        const isState1 = this.currentState === this.state1Value;
-        const showState1Icon = this._isHovering ? !isState1 : isState1;
+        const isEco = this.currentState === 'eco';
+        const icon = isEco ? this.iconState1 : this.iconState2;
+        const color = isEco ? this.colorState1 : this.colorState2;
+        const hoverIcon = isEco ? this.iconState2 : this.iconState1;
+        const hoverColor = isEco ? this.colorState2 : this.colorState1;
+        const title = isEco ? this.titleState1 : this.titleState2;
+        const iconSize = this.width * 0.7;
 
-        const icon = showState1Icon ? this.iconState1 : this.iconState2;
-        const title = isState1 ? this.titleState1 : this.titleState2; //
-
-        // Apply hover effect styles directly
-		const bgColor = isState1 ? this.colorState1 : this.colorState2; // Color of the *next* state on hover
-		const hoverColor = isState1 ? this.colorState2 : this.colorState1; // Color of the *next* state on hover
-		const iconSize = this.width * 0.7 ; // Adjust icon size based on width
         const hostStyles = `
-			:host {
-				background-color: ${bgColor}; 
-				border-color: var(--divider-color);
-			}
-            :host(:hover) {
-                background-color: transparent;
+            :host {
+                --toggle-icon: "${icon}";
+                --toggle-color: ${color};
+                --hover-icon: "${hoverIcon}";
+                --hover-color: ${hoverColor};
+                background-color: ${color};
+                border-color: var(--divider-color);
             }
-            :host(:hover) ha-icon {
-				color: ${hoverColor};
+            :host ha-icon {
+                color: var(--primary-text-color);
             }
-			:host ha-icon {
-				color: var(--primary-text-color);
+            ha-icon {
+                --mdc-icon-size: ${iconSize};
             }
-             ha-icon {
-            --mdc-icon-size: ${iconSize};
-            }   
+            @media (hover: hover) {
+                :host(:hover) {
+                    background-color: transparent !important;
+                }
+                :host(:hover) ha-icon {
+                    color: var(--hover-color) !important;
+                }
+            }
         `;
 
         return html`
             <style>
                 ${hostStyles}
             </style>
-			<div
-				class="toggle-button"
-				style="width:${this.width}px;
-				height: ${this.width}px;"
-				@click=${this._handleClick}
-			>
-				<ha-icon
-					.icon=${icon}
-					.title=${title}
-				></ha-icon>
-			</div>
+            <div
+                class="toggle-button"
+                style="width:${this.width}px; height:${this.width}px;"
+                @click=${this._handleClick}
+            >
+                <ha-icon
+                    class="current-icon"
+                    .icon=${icon}
+                    .title=${title}
+                ></ha-icon>
+                <ha-icon
+                    class="hover-icon"
+                    .icon=${hoverIcon}
+                    .title=${title}
+                ></ha-icon>
+            </div>
         `;
     }
 }

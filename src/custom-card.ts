@@ -543,7 +543,7 @@ class CustomCard extends LitElement {
                                 .colorState2=${'var(--evse-auto-color)'}
 .titleState1=${localize('switch to fast mode', this._lang)}
 .titleState2=${localize('switch to eco mode', this._lang)}
-                                .width=${25}
+                                .width=${20}
                                 .clickHandler=${() => this._toggleDivertMode(divertModeEntity.state == 'fast' ? 'eco' : 'fast')}
                             ></toggle-button>
                         </div>
