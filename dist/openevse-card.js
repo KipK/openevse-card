@@ -1170,7 +1170,7 @@ const rt=t=>(e,i)=>{void 0!==i?i.addInitializer((()=>{customElements.define(t,e)
                                 .selectOverrideStateHandler=${this._selectOverrideState}
                             ></override-controls>
                         </div>
-                        ${h&&d?W`
+                        ${"on"==h?.state&&d?W`
                         <div class="divert-toggle">
                             <toggle-button
                                 .hass=${this.hass}

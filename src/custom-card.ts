@@ -8,8 +8,7 @@ import {
     Limit,
     EntityState,
     EntityIdKey,
-} from './types'; // Added EntityConfig back
-import type { RenderedOptionalEntity } from './components/optional-entities';
+} from './types';
 import {cardStyles} from './styles';
 import {localize} from './utils/translations';
 import {loadHaComponents} from '@kipk/load-ha-components';
@@ -28,7 +27,8 @@ import './components/info-grid';
 import './components/vehicle-info';
 import './components/override-controls';
 import './components/optional-entities';
-import './components/toggle-button'; // Import the new component
+import type { RenderedOptionalEntity } from './components/optional-entities';
+import './components/toggle-button';
 const REQUIRED_HA_COMPONENTS = [
     'ha-form',
     'ha-icon',
@@ -530,7 +530,7 @@ class CustomCard extends LitElement {
                                 .selectOverrideStateHandler=${this._selectOverrideState}
                             ></override-controls>
                         </div>
-                        ${divertActiveEntity && divertModeEntity ? html`
+                        ${divertActiveEntity?.state == 'on' && divertModeEntity ? html`
                         <div class="divert-toggle">
                             <toggle-button
                                 .hass=${this.hass}
