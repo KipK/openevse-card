@@ -9,9 +9,11 @@ import {
     EntityState,
     EntityIdKey,
 } from './types'; // Added EntityConfig back
+import type { RenderedOptionalEntity } from './components/optional-entities';
 import {cardStyles} from './styles';
 import {localize} from './utils/translations';
 import {loadHaComponents} from '@kipk/load-ha-components';
+
 import {
     getIntegrationVersion,
     compareVersion,
@@ -289,130 +291,93 @@ class CustomCard extends LitElement {
         return 3;
     }
 
-    // Call service for the buttons
-    _selectOverrideState(entity_id: string, option: string | number): void {
-        if (this.hass) {
-            this.hass.callService('select', 'select_option', {
-                entity_id: entity_id,
-                option: option.toString(),
-            });
-        }
-    }
-    // Adjusted _toggleDivertMode to accept the next state from the button
-    _toggleDivertMode(nextState: string | number | boolean): void {
-        if (this.hass && this.config?.divert_mode_entity) {
-            this.hass.callService('select', 'select_option', {
-                entity_id: this.config.divert_mode_entity,
-                option: nextState.toString(), // Pass the next state determined by the button
-            });
-        }
-    }
-    // Call service to get limit
-    async _getLimit(): Promise<Limit | null> {
-        if (!this.hass) return null;
-
+    private _callService(domain: string, service: string, data: Record<string, any>, options: {awaitResponse?: boolean} = {}): Promise<any> | void {
+        if (!this.hass) return;
         try {
-            const response = await this.hass.callService(
-                'openevse',
-                'get_limit',
-                {
-                    device_id: this.config?.device_id,
-                },
+            return this.hass.callService(
+                domain,
+                service,
+                data,
                 undefined,
                 false,
-                true
+                options.awaitResponse ?? false
             );
+        } catch (error) {
+            console.error(`Error calling service ${domain}.${service}`, error);
+        }
+    }
 
-            const limit: Limit | null = response?.response
-                ? (response.response as unknown as Limit)
-                : null;
-            return limit;
+    _selectOverrideState = (entity_id: string, option: string | number): void => {
+        this._callService('select', 'select_option', {
+            entity_id,
+            option: option.toString(),
+        });
+    };
+
+    _toggleDivertMode = (nextState: string | number | boolean): void => {
+        if (!this.config?.divert_mode_entity) return;
+        this._callService('select', 'select_option', {
+            entity_id: this.config.divert_mode_entity,
+            option: nextState.toString(),
+        });
+    };
+
+    async _getLimit(): Promise<Limit | null> {
+        if (!this.hass) return null;
+        try {
+            const response = await this._callService(
+                'openevse',
+                'get_limit',
+                { device_id: this.config?.device_id },
+                { awaitResponse: true }
+            ) as any;
+            return response?.response ? (response.response as unknown as Limit) : null;
         } catch (error) {
             console.error('Error while getting limit', error);
             return null;
         }
     }
 
-    // Set limit function
-    _setLimit(type: string, value: number): void {
-        if (!this.hass) return;
-        try {
-            this.hass.callService(
-                'openevse',
-                'set_limit',
-                {
-                    device_id: this.config?.device_id,
-                    type: type,
-                    value: value,
-                    auto_release: true,
-                },
-                undefined,
-                false,
-                false
-            );
-            return;
-        } catch (error) {
-            console.error('Error while setting limit', error);
-            return;
-        }
-    }
+    _setLimit = (type: string, value: number): void => {
+        this._callService('openevse', 'set_limit', {
+            device_id: this.config?.device_id,
+            type,
+            value,
+            auto_release: true,
+        });
+    };
 
-    // Delete limit function
-    _delLimit(): void {
-        if (!this.hass) return;
-        try {
-            this.hass.callService(
-                'openevse',
-                'clear_limit',
-                {
-                    device_id: this.config?.device_id,
-                },
-                undefined,
-                false,
-                false
-            );
-            return;
-        } catch (error) {
-            console.error('Error while removing limit', error);
-            return;
-        }
-    }
+    _delLimit = (): void => {
+        this._callService('openevse', 'clear_limit', {
+            device_id: this.config?.device_id,
+        });
+    };
 
-    // Show entity more-info dialog
-    _showMoreInfo(entity_id: string): void {
+    _showMoreInfo = (entity_id: string): void => {
         const event = new Event('hass-more-info', {
             bubbles: true,
             composed: true,
         }) as CustomDetailEvent;
-
-        event.detail = {entityId: entity_id};
+        event.detail = { entityId: entity_id };
         this.dispatchEvent(event);
-    }
+    };
 
-    // Helper to safely get entity state
     _getEntityState(entityIdKey: EntityIdKey): EntityState | null {
-        // Use the specific EntityIdKey type
         const entityId = this.config?.[entityIdKey];
-        // Ensure entityId is a non-empty string and states exist
         if (typeof entityId !== 'string' || !entityId || !this.hass?.states) {
             return null;
         }
-        // Access states only if entityId is a valid string key
         return this.hass.states[entityId] || null;
     }
 
     _convertSeconds(sec: number): string {
-        if (isNaN(sec) || sec < 0 || sec == undefined) {
+        if (isNaN(sec) || sec < 0 || sec === undefined) {
             return '--:--:--';
         }
-
         const hours = Math.floor(sec / 3600);
         const minutes = Math.floor((sec % 3600) / 60);
         const seconds = Math.floor(sec % 60);
-
-        return [hours, minutes, seconds]
-            .map((unit) => String(unit).padStart(2, '0'))
-            .join(':');
+        return [hours, minutes, seconds].map((u) => String(u).padStart(2, '0')).join(':');
     }
 
     _convertTime(t: number): string {
@@ -423,15 +388,49 @@ class CustomCard extends LitElement {
         return this._convertSeconds(totalSeconds);
     }
 
-    // Removed the _t method
+    _updateSlider = (e: CustomEvent): void => {
+        if (!this.config?.charge_rate_entity) return;
+        this._callService('number', 'set_value', {
+            entity_id: this.config.charge_rate_entity,
+            value: e.detail.value,
+        });
+    };
 
-    _updateSlider(e: CustomEvent) {
-        if (this.hass && this.config?.charge_rate_entity) {
-            this.hass.callService('number', 'set_value', {
-                entity_id: this.config.charge_rate_entity,
-                value: e.detail.value,
-            });
-        }
+    private _getOptionalEntities(): RenderedOptionalEntity[] {
+        return this.config?.optional_entities?.map((entityConf) => {
+            let entityId: string | undefined;
+            let configObject: EntityConfig | null = null;
+
+            if (typeof entityConf === 'string') {
+                entityId = entityConf;
+            } else if (typeof entityConf === 'object' && entityConf !== null) {
+                const entity = entityConf.entity as string | undefined;
+                const id = entityConf.id as string | undefined;
+                entityId = entity ?? id;
+                configObject = entityConf;
+            }
+
+            if (!entityId || typeof entityId !== 'string') {
+                return {
+                    name: 'Invalid Config',
+                    value: null,
+                    icon: undefined,
+                    id: undefined,
+                };
+            }
+
+            const stateObj = this.hass?.states[entityId];
+            const attributes = stateObj?.attributes;
+            const friendlyName = attributes?.friendly_name as string | undefined;
+            const stateIcon = attributes?.icon as string | undefined;
+
+            return {
+                name: configObject?.name ?? friendlyName ?? entityId,
+                value: stateObj ? this.hass?.formatEntityState(stateObj) ?? null : null,
+                icon: configObject?.icon ?? stateIcon,
+                id: entityId,
+            };
+        }).filter((entity) => entity.id !== undefined) ?? [];
     }
 
     // Render the card
@@ -446,86 +445,18 @@ class CustomCard extends LitElement {
         const powerEntity = this._getEntityState('power_entity');
         const currentEntity = this._getEntityState('current_entity');
         const chargeRateEntity = this._getEntityState('charge_rate_entity');
-        const vehicleConnectedEntity = this._getEntityState(
-            'vehicle_connected_entity'
-        );
-        const chargingStatusEntity = this._getEntityState(
-            'charging_status_entity'
-        );
-        const sessionEnergyEntity = this._getEntityState(
-            'session_energy_entity'
-        );
+        const vehicleConnectedEntity = this._getEntityState('vehicle_connected_entity');
+        const chargingStatusEntity = this._getEntityState('charging_status_entity');
+        const sessionEnergyEntity = this._getEntityState('session_energy_entity');
         const timeElapsedEntity = this._getEntityState('time_elapsed_entity');
-        const wifiSignalEntity = this._getEntityState(
-            'wifi_signal_strength_entity'
-        );
+        const wifiSignalEntity = this._getEntityState('wifi_signal_strength_entity');
         const divertActiveEntity = this._getEntityState('divert_active_entity');
         const divertModeEntity = this._getEntityState('divert_mode_entity');
         const pvChargeRateEntity = this._getEntityState('pv_charge_rate_entity');
-        const vehicleBatteryLevelEntity = this._getEntityState(
-            'vehicle_battery_level_entity'
-        );
+        const vehicleBatteryLevelEntity = this._getEntityState('vehicle_battery_level_entity');
         const vehicleRangeEntity = this._getEntityState('vehicle_range_entity');
 
-        // Define an interface for the processed optional entity data used by the component
-        interface RenderedOptionalEntity {
-            name: string | null;
-            value: string | null; // Re-added value property
-            icon: string | undefined;
-            id: string | undefined;
-        }
-
-        const getOptionalEntities = (): RenderedOptionalEntity[] =>
-            this.config?.optional_entities
-                ?.map((entityConf): RenderedOptionalEntity => {
-                    let entityId: string | undefined;
-                    let configObject: EntityConfig | null = null;
-
-                    if (typeof entityConf === 'string') {
-                        entityId = entityConf;
-                    } else if (
-                        typeof entityConf === 'object' &&
-                        entityConf !== null
-                    ) {
-                        // Handle old format { id: ..., name: ..., icon: ... }
-                        // and new format { entity: ..., name: ..., icon: ... }
-                        const entity = entityConf.entity as string | undefined;
-                        const id = entityConf.id as string | undefined;
-                        entityId = entity ?? id; // Prioritize 'entity', fallback to 'id'
-                        configObject = entityConf;
-                    }
-
-                    // If no valid entityId could be determined, return invalid config (without value)
-                    if (!entityId || typeof entityId !== 'string') {
-                        return {
-                            name: 'Invalid Config',
-                            value: null,
-                            icon: undefined,
-                            id: undefined,
-                        }; // Re-added value: null
-                    }
-
-                    const stateObj = this.hass?.states[entityId];
-                    const attributes = stateObj?.attributes;
-                    const friendlyName = attributes?.friendly_name as
-                        | string
-                        | undefined;
-                    const stateIcon = attributes?.icon as string | undefined;
-
-                    return {
-                        name: configObject?.name ?? friendlyName ?? entityId,
-                        value: stateObj
-                            ? this.hass?.formatEntityState(stateObj) ?? null
-                            : null, // Re-added value mapping
-                        icon: configObject?.icon ?? stateIcon,
-                        id: entityId,
-                    };
-                })
-                ?.filter((entity) => entity.id !== undefined) ?? []; // Filter out any invalid entries
-
-        // wifiIcon function removed as it's now in status-icons component
-
-        const optionalEntities = getOptionalEntities();
+        const optionalEntities = this._getOptionalEntities();
 
         // HTML output
 
@@ -591,27 +522,31 @@ class CustomCard extends LitElement {
                         .vehicleRangeEntity=${vehicleRangeEntity}
                     ></vehicle-info>
                     <div class="override-container">
-                        <override-controls
-                            .config=${this.config}
-                            .overrideEntity=${overrideEntity}
-                            .chargingStatusEntity=${chargingStatusEntity}
-                            .selectOverrideStateHandler=${this._selectOverrideState}
-                        ></override-controls>
+                        <div class="override-center">
+                            <override-controls
+                                .config=${this.config}
+                                .overrideEntity=${overrideEntity}
+                                .chargingStatusEntity=${chargingStatusEntity}
+                                .selectOverrideStateHandler=${this._selectOverrideState}
+                            ></override-controls>
+                        </div>
                         ${divertActiveEntity && divertModeEntity ? html`
-                        <toggle-button
-                            .hass=${this.hass}
-                            .currentState=${divertModeEntity.state}
-                            .state1Value=${'eco'}
-                            .state2Value=${'fast'}
-                            .iconState1=${'mdi:solar-panel'}
-                            .colorState1=${'var(--evse-active-color)'}
-                            .iconState2=${'mdi:transmission-tower-export'}
-                            .colorState2=${'var(--evse-auto-color)'}
-                            .titleState1=${localize('eco', this._lang)}
-                            .titleState2=${localize('fast', this._lang)}
-                            .width=${25}
-                            .clickHandler=${() => this._toggleDivertMode(divertModeEntity.state == 'fast' ? 'eco' : 'fast')}
-                        ></toggle-button>
+                        <div class="divert-toggle">
+                            <toggle-button
+                                .hass=${this.hass}
+                                .currentState=${divertModeEntity.state}
+                                .state1Value=${'eco'}
+                                .state2Value=${'fast'}
+                                .iconState1=${'mdi:solar-panel'}
+                                .colorState1=${'var(--evse-active-color)'}
+                                .iconState2=${'mdi:transmission-tower-export'}
+                                .colorState2=${'var(--evse-auto-color)'}
+.titleState1=${localize('switch to fast mode', this._lang)}
+.titleState2=${localize('switch to eco mode', this._lang)}
+                                .width=${25}
+                                .clickHandler=${() => this._toggleDivertMode(divertModeEntity.state == 'fast' ? 'eco' : 'fast')}
+                            ></toggle-button>
+                        </div>
                         ` : nothing}
                     </div>
                     <div class="container">

@@ -3,7 +3,7 @@ import {property, customElement} from 'lit/decorators.js';
 import {HomeAssistant} from '../types'; // Removed OptionalEntity import
 
 // Define the expected input structure based on custom-card.ts getOptionalEntities
-interface RenderedOptionalEntity {
+export interface RenderedOptionalEntity {
     name: string | null;
     value: string | null; // Re-added value property
     icon: string | undefined;

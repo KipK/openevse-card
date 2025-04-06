@@ -110,14 +110,28 @@ const cardStyles = css`
         flex-direction: row;
         width: 100%;
     }
-    .override-container { /* Added container styles */
-        position: relative; /* Needed for absolute positioning of children */
+    .override-container {
+        position: relative;
         display: flex;
-        justify-content: center; /* Center the main override controls */
+        justify-content: center;
         align-items: center;
         margin-bottom: 16px;
         margin-top: 10px;
-        width: 100%; /* Ensure container takes full width */
+        width: 100%;
+    }
+    .override-center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .divert-toggle {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .override-button {
         flex: 1;

@@ -2,6 +2,8 @@ const translations = {
     en: {
         disabled: 'disabled',
         sleeping: 'disabled',
+        'switch to fast mode': 'Switch to fast mode',
+        'switch to eco mode': 'Switch to eco mode',
         active: 'active',
         charging: 'charging',
         'not connected': 'waiting',
@@ -86,6 +88,8 @@ const translations = {
     fr: {
         disabled: 'désactivé',
         sleeping: 'désactivé',
+        'switch to fast mode': 'Passer en mode rapide',
+        'switch to eco mode': 'Passer en mode éco',
         active: 'activé',
         charging: 'en charge',
         'not connected': 'en attente',
@@ -172,6 +176,8 @@ const translations = {
     de: {
         disabled: 'deaktiviert',
         sleeping: 'deaktiviert',
+        'switch to fast mode': 'In den Schnellmodus wechseln',
+        'switch to eco mode': 'In den Eco-Modus wechseln',
         active: 'aktiv',
         charging: 'lädt',
         'not connected': 'bereit',
@@ -258,6 +264,8 @@ const translations = {
     es: {
         disabled: 'desactivado',
         sleeping: 'desactivado',
+        'switch to fast mode': 'Cambiar a modo rápido',
+        'switch to eco mode': 'Cambiar a modo eco',
         active: 'activo',
         charging: 'cargando',
         'not connected': 'en espera',
