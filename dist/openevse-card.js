@@ -1096,7 +1096,7 @@ const rt=t=>(e,i)=>{void 0!==i?i.addInitializer((()=>{customElements.define(t,e)
             justify-content: center;
             cursor: pointer;
             border: 1px solid var(--divider-color);
-            border-radius: 6px;
+            border-radius: 4px;
             box-sizing: border-box;
             padding: 6px;
             padding-bottom: 4px;

@@ -42,7 +42,7 @@ export class ToggleButton extends LitElement {
             justify-content: center;
             cursor: pointer;
             border: 1px solid var(--divider-color);
-            border-radius: 6px;
+            border-radius: 4px;
             box-sizing: border-box;
             padding: 6px;
             padding-bottom: 4px;
