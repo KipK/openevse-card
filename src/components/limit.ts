@@ -1,4 +1,4 @@
-import {LitElement, html, css, nothing} from 'lit-element';
+import {LitElement, html, css, nothing} from 'lit';
 import {property, state, customElement} from 'lit/decorators.js'; // Import state decorator
 import {Limit} from '../types';
 import {localize} from '../utils/translations';

@@ -1,4 +1,4 @@
-import {LitElement, html, PropertyValues, nothing} from 'lit-element';
+import {LitElement, html, PropertyValues, nothing} from 'lit';
 import {property, state} from 'lit/decorators.js';
 import {
     HomeAssistant,

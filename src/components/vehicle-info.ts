@@ -1,4 +1,4 @@
-import {LitElement, html, nothing} from 'lit-element';
+import {LitElement, html, nothing} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import {CardConfig, EntityState} from '../types';
 import './progress-bar';
