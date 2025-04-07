@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
-import { HomeAssistant } from '../types'; // Assuming types are needed, adjust if not
+import { HomeAssistant } from '../types';
 
 export class ToggleButton extends LitElement {
     @property({ attribute: false }) hass?: HomeAssistant;
@@ -8,14 +8,15 @@ export class ToggleButton extends LitElement {
     @property({ type: String }) state1Value: string | number | boolean = 'off';
     @property({ type: String }) state2Value: string | number | boolean = 'on';
     @property({ type: String }) currentState: string | number | boolean = this.state1Value;
-    @property({ attribute: false }) clickHandler?: (nextState: string | number | boolean) => void; // Corrected decorator
+    @property({ attribute: false }) clickHandler?: (nextState: string | number | boolean) => void;
     @property({ type: String }) iconState1: string = 'mdi:toggle-switch-off-outline';
     @property({ type: String }) colorState1: string = 'var(--primary-text-color)';
     @property({ type: String }) iconState2: string = 'mdi:toggle-switch';
     @property({ type: String }) colorState2: string = 'var(--primary-color)';
     @property({ type: String }) titleState1: string = 'State 1';
 	@property({ type: String }) titleState2: string = 'State 2';
-    @property({ type: Number }) heigth: number = 20;
+    @property({ type: Number }) heigth: number = 0;
+    @property({ type: String }) fontSize: string = '1rem';
     
     override connectedCallback() {
         super.connectedCallback();
@@ -48,6 +49,10 @@ export class ToggleButton extends LitElement {
             padding-bottom: 4px;
             font-weight: var(--ha-card-header-font-weight, 400);
             line-height: 1;
+        }
+        :host:active {
+            transform: scale(0.9); 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         .label {
             margin-left: 5px;
@@ -82,7 +87,7 @@ export class ToggleButton extends LitElement {
         const hoverIcon = isEco ? this.iconState2 : this.iconState1;
         const hoverColor = isEco ? this.colorState2 : this.colorState1;
         const title = isEco ? this.titleState1 : this.titleState2;
-        const iconSize = this.heigth * 0.7;
+        const iconSize = this.heigth * 0.7 || 18; // Default icon size if height is not set
 
         const hostStyles = `
             :host {
@@ -90,10 +95,15 @@ export class ToggleButton extends LitElement {
                 --toggle-color: ${color};
                 --hover-icon: "${hoverIcon}";
                 --hover-color: ${hoverColor};
+                --font-size: ${this.fontSize};
                 background-color: ${color};
                 border-color: var(--divider-color);
-                height:${this.heigth}px;
-                font-size: var(${this.heigth*0,7}px, 20px);
+                ${this.heigth?`height:${this.heigth}px`:''};
+                font-size: var(--font-size);
+            }
+            :host:active {
+                font-size: calc(var(--font-size) * 0.8);
+
             }
             :host ha-icon {
                 color: var(--primary-text-color);

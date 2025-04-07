@@ -44,7 +44,7 @@ const REQUIRED_HA_COMPONENTS = [
     'ha-sortable',
     'ha-svg-icon',
     'ha-alert',
-    'mwc-button',
+    'mwc-button'
 ];
 
 class CustomCard extends LitElement {
@@ -510,16 +510,17 @@ class CustomCard extends LitElement {
                         <toggle-button
                                 .hass=${this.hass}
                                 .label=${divertModeEntity.state == 'eco' ? localize('eco', this._lang) : localize('fast', this._lang)}
-                                .heigth=${25}
+                                .heigth=${24}
                                 .currentState=${divertModeEntity.state}
                                 .state1Value=${'eco'}
                                 .state2Value=${'fast'}
                                 .iconState1=${'mdi:solar-panel'}
                                 .colorState1=${'var(--evse-active-color)'}
                                 .iconState2=${'mdi:transmission-tower-export'}
-                                .colorState2=${'var(--evse-auto-color)'}
+                                .colorState2=${'var(--primary-color)'}
                                 .titleState1=${localize('switch to fast mode', this._lang)}
                                 .titleState2=${localize('switch to eco mode', this._lang)}
+                                .fintSize=${'14px'}
                                 .clickHandler=${this._toggleDivertMode}
                             ></toggle-button>
                             `:nothing}

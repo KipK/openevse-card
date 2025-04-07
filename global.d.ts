@@ -153,6 +153,7 @@ declare global {
         'ha-list-item': HaListItem;
         'ha-textfield': HaTextfield;
         'mwc-button': MwcButton;
+        'mwc-ripple': HTMLElement;
     }
 }
 
