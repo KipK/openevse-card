@@ -56,14 +56,14 @@ export class LimitComponent extends LitElement {
                 color: var(--text-primary-color);
                 border: none;
                 border-radius: 4px;
-                padding: 8px 16px;
+                padding: 8px;
                 font-size: 14px;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 transition: background-color 0.3s;
-                height: 36px;
+                height: 30px;
             }
             .new-limit-btn:hover {
                 background-color: var(--dark-primary-color);
@@ -177,13 +177,13 @@ export class LimitComponent extends LitElement {
                 align-items: center;
                 background-color: var(--primary-color);
                 color: var(--text-primary-color);
-                border-radius: 8px;
+                border-radius: 4px;
                 padding-left: 8px;
                 padding-right: 4px;
                 font-size: 14px;
                 max-width: fit-content;
                 margin: 0 auto;
-                height: 36px;
+                height: 30px;
             }
             .limit-badge ha-icon {
                 flex: 1;

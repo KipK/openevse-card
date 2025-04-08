@@ -53,7 +53,7 @@ export class ProgressBar extends LitElement {
                 top: 0;
                 left: 0;
                 height: 100%;
-                background-color: var(--primary-color, #03a9f4);
+                background-color: var(--state-icon-color, #03a9f4);
                 transition: width 0.5s ease-in-out;
             }
             .value {
@@ -89,7 +89,7 @@ export class ProgressBar extends LitElement {
                         class="progress-fill"
                         style="width: ${percentage}%"
                     ></div>
-                    <div class="value">${this.value}${this.unit}</div>
+                    <div class="value">${this.value} ${this.unit}</div>
                 </div>
             </div>
         `;

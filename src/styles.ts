@@ -4,8 +4,8 @@ const cardStyles = css`
     :host {
         --evse-active-color: var(--success-color);
         --evse-disabled-color: #116a88;
-        --evse-auto-color: #32b3d4;
-        --evse-slider-color: var(--accent-color, #2196f3);
+        --evse-auto-color: var(--info-color);
+        --evse-slider-color: var(--info-color, #2196f3);
         --evse-shadow: var(
             --ha-card-box-shadow,
             0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -27,7 +27,7 @@ const cardStyles = css`
         line-height: 1.2;
     }
     .card-content {
-        padding: 16px;
+        padding: 8px 16px;
         transition: all 0.3s ease-out;
     }
     .evse-states {
@@ -60,7 +60,7 @@ const cardStyles = css`
         padding: 6px;
         padding-bottom: 4px;
         line-height: 1;
-        text-transform: uppercase;
+        text-transform: capitalize;
     }
     .badge-charging {
         background-color: orange;
@@ -188,13 +188,13 @@ const cardStyles = css`
     .entity-row {
         display: flex;
         justify-content: space-between;
-        margin: 8px;
+        margin: 4px;
         color: var(--primary-text-color);
         background-color: var(--evse-secondary-bg-color);
         align-items: center;
         border-radius: 10px;
         align-items: center;
-        padding: 8px 16px;
+        padding: 4px 16px;
     }
     .entity-title {
         display: flex;
@@ -204,12 +204,13 @@ const cardStyles = css`
     .entity-label {
         display: flex;
         justify-content: right;
+        color: var(--secondary-text-color);
     }
     .entity-value {
         text-align: right;
-        color: var(--primary-color);
-        font-size: 1.1rem;
-        font-weight: 500;
+        color: var(--primary-text-color);
+        font-size: 1rem;
+        /* font-weight: 500; */
     }
     .entity-icon {
         padding: 6px;
@@ -245,15 +246,15 @@ const cardStyles = css`
     }
     .grid-item-label {
         font-size: 1rem;
-        color: var(--primary-text-color);
+        color: var(--secondary-text-color);
         margin-bottom: 3px;
-        font-weight: bold;
+        font-weight: 300;
         text-transform: capitalize;
     }
     .grid-item-value {
-        font-size: 1.5rem;
-        font-weight: 500;
-        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: var(--primary-text-color);
     }
     .other-entities-container {
         width: 100%;

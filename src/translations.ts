@@ -84,6 +84,8 @@ const translations = {
         save: 'Save',
         integration_missing_or_outdated:
             'OpenEVSE integration not found or requires version {min_version} & higher.',
+        eco: "Eco",
+        fast: "Fast",
     },
     fr: {
         disabled: 'désactivé',
@@ -170,8 +172,9 @@ const translations = {
         warning: 'Avertissement',
         'edit optional entity': "Modifier l'entité optionnelle",
         save: 'Enregistrer',
-        integration_missing_or_outdated:
-            'Intégration OpenEVSE non trouvée ou nécessite la version {min_version} ou supérieure.',
+        integration_missing_or_outdated: 'Intégration OpenEVSE non trouvée ou nécessite la version {min_version} ou supérieure.',
+        eco: "Éco",
+        fast: "Rapide",
     },
     de: {
         disabled: 'deaktiviert',
@@ -260,6 +263,8 @@ const translations = {
         save: 'Speichern',
         integration_missing_or_outdated:
             'OpenEVSE-Integration nicht gefunden oder erfordert Version {min_version} oder höher.',
+        eco: "Öko",
+        fast: "Schnell",
     },
     es: {
         disabled: 'desactivado',
@@ -348,6 +353,8 @@ const translations = {
         save: 'Guardar',
         integration_missing_or_outdated:
             'Integración OpenEVSE no encontrada o requiere la versión {min_version} o superior.',
+        eco: "Eco",
+        fast: "Rápido",
     },
 };
 

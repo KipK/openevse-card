@@ -517,11 +517,12 @@ class CustomCard extends LitElement {
                                 .iconState1=${'mdi:solar-panel'}
                                 .colorState1=${'var(--evse-active-color)'}
                                 .iconState2=${'mdi:transmission-tower-export'}
-                                .colorState2=${'var(--primary-color)'}
+                                .colorState2=${'var(--info-color)'}
                                 .titleState1=${localize('switch to fast mode', this._lang)}
                                 .titleState2=${localize('switch to eco mode', this._lang)}
                                 .fintSize=${'14px'}
                                 .clickHandler=${this._toggleDivertMode}
+                                .language=${this._lang}
                             ></toggle-button>
                             `:nothing}
                         <status-heading
