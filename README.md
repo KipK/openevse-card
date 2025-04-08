@@ -1,6 +1,6 @@
 # OpenEVSE card for Home Assistant
 
-![image](assets/card-charging.png)
+![image](assets/card.png)
 
 This is a Lovelace custom card for @firstof9 [OpenEVSE integration](https://github.com/firstof9/openevse)
 
