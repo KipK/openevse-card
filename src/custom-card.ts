@@ -506,8 +506,9 @@ class CustomCard extends LitElement {
                             .chargingStatusEntity=${chargingStatusEntity}
                             .showMoreInfoHandler=${this._showMoreInfo}
                         ></status-icons>
-                         ${divertActiveEntity?.state == 'on' && divertModeEntity ? html`
-                        <toggle-button
+                        <div class="status-header-line">
+                            ${divertActiveEntity?.state == 'on' && divertModeEntity ? html`
+                            <toggle-button
                                 .hass=${this.hass}
                                 .label=${divertModeEntity.state == 'eco' ? localize('eco', this._lang) : localize('fast', this._lang)}
                                 .heigth=${24}
@@ -524,12 +525,13 @@ class CustomCard extends LitElement {
                                 .clickHandler=${this._toggleDivertMode}
                                 .language=${this._lang}
                             ></toggle-button>
-                            `:nothing}
-                        <status-heading
-                            .statusEntity=${statusEntity}
-                            .chargingStatusEntity=${chargingStatusEntity}
-                            .language=${this._lang}
-                        ></status-heading>
+                            `: nothing}
+                             <status-heading
+                                .statusEntity=${statusEntity}
+                                .chargingStatusEntity=${chargingStatusEntity}
+                                .language=${this._lang}
+                            ></status-heading>
+                        </div>
                     </div>
                     <info-grid
                         .hass=${this.hass}

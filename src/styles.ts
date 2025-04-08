@@ -40,6 +40,15 @@ const cardStyles = css`
         align-items: center;
 
     }
+    .status-header-line {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        width: 100%;
+        flex-grow: 1;
+        margin-left: 8px;
+        gap: 8px;
+    }
     .status-icons {
         border-radius: 8px;
         display: flex;
