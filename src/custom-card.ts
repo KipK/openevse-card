@@ -610,7 +610,11 @@ class CustomCard extends LitElement {
                                       .range_unit=${String(
                                           vehicleRangeEntity?.attributes
                                               .unit_of_measurement || ''
-                                      )}
+            )}
+                                      .evse_elapsed=${Number(this._localTimeElapsed) || 0}
+                                      .evse_energy=${Number(sessionEnergyEntity?.state) || 0}
+                                      .evse_soc=${Number(vehicleBatteryLevelEntity?.state) || 0}
+                                      .evse_range=${Number(vehicleRangeEntity?.state) || 0}
                                       .language=${this._lang}
                                   ></limit-component>
                               </div>

@@ -17,7 +17,11 @@ export class LimitComponent extends LitElement {
     @property({type: Number}) energy_max_value: number = 100;
     @property({type: Number}) range_max_value: number = 600;
     @property({type: String}) range_unit: string = 'km';
-    @property({type: String}) language?: string = 'en';
+    @property({ type: String }) language?: string = 'en';
+    @property({ type: Number }) evse_elapsed: number = 0;
+    @property({ type: Number }) evse_energy: number = 0;
+    @property({ type: Number }) evse_soc: number = 0;
+    @property({ type: Number }) evse_range: number = 0;
 
     // Internal state properties
     @state() private _showLimitForm: boolean = false;
@@ -279,12 +283,12 @@ export class LimitComponent extends LitElement {
     _formatValue(value: number, type: string): string {
         if (type === 'energy') {
             // Convert Wh to kWh for display (always whole numbers)
-            const kwh = Math.round(value / 1000);
+            const kwh = ((value / 1000) - this.evse_energy).toFixed(2);
             return `${kwh} kWh`;
         } else if (type === 'soc') {
-            return `${value}%`;
+            return `${value - this.evse_soc}%`;
         } else if (type === 'range') {
-            return `${value} ${this.range_unit}`;
+            return `${value - this.evse_range} ${this.range_unit}`;
         }
         return String(value);
     }
@@ -329,9 +333,12 @@ export class LimitComponent extends LitElement {
     }
 
     _formatTimeValue(minutes: number): string {
-        const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
-        const secs = 0;
+        const remaining_minutes = minutes - this.evse_elapsed;
+        const total_seconds = remaining_minutes * 60;
+
+        const hours = Math.floor(total_seconds / 3600);
+        const mins = Math.floor((total_seconds % 3600) / 60);
+        const secs = Math.floor(total_seconds % 60);
 
         return [hours, mins, secs]
             .map((unit) => String(unit).padStart(2, '0'))
