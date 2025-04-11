@@ -1060,10 +1060,11 @@ const rt=t=>(e,i)=>{void 0!==i?i.addInitializer((()=>{customElements.define(t,e)
                     </div>
                 </div>
             </div>
-        `}};jt([ct({attribute:!1})],zt.prototype,"config",void 0),jt([ct({attribute:!1})],zt.prototype,"overrideEntity",void 0),jt([ct({attribute:!1})],zt.prototype,"chargingStatusEntity",void 0),jt([ct({attribute:!1})],zt.prototype,"selectOverrideStateHandler",void 0),zt=jt([rt("override-controls")],zt);var Tt=function(t,e,i,s){for(var n,r=arguments.length,o=r<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s,a=t.length-1;a>=0;a--)(n=t[a])&&(o=(r<3?n(o):r>3?n(e,i,o):n(e,i))||o);return r>3&&o&&Object.defineProperty(e,i,o),o};let Nt=class extends st{constructor(){super(...arguments),this.entities=[]}static get styles(){return ht}_handleEntityClick(t){const e=t.target.closest(".clickable[data-entity-id]"),i=e?.dataset.entityId;this.showMoreInfoHandler&&i&&this.showMoreInfoHandler(i)}render(){return this.hass&&this.entities&&0!==this.entities.length?R`
-            <div @click=${this._handleEntityClick}>
+        `}};jt([ct({attribute:!1})],zt.prototype,"config",void 0),jt([ct({attribute:!1})],zt.prototype,"overrideEntity",void 0),jt([ct({attribute:!1})],zt.prototype,"chargingStatusEntity",void 0),jt([ct({attribute:!1})],zt.prototype,"selectOverrideStateHandler",void 0),zt=jt([rt("override-controls")],zt);var Tt=function(t,e,i,s){for(var n,r=arguments.length,o=r<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s,a=t.length-1;a>=0;a--)(n=t[a])&&(o=(r<3?n(o):r>3?n(e,i,o):n(e,i))||o);return r>3&&o&&Object.defineProperty(e,i,o),o};let Nt=class extends st{constructor(){super(...arguments),this.entities=[]}static get styles(){return ht}render(){return this.hass&&this.entities&&0!==this.entities.length?R`
+            <div>
                 ${this.entities.map((t=>R`
-                        <div class="other-entities-container">
+                        <div class="other-entities-container clickable"
+                        @click=${()=>this.showMoreInfoHandler?.(t.id||"")}>
                             <div class="entity-row">
                                 <div class="entity-title">
                                     ${null!=t.icon?R`

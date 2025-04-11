@@ -23,27 +23,17 @@ export class OptionalEntities extends LitElement {
         return cardStyles;
     }
 
-    private _handleEntityClick(event: MouseEvent) {
-        const target = event.target as HTMLElement;
-        // Find the closest clickable element with the data attribute
-        const clickableElement = target.closest('.clickable[data-entity-id]') as HTMLElement | null;
-        const entityId = clickableElement?.dataset.entityId;
-
-        if (this.showMoreInfoHandler && entityId) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
-
     override render() {
         if (!this.hass || !this.entities || this.entities.length === 0) {
             return html``;
         }
 
         return html`
-            <div @click=${this._handleEntityClick}>
+            <div>
                 ${this.entities.map(
                     (entity) => html`
-                        <div class="other-entities-container">
+                        <div class="other-entities-container clickable"
+                        @click=${() => this.showMoreInfoHandler?.(entity.id || '')}>
                             <div class="entity-row">
                                 <div class="entity-title">
                                     ${entity.icon != null
