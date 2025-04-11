@@ -1,4 +1,4 @@
-import {LitElement, html} from 'lit';
+import {LitElement, html, nothing} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {HomeAssistant, CardConfig, EntityState} from '../types';
 import {localize} from '../utils/translations';
@@ -15,56 +15,16 @@ export class InfoGrid extends LitElement {
     @property({type: Number}) localTimeElapsed: number = 0;
     @property({type: String}) language?: string;
     @property({attribute: false}) showMoreInfoHandler?: (
-        entityId: string
+        entityId: string | undefined
     ) => void;
     @property({attribute: false}) convertTimeHandler?: (time: number) => string;
 
     constructor() {
         super();
-        // Bind the new click handlers
-        this._handlePowerClick = this._handlePowerClick.bind(this);
-        this._handleCurrentClick = this._handleCurrentClick.bind(this);
-        this._handleSessionClick = this._handleSessionClick.bind(this);
     }
 
     static override get styles() {
         return cardStyles;
-    }
-
-    // Specific handler for Power item
-    private _handlePowerClick() {
-        const entityId = this.config?.power_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
-
-    // Specific handler for Current item
-    private _handleCurrentClick() {
-        const entityId = this.config?.current_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
-
-    // Specific handler for Session item
-    private _handleSessionClick() {
-        const entityId = this.config?.session_energy_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
     }
 
     override render() {
@@ -76,14 +36,13 @@ export class InfoGrid extends LitElement {
             <div class="grid-container">
                 ${this.powerEntity
                     ? html`
-                          <div class="grid-item">
+                          <div class="grid-item clickable"
+                           @click=${() => this.showMoreInfoHandler?.(this.config?.power_entity) || nothing}
+                           >
                               <div class="grid-item-label">
                                   ${localize('power', this.language)}
                               </div>
-                              <div
-                                  class="grid-item-value clickable"
-                                  @click=${this._handlePowerClick}
-                              >
+                              <div class="grid-item-value">
                                   ${this.hass.formatEntityState(
                                       this.powerEntity
                                   )}
@@ -98,14 +57,13 @@ export class InfoGrid extends LitElement {
                       </div>`}
                 ${this.currentEntity
                     ? html`
-                          <div class="grid-item">
+                          <div class="grid-item clickable"
+                          @click=${() => this.showMoreInfoHandler?.(this.config?.current_entity) || nothing}
+                          >
                               <div class="grid-item-label">
                                   ${localize('current', this.language)}
                               </div>
-                              <div
-                                  class="grid-item-value clickable"
-                                  @click=${this._handleCurrentClick}
-                              >
+                              <div class="grid-item-value clickable">
                                   ${this.hass.formatEntityState(
                                       this.currentEntity
                                   )}
@@ -121,14 +79,14 @@ export class InfoGrid extends LitElement {
                 ${
                     this.sessionEnergyEntity
                         ? html`
-                              <div class="grid-item">
+                              <div class="grid-item clickable"
+                               @click=${() => this.showMoreInfoHandler?.(this.config?.session_energy_entity) || nothing}
+                              >
                                   <div class="grid-item-label">
                                       ${localize('session', this.language)}
                                   </div>
                                   <div
-                                      class="grid-item-value clickable"
-                                      @click=${this._handleSessionClick}
-                                  >
+                                      class="grid-item-value clickable">
                                       ${this.hass.formatEntityState(
                                           this.sessionEnergyEntity
                                       )}

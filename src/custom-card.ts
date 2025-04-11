@@ -361,7 +361,8 @@ class CustomCard extends LitElement {
         });
     };
 
-    _showMoreInfo = (entity_id: string): void => {
+    _showMoreInfo = (entity_id: string | undefined): void => {
+        if (!entity_id) return;
         const event = new Event('hass-more-info', {
             bubbles: true,
             composed: true,

@@ -18,30 +18,6 @@ export class VehicleInfo extends LitElement {
         return cardStyles;
     }
 
-    // Specific handler for Session item
-    private _handleSocClick() {
-        const entityId = this.config?.vehicle_battery_level_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
-
-    // Specific handler for Session item
-    private _handleRangeClick() {
-        const entityId = this.config?.vehicle_range_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
-
     override render() {
         if (!this.config) {
             return html``;
@@ -64,8 +40,8 @@ export class VehicleInfo extends LitElement {
                               )}
                               unit="%"
                               icon="mdi:battery-medium"
-                              @click=${this._handleSocClick}
-                          ></progress-bar>
+                              @click=${() => this.showMoreInfoHandler?.(this.config?.vehicle_battery_level_entity || '') || nothing }
+                          ></progress-bar> 
                       `
                     : ''}
                 ${showRange
@@ -76,7 +52,7 @@ export class VehicleInfo extends LitElement {
                               unit=${this.vehicleRangeEntity?.attributes
                                   .unit_of_measurement || nothing}
                               icon="mdi:map-marker-distance"
-                              @click=${this._handleRangeClick}
+                              @click=${() => this.showMoreInfoHandler?.(this.config?.vehicle_range_entity || '') || nothing }
                           ></progress-bar>
                       `
                     : ''}

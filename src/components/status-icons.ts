@@ -1,4 +1,4 @@
-import {LitElement, html} from 'lit';
+import {LitElement, html, nothing} from 'lit';
 import {property, customElement} from 'lit/decorators.js';
 import {HomeAssistant, CardConfig, EntityState} from '../types';
 import {cardStyles} from '../styles';
@@ -17,10 +17,6 @@ export class StatusIcons extends LitElement {
 
     constructor() {
         super();
-        // Bind the new click handlers
-        this._handleWifiClick = this._handleWifiClick.bind(this);
-        this._handleStatusClick = this._handleStatusClick.bind(this);
-        this._handleVehicleClick = this._handleVehicleClick.bind(this);
     }
 
     static override get styles() {
@@ -34,42 +30,7 @@ export class StatusIcons extends LitElement {
         if (-75 > dbi && dbi >= -80) return 'mdi:wifi-strength-1';
         return 'mdi:wifi-strength-alert-outline';
     }
-
-    // Specific handler for WiFi icon
-    private _handleWifiClick() {
-        const entityId = this.config?.wifi_signal_strength_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
-
-    // Specific handler for Status icon
-    private _handleStatusClick() {
-        const entityId = this.config?.status_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
-
-    // Specific handler for Vehicle icon
-    private _handleVehicleClick() {
-        const entityId = this.config?.vehicle_connected_entity;
-        if (
-            this.showMoreInfoHandler &&
-            typeof entityId === 'string' &&
-            entityId
-        ) {
-            this.showMoreInfoHandler(entityId);
-        }
-    }
+    
 
     override render() {
         if (!this.hass || !this.config) {
@@ -88,7 +49,7 @@ export class StatusIcons extends LitElement {
                           <div
                               class="status-icon clickable"
                               @click=${() =>
-                                  this._handleWifiClick}
+                this.showMoreInfoHandler?.(this.config?.wifi_signal_strength_entity || '') || nothing}
                           >
                               <ha-icon
                                   icon="${this._wifiIcon(wifiDbi)}"
@@ -100,7 +61,7 @@ export class StatusIcons extends LitElement {
 
                 <div
                     class="status-icon clickable"
-                    @click=${this._handleStatusClick}
+                    @click=${() => this.showMoreInfoHandler?.(this.config?.status_entity || '') || nothing}
                 >
                     <ha-icon
                         icon="${statusState === 'active'
@@ -118,7 +79,7 @@ export class StatusIcons extends LitElement {
 
                 <div
                     class="status-icon clickable"
-                    @click=${this._handleVehicleClick}
+                    @click=${() => this.showMoreInfoHandler?.(this.config?.vehicle_connected_entity || '') || nothing}
                 >
                     <ha-icon
                         icon="${vehicleConnectedState === 'off'
