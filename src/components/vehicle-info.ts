@@ -9,10 +9,37 @@ export class VehicleInfo extends LitElement {
     @property({attribute: false}) config?: CardConfig;
     @property({attribute: false})
     vehicleBatteryLevelEntity?: EntityState | null;
-    @property({attribute: false}) vehicleRangeEntity?: EntityState | null;
+    @property({ attribute: false }) vehicleRangeEntity?: EntityState | null;
+    @property({ attribute: false }) showMoreInfoHandler?: (
+        entityId: string
+    ) => void;
 
     static override get styles() {
         return cardStyles;
+    }
+
+    // Specific handler for Session item
+    private _handleSocClick() {
+        const entityId = this.config?.vehicle_battery_level_entity;
+        if (
+            this.showMoreInfoHandler &&
+            typeof entityId === 'string' &&
+            entityId
+        ) {
+            this.showMoreInfoHandler(entityId);
+        }
+    }
+
+    // Specific handler for Session item
+    private _handleRangeClick() {
+        const entityId = this.config?.vehicle_range_entity;
+        if (
+            this.showMoreInfoHandler &&
+            typeof entityId === 'string' &&
+            entityId
+        ) {
+            this.showMoreInfoHandler(entityId);
+        }
     }
 
     override render() {
@@ -37,6 +64,7 @@ export class VehicleInfo extends LitElement {
                               )}
                               unit="%"
                               icon="mdi:battery-medium"
+                              @click=${this._handleSocClick}
                           ></progress-bar>
                       `
                     : ''}
@@ -48,6 +76,7 @@ export class VehicleInfo extends LitElement {
                               unit=${this.vehicleRangeEntity?.attributes
                                   .unit_of_measurement || nothing}
                               icon="mdi:map-marker-distance"
+                              @click=${this._handleRangeClick}
                           ></progress-bar>
                       `
                     : ''}

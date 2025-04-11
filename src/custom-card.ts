@@ -549,6 +549,7 @@ class CustomCard extends LitElement {
                         .config=${this.config}
                         .vehicleBatteryLevelEntity=${vehicleBatteryLevelEntity}
                         .vehicleRangeEntity=${vehicleRangeEntity}
+                        .showMoreInfoHandler=${this._showMoreInfo}
                     ></vehicle-info>
                     <div class="override-container">
                         <div class="override-center">

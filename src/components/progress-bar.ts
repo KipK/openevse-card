@@ -68,6 +68,10 @@ export class ProgressBar extends LitElement {
                 color: var(--primary-text-color);
                 font-weight: normal;
             }
+            .clickable {
+                cursor: pointer;
+                text-decoration: none;
+            }
         `;
     }
 
@@ -76,7 +80,7 @@ export class ProgressBar extends LitElement {
             this.max_value > 0 ? (100 * this.value) / this.max_value : 0;
 
         return html`
-            <div class="container">
+            <div class="container clickable">
                 <div class="label">
                     ${this.icon
                         ? html`<ha-icon class="icon" icon=${this.icon}>
