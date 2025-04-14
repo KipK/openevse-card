@@ -321,16 +321,13 @@ export class LimitComponent extends LitElement {
     }
     _formatRemainingValue(value: number, type: string): string {
         if (type === 'energy') {
-            let kwh = ((value / 1000) - this.evse_energy);
-            kwh>=0? kwh = kwh : kwh = 0;
+            const kwh = Math.max(0,(value / 1000) - this.evse_energy);
             return `${kwh.toFixed(2) } kWh`;
         } else if (type === 'soc') {
-            let soc = (value - this.evse_soc);
-            soc>=0? soc = soc : soc = 0;
+            const soc = Math.max(0, (value - this.evse_soc));
             return `${soc} %`;
         } else if (type === 'range') {
-            let range = (value - this.evse_range);
-            range>=0? range = range : range = 0;
+            const range = Math.max(0, (value - this.evse_range));
             return `${range} ${this.range_unit}`;
         }
         return String(value);
@@ -406,15 +403,6 @@ export class LimitComponent extends LitElement {
                                       : 'mdi:lightning-bolt'}"
                           ></ha-icon>
                           <span class="limit-type">
-                              <!-- ${this.limit.type === 'time'
-                                  ? localize('time', this.language) + ': '
-                                  : this.limit.type === 'energy'
-                                    ? localize('energy', this.language) + ': '
-                                    : this.limit.type === 'range'
-                                      ? localize('range', this.language) + ': '
-                                      : this.limit.type === 'soc'
-                                        ? localize('battery', this.language) + ': '
-                            : nothing} -->
                                 ${localize('limit', this.language)}
                           </span>
                           <span class="limit-value">
