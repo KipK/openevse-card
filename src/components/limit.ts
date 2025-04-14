@@ -380,9 +380,9 @@ export class LimitComponent extends LitElement {
 
         const hours = Math.floor(total_seconds / 3600);
         const mins = Math.floor((total_seconds % 3600) / 60);
-        const secs = Math.floor(total_seconds % 60);
+        // const secs = Math.floor(total_seconds % 60);
 
-        return [hours, mins, secs]
+        return [hours, mins]
             .map((unit) => String(unit).padStart(2, '0'))
             .join(':');
     }
