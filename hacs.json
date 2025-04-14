@@ -2,5 +2,5 @@
     "name": "OpenEVSE custom card",
     "filename": "openevse-card.js",
     "render_readme": true,
-    "homeassistant": "2024.8"
+    "homeassistant": "2024.0"
 }

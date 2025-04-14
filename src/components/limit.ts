@@ -43,6 +43,7 @@ export class LimitComponent extends LitElement {
             .limit-container {
                 width: 100%;
                 display: flex;
+                flex-wrap: wrap;
                 justify-content: center;
                 margin: 10px 0;
             }
@@ -188,6 +189,7 @@ export class LimitComponent extends LitElement {
                 max-width: fit-content;
                 margin: 0 auto;
                 height: 30px;
+                
             }
             .limit-badge ha-icon {
                 flex: 1;
@@ -207,12 +209,36 @@ export class LimitComponent extends LitElement {
             .close-icon:hover {
                 background-color: var(--dark-primary-color);
             }
+            .limit-badge .lock-icon {
+                flex: 1;
+                align-items: center;
+                margin-left: 8px;
+                margin-right: 4px;
+                --mdc-icon-size: 20px;
+            }
+
+            .limit-type {
+                font-weight: 500;
+                margin-left: 8px;
+                white-space: nowrap;
+                font-size: 1.1rem;
+            }
 
             .limit-value {
                 font-weight: 500;
                 margin-left: 8px;
                 white-space: nowrap;
                 font-size: 1.1rem;
+            }
+            .limit-remaining {
+                width: 100%;
+                font-weight: 400;
+                margin-left: 8px;
+                white-space: nowrap;
+                font-size: 0.9rem;
+                color: var(--secondary-text-color);
+                margin-top: 4px;
+                text-align: center;
             }
         `;
     }
@@ -283,12 +309,28 @@ export class LimitComponent extends LitElement {
     _formatValue(value: number, type: string): string {
         if (type === 'energy') {
             // Convert Wh to kWh for display (always whole numbers)
-            const kwh = ((value / 1000) - this.evse_energy).toFixed(2);
+            const kwh = (value / 1000);
             return `${kwh} kWh`;
         } else if (type === 'soc') {
-            return `${value - this.evse_soc}%`;
+            return `${value} %`;
         } else if (type === 'range') {
-            return `${value - this.evse_range} ${this.range_unit}`;
+            return `${value} ${this.range_unit}`;
+        }
+        return String(value);
+    }
+    _formatRemainingValue(value: number, type: string): string {
+        if (type === 'energy') {
+            let kwh = ((value / 1000) - this.evse_energy);
+            kwh>=0? kwh = kwh : kwh = 0;
+            return `${kwh.toFixed(2) } kWh`;
+        } else if (type === 'soc') {
+            let soc = (value - this.evse_soc);
+            soc>=0? soc = soc : soc = 0;
+            return `${soc} %`;
+        } else if (type === 'range') {
+            let range = (value - this.evse_range);
+            range>=0? range = range : range = 0;
+            return `${range} ${this.range_unit}`;
         }
         return String(value);
     }
@@ -333,8 +375,7 @@ export class LimitComponent extends LitElement {
     }
 
     _formatTimeValue(minutes: number): string {
-        const remaining_minutes = minutes - this.evse_elapsed;
-        const total_seconds = remaining_minutes * 60;
+        const total_seconds = minutes * 60;
 
         const hours = Math.floor(total_seconds / 3600);
         const mins = Math.floor((total_seconds % 3600) / 60);
@@ -346,6 +387,8 @@ export class LimitComponent extends LitElement {
     }
 
     override render() {
+        const isSystemLimit = this.limit?.auto_release ? false : true || false;
+        
         return html`
             <div class="limit-container">
                 ${this.limit && this.limit.type
@@ -362,7 +405,7 @@ export class LimitComponent extends LitElement {
                                       : 'mdi:lightning-bolt'}"
                           ></ha-icon>
                           <span class="limit-type">
-                              ${this.limit.type === 'time'
+                              <!-- ${this.limit.type === 'time'
                                   ? localize('time', this.language) + ': '
                                   : this.limit.type === 'energy'
                                     ? localize('energy', this.language) + ': '
@@ -370,7 +413,8 @@ export class LimitComponent extends LitElement {
                                       ? localize('range', this.language) + ': '
                                       : this.limit.type === 'soc'
                                         ? localize('battery', this.language) + ': '
-                                        : nothing}
+                            : nothing} -->
+                                ${localize('limit', this.language)}
                           </span>
                           <span class="limit-value">
                               ${this.limit.type === 'time'
@@ -380,11 +424,27 @@ export class LimitComponent extends LitElement {
                                         this.limit.type
                                     )}
                           </span>
-                          <ha-icon
+                          ${!isSystemLimit ? html`
+                            <ha-icon
                               class="close-icon"
                               icon="mdi:close"
                               @click=${this._removeLimit}
-                          ></ha-icon>
+                            ></ha-icon>
+                          `: html`
+                            <ha-icon
+                              class="lock-icon"
+                              icon="mdi:lock"
+                            ></ha-icon>
+                          `}
+                      </div>
+                      <div class="limit-remaining">
+                        Remaining:
+                        ${this.limit.type === 'time'
+                        ? this._formatTimeValue(this.limit.value - this.evse_elapsed)
+                        : this._formatRemainingValue(
+                            this.limit.value,
+                            this.limit.type
+                        )}
                       </div>
                   `
                 : // Display "New Limit" button
@@ -494,7 +554,7 @@ export class LimitComponent extends LitElement {
                                     ? Math.round(this._value / 1000)
                                     : this._value}
                                 height="10"
-                                .color=${'var(--text-primary-color)'}
+                                .color=${'--text-primary-color'}
                                 .unit=${this._selectedLimitType === 'range'
                                     ? this.range_unit
                                     : this._selectedLimitType === 'energy'

@@ -1,5 +1,6 @@
 import {LitElement, html, css, PropertyValues} from 'lit';
-import {customElement, property, state, eventOptions} from 'lit/decorators.js';
+import { customElement, property, state, eventOptions } from 'lit/decorators.js';
+import 
 
 @customElement('custom-slider')
 export class CustomSlider extends LitElement {
@@ -9,7 +10,7 @@ export class CustomSlider extends LitElement {
     @property({type: Number}) value = 0;
     @property({type: Boolean, reflect: true}) disabled = false;
     @property({type: Number}) height = 22;
-    @property({type: String}) color = 'var(--primary-color, #03a9f4)';
+    @property({type: String}) color = 'black';
     @property({type: Boolean, attribute: 'display-thumb'}) displayThumb = true;
     @property({type: String}) unit = '';
 
@@ -250,7 +251,7 @@ export class CustomSlider extends LitElement {
                     ? html`
                           <div
                               class="slider-badge"
-                              style="color: ${this.color}"
+                              style="color: var(${this.color})"
                           >
                               ${this._formatValue(this._sliderValue)}
                               ${this.unit}
@@ -263,7 +264,7 @@ export class CustomSlider extends LitElement {
                     @touchstart=${this._handleSliderStart}
                     style="
           --slider-height: ${this.height}px;
-          --slider-color: ${this.color};
+          --slider-color: var(${this.color});
           --slider-percentage: ${this._percentage}%;
         "
                 >
