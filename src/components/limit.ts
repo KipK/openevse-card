@@ -39,6 +39,7 @@ export class LimitComponent extends LitElement {
             :host {
                 display: block;
                 width: 100%;
+                --limit-slider-color: var(--primary-text-color);
             }
             .limit-container {
                 width: 100%;
@@ -438,13 +439,13 @@ export class LimitComponent extends LitElement {
                           `}
                       </div>
                       <div class="limit-remaining">
-                        Remaining:
                         ${this.limit.type === 'time'
                         ? this._formatTimeValue(this.limit.value - this.evse_elapsed)
                         : this._formatRemainingValue(
                             this.limit.value,
                             this.limit.type
-                        )}
+                            )}
+                        ${localize('left', this.language)}
                       </div>
                   `
                 : // Display "New Limit" button
@@ -554,7 +555,7 @@ export class LimitComponent extends LitElement {
                                     ? Math.round(this._value / 1000)
                                     : this._value}
                                 height="10"
-                                .color=${'--text-primary-color'}
+                                .color=${'--limit-slider-color'}
                                 .unit=${this._selectedLimitType === 'range'
                                     ? this.range_unit
                                     : this._selectedLimitType === 'energy'

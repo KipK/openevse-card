@@ -1,6 +1,6 @@
 import {LitElement, html, css, PropertyValues} from 'lit';
-import { customElement, property, state, eventOptions } from 'lit/decorators.js';
-import 
+import {customElement, property, state, eventOptions} from 'lit/decorators.js';
+
 
 @customElement('custom-slider')
 export class CustomSlider extends LitElement {
