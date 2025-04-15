@@ -19,13 +19,19 @@ export class StatusHeading extends LitElement {
         const statusState = this.statusEntity?.state;
 
         const badgeClass =
-            chargingState === 'error'
-                ? 'badge-error'
-                : statusState === 'disabled'
-                ? 'badge-disabled'
-                : chargingState === 'charging'
-                ? 'badge-charging'
-                : 'badge-active';
+            chargingState === 'vent_required'
+            || chargingState === 'diode check failed'
+            || chargingState === 'gfci fault'
+            || chargingState === 'no ground'
+            || chargingState === 'stuck relay'
+            || chargingState === 'gfci self-test failure'
+            || chargingState === 'over temperature'
+            ? 'badge-error'
+            : statusState === 'disabled'
+            ? 'badge-disabled'
+            : chargingState === 'charging'
+            ? 'badge-charging'
+            : 'badge-active';
 
         return html`
             <div class="status-badge ${badgeClass}">
