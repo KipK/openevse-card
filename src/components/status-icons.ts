@@ -1,5 +1,5 @@
 import {LitElement, html, nothing} from 'lit';
-import {property, customElement} from 'lit/decorators.js';
+import {property, customElement, state} from 'lit/decorators.js';
 import {HomeAssistant, CardConfig, EntityState} from '../types';
 import {cardStyles} from '../styles';
 
@@ -14,6 +14,7 @@ export class StatusIcons extends LitElement {
     @property({attribute: false}) showMoreInfoHandler?: (
         entityId: string
     ) => void;
+    @state() private _isError: boolean = false;
 
     constructor() {
         super();
@@ -41,6 +42,14 @@ export class StatusIcons extends LitElement {
         const statusState = this.statusEntity?.state;
         const vehicleConnectedState = this.vehicleConnectedEntity?.state;
         const chargingState = this.chargingStatusEntity?.state;
+        this._isError = chargingState === 'vent_required'
+            || chargingState === 'diode check failed'
+            || chargingState === 'gfci fault'
+            || chargingState === 'no ground'
+            || chargingState === 'stuck relay'
+            || chargingState === 'gfci self-test failure'
+            || chargingState === 'over temperature'
+            ? true : false;
 
         return html`
             <div class="status-icons">
@@ -64,12 +73,19 @@ export class StatusIcons extends LitElement {
                     @click=${() => this.showMoreInfoHandler?.(this.config?.status_entity || '') || nothing}
                 >
                     <ha-icon
-                        icon="${statusState === 'active'
+                        icon="
+                            ${
+                               this._isError ?
+                            'mdi:alert-circle' :  
+                            statusState === 'active'
                             ? vehicleConnectedState === 'off'
                                 ? 'mdi:timer-sand'
                                 : 'mdi:lightning-bolt'
                             : 'mdi:cancel'}"
-                        class="${statusState === 'active'
+                        class="
+                            ${this._isError
+                            ? 'error' :
+                            statusState === 'active'
                             ? chargingState === 'charging'
                                 ? 'charging'
                                 : 'active bg-active'
