@@ -73,18 +73,15 @@ export class StatusIcons extends LitElement {
                     @click=${() => this.showMoreInfoHandler?.(this.config?.status_entity || '') || nothing}
                 >
                     <ha-icon
-                        icon="
-                            ${
-                               this._isError ?
-                            'mdi:alert-circle' :  
+                        icon="${this._isError ?
+                            'mdi:alert-circle':  
                             statusState === 'active'
                             ? vehicleConnectedState === 'off'
                                 ? 'mdi:timer-sand'
                                 : 'mdi:lightning-bolt'
                             : 'mdi:cancel'}"
-                        class="
-                            ${this._isError
-                            ? 'error' :
+                        class="${this._isError
+                            ? 'erroricon' :
                             statusState === 'active'
                             ? chargingState === 'charging'
                                 ? 'charging'

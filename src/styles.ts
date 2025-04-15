@@ -91,6 +91,9 @@ const cardStyles = css`
         background-color: var(--error-color);
         color: white;
     }
+    .erroricon {
+        color: var(--error-color);
+    }
     .active {
         color: var(--evse-active-color);
     }
