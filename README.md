@@ -14,17 +14,11 @@ This is a Lovelace custom card for @firstof9 [OpenEVSE integration](https://gith
 
 If not done, install [OpenEVSE Ha integration](https://github.com/firstof9/openevse) using HACS or manually as documented.
 
-Then follow the guide below
+Then install the custom card
 
-### HACS (recommended)
+### HACS
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=KipK&repository=openevse-card&category=plugin)
-
-1. Follow the link [here](https://hacs.xyz/docs/faq/custom_repositories/)
-2. Use the custom repo link https://github.com/KipK/openevse-card
-3. Select the category type `lovelace`
-4. Then once it's there (still in HACS) click the INSTALL button
-5. Restart Home Assistant
+Search for Openevse card in HACS and install it.
 
 ### Manual install
 
