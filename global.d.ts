@@ -124,16 +124,6 @@ type HaAlert = HTMLElement & {
     dismissable?: boolean;
 };
 
-type MwcButton = HTMLElement & {
-    raised?: boolean;
-    unelevated?: boolean;
-    outlined?: boolean;
-    dense?: boolean;
-    disabled?: boolean;
-    icon?: string;
-    label?: string;
-    trailingIcon?: boolean;
-};
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -152,8 +142,6 @@ declare global {
         'ha-select': HaSelect;
         'ha-list-item': HaListItem;
         'ha-textfield': HaTextfield;
-        'mwc-button': MwcButton;
-        'mwc-ripple': HTMLElement;
     }
 }
 

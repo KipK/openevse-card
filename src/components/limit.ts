@@ -3,6 +3,7 @@ import {property, state, customElement} from 'lit/decorators.js'; // Import stat
 import {Limit} from '../types';
 import {localize} from '../utils/translations';
 import './custom-slider';
+import '@material/mwc-button';
 
 @customElement('limit-component')
 export class LimitComponent extends LitElement {
