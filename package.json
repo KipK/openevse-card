@@ -28,7 +28,6 @@
     "dependencies": {
         "@kipk/ha-multi-entity-selector": "^0.0.2",
         "@kipk/load-ha-components": "^1.0.3",
-        "@material/mwc-button": "^0.27.0",
         "lit": "^3.2.1",
         "memoize-one": "^6.0.0"
     },
