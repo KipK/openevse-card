@@ -89,7 +89,10 @@ class CustomCard extends LitElement {
         // Check OpenEVSE integration version
         if (this.hass) {
             try {
-                const installedVersion = await getIntegrationVersion(this.hass);
+                let installedVersion = await getIntegrationVersion(this.hass);
+                if (installedVersion == "0.0.0-dev") {
+                    installedVersion = "9.9"; // little hack to fix for dev version
+                }
                 if (installedVersion === '0') {
                     console.warn(
                         'OpenEVSE integration not found or version could not be determined.'
