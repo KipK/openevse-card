@@ -50,13 +50,18 @@ export class LimitComponent extends LitElement {
             }
             ha-dialog {
                 /* Prevent dialog from overlapping app header */
-                --dialog-surface-position: static;
                 --dialog-z-index: 5;
+                --dialog-surface-max-width: 400px;
+                --mdc-dialog-min-width: 300px;
+                --mdc-dialog-max-width: 400px;
             }
              .dialog-content {
-                padding: 16px 16px 8px 16px; 
-                box-sizing: border-box;
-            }
+                 padding: 16px 16px 8px 16px;
+                 box-sizing: border-box;
+                 width: 100%;
+                 max-width: 400px;
+                 margin: 0 auto;
+             }
             .new-limit-btn {
                 background-color: var(--primary-color);
                 color: var(--text-primary-color);
