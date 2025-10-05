@@ -43,7 +43,8 @@ const REQUIRED_HA_COMPONENTS = [
     'ha-dialog',
     'ha-sortable',
     'ha-svg-icon',
-    'ha-alert'
+    'ha-alert',
+    'ha-button'
 ];
 
 class CustomCard extends LitElement {

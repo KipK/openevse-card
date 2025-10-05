@@ -124,6 +124,13 @@ type HaAlert = HTMLElement & {
     dismissable?: boolean;
 };
 
+interface HaButton extends LitElement {
+    size?: 'small' | 'medium';
+    variant?: 'brand' | 'neutral' | 'danger' | 'warning' | 'success';
+    appearance?: 'accent' | 'filled' | 'plain';
+    loading?: boolean;
+    disabled?: boolean;
+}
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -142,6 +149,7 @@ declare global {
         'ha-select': HaSelect;
         'ha-list-item': HaListItem;
         'ha-textfield': HaTextfield;
+        'ha-button': HaButton;
     }
 }
 

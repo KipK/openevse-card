@@ -593,21 +593,22 @@ export class LimitComponent extends LitElement {
                     `
                     : nothing}
                 </div> 
-                <button
+                <ha-button
                     slot="secondaryAction"
+                    size="small"
+                    appearance="plain"
                     @click=${this._closeDialog}
-                    class="btn btn-secondary"
                 >
                         ${localize('cancel', this.language)}
-                </button>
-                <button
+                </ha-button>
+                <ha-button
+                    size="small"
                     slot="primaryAction"
                     @click=${this._addLimit}
                     .disabled=${this._isAddButtonDisabled()}
-                    class="btn btn-primary"
                 >
                     ${localize('add limit', this.language)}
-                </button>
+                </ha-button>
             </ha-dialog>
         `;
     }
