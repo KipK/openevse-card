@@ -34,14 +34,43 @@ export const getIntegrationVersion = async (
 //   1 if v1 > v2
 //  -1 if v1 < v2
 export const compareVersion = (v1: string, v2: string): number => {
-    const parts1 = v1.split('.').map(Number);
-    const parts2 = v2.split('.').map(Number);
+    const parse = (v: string): { core: number[]; beta: number | null } => {
+        // Handle dev/unknown versions as very high to always pass
+        if (v === '0.0.0-dev') {
+            return { core: [Number.MAX_SAFE_INTEGER], beta: null };
+        }
 
-    for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
-        const p1 = parts1[i] || 0;
-        const p2 = parts2[i] || 0;
+        const betaMatch = v.match(/^(\d+(?:\.\d+)*?)-b(\d+)$/i);
+        if (betaMatch) {
+            const core = betaMatch[1].split('.').map(Number);
+            const beta = Number(betaMatch[2]);
+            return { core, beta };
+        }
+
+        // Fallback: pure numeric semantic version
+        const core = v.split('.').map(Number);
+        return { core, beta: null };
+    };
+
+    const a = parse(v1);
+    const b = parse(v2);
+
+    const maxLen = Math.max(a.core.length, b.core.length);
+    for (let i = 0; i < maxLen; i++) {
+        const p1 = a.core[i] ?? 0;
+        const p2 = b.core[i] ?? 0;
         if (p1 > p2) return 1;
         if (p1 < p2) return -1;
     }
+
+    // Core versions equal, handle beta tags:
+    // - Non-beta (stable) is considered newer than any beta of same core.
+    // - Otherwise compare beta numbers.
+    if (a.beta === null && b.beta === null) return 0;
+    if (a.beta === null) return 1;
+    if (b.beta === null) return -1;
+
+    if (a.beta > b.beta) return 1;
+    if (a.beta < b.beta) return -1;
     return 0;
 };
