@@ -1,22 +1,22 @@
-import {LitElement, html, css, nothing} from 'lit';
-import {property, state, customElement} from 'lit/decorators.js'; // Import state decorator
-import {Limit} from '../types';
-import {localize} from '../utils/translations';
+import { LitElement, html, css, nothing } from 'lit';
+import { property, state, customElement } from 'lit/decorators.js'; // Import state decorator
+import { Limit } from '../types';
+import { localize } from '../utils/translations';
 import './custom-slider';
 
 @customElement('limit-component')
 export class LimitComponent extends LitElement {
-    @property({attribute: false}) limit?: Limit | null;
-    @property({attribute: false}) setLimit?: (
+    @property({ attribute: false }) limit?: Limit | null;
+    @property({ attribute: false }) setLimit?: (
         type: string,
         value: number
     ) => void;
-    @property({attribute: false}) delLimit?: () => void;
-    @property({type: Boolean}) feat_soc: boolean = false;
-    @property({type: Boolean}) feat_range: boolean = false;
-    @property({type: Number}) energy_max_value: number = 100;
-    @property({type: Number}) range_max_value: number = 600;
-    @property({type: String}) range_unit: string = 'km';
+    @property({ attribute: false }) delLimit?: () => void;
+    @property({ type: Boolean }) feat_soc: boolean = false;
+    @property({ type: Boolean }) feat_range: boolean = false;
+    @property({ type: Number }) energy_max_value: number = 100;
+    @property({ type: Number }) range_max_value: number = 600;
+    @property({ type: String }) range_unit: string = 'km';
     @property({ type: String }) language?: string = 'en';
     @property({ type: Number }) evse_elapsed: number = 0;
     @property({ type: Number }) evse_energy: number = 0;
@@ -158,6 +158,13 @@ export class LimitComponent extends LitElement {
                 font-weight: 500;
                 margin-bottom: 0px;
             }
+            .dialog-actions {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 8px;
+                width: 100%;
+            }
             .btn {
                 padding: 8px 16px;
                 border: none;
@@ -182,38 +189,6 @@ export class LimitComponent extends LitElement {
             .btn:disabled {
                 opacity: 0.5;
                 cursor: not-allowed;
-            }
-            /* Dialog button styling */
-            ha-dialog::part(secondaryAction) {
-                --mdc-theme-primary: var(--primary-color);
-            }
-            ha-dialog::part(primaryAction) {
-                --mdc-theme-primary: var(--primary-color);
-            }
-            ha-dialog button {
-                background-color: var(--primary-color);
-                color: var(--text-primary-color);
-                border: none;
-                border-radius: 4px;
-                padding: 8px 16px;
-                font-size: 14px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-            }
-            ha-dialog button:hover:not(:disabled) {
-                background-color: var(--dark-primary-color);
-            }
-            ha-dialog button:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-                background-color: var(--disabled-color, #ccc);
-            }
-            ha-dialog button[slot="secondaryAction"] {
-                background-color: var(--secondary-background-color);
-                color: var(--primary-text-color);
-            }
-            ha-dialog button[slot="secondaryAction"]:hover:not(:disabled) {
-                background-color: var(--dark-secondary-background-color);
             }
             .limit-badge {
                 display: flex;
@@ -296,9 +271,25 @@ export class LimitComponent extends LitElement {
         this.requestUpdate();
     }
 
-    _handleTypeChange(e: Event): void {
-        const target = e.target as HTMLSelectElement;
-        this._selectedLimitType = target.value;
+    private _limitTypeOptions() {
+        return [
+            { value: 'time', label: localize('time', this.language) },
+            { value: 'energy', label: localize('energy', this.language) },
+            ...(this.feat_soc
+                ? [{ value: 'soc', label: localize('battery', this.language) }]
+                : []),
+            ...(this.feat_range
+                ? [{ value: 'range', label: localize('range', this.language) }]
+                : []),
+        ];
+    }
+
+    _handleTypeChange(e: CustomEvent<{ value?: string }>): void {
+        const value = e.detail.value;
+        if (!value || value === this._selectedLimitType) {
+            return;
+        }
+        this._selectedLimitType = value;
         this._value = 0;
         this.requestUpdate();
     }
@@ -358,8 +349,8 @@ export class LimitComponent extends LitElement {
     }
     _formatRemainingValue(value: number, type: string): string {
         if (type === 'energy') {
-            const kwh = Math.max(0,(value / 1000) - this.evse_energy);
-            return `${kwh.toFixed(2) } kWh`;
+            const kwh = Math.max(0, (value / 1000) - this.evse_energy);
+            return `${kwh.toFixed(2)} kWh`;
         } else if (type === 'soc') {
             const soc = Math.max(0, (value - this.evse_soc));
             return `${soc} %`;
@@ -423,32 +414,32 @@ export class LimitComponent extends LitElement {
 
     override render() {
         const isSystemLimit = this.limit?.auto_release ? false : true || false;
-        
+
         return html`
             <div class="limit-container">
                 ${this.limit && this.limit.type
                 ? // Display existing limit as a badge
-                  html`
+                html`
                       <div class="limit-badge">
                           <ha-icon
                               icon="${this.limit.type === 'time'
-                                  ? 'mdi:clock'
-                                  : this.limit.type === 'range'
-                                    ? 'mdi:map-marker-distance'
-                                    : this.limit.type === 'soc'
-                                      ? 'mdi:battery-medium'
-                                      : 'mdi:lightning-bolt'}"
+                        ? 'mdi:clock'
+                        : this.limit.type === 'range'
+                            ? 'mdi:map-marker-distance'
+                            : this.limit.type === 'soc'
+                                ? 'mdi:battery-medium'
+                                : 'mdi:lightning-bolt'}"
                           ></ha-icon>
                           <span class="limit-type">
                                 ${localize('limit', this.language)}
                           </span>
                           <span class="limit-value">
                               ${this.limit.type === 'time'
-                                  ? this._formatTimeValue(this.limit.value)
-                                  : this._formatValue(
-                                        this.limit.value,
-                                        this.limit.type
-                                    )}
+                        ? this._formatTimeValue(this.limit.value)
+                        : this._formatValue(
+                            this.limit.value,
+                            this.limit.type
+                        )}
                           </span>
                           ${!isSystemLimit ? html`
                             <ha-icon
@@ -469,12 +460,12 @@ export class LimitComponent extends LitElement {
                         : this._formatRemainingValue(
                             this.limit.value,
                             this.limit.type
-                            )}
+                        )}
                         ${localize('left', this.language)}
                       </div>
                   `
                 : // Display "New Limit" button
-                  html`
+                html`
                       <button class="new-limit-btn" @click=${this._openDialog}>
                           <ha-icon icon="mdi:plus"></ha-icon>
                           ${localize('new limit', this.language)}
@@ -487,6 +478,8 @@ export class LimitComponent extends LitElement {
                 ?open=${this._showLimitForm}
                 @closed=${this._closeDialog}
                 .heading=${localize('add charging limit', this.language)}
+                .headerTitle=${localize('add charging limit', this.language)}
+                width="medium"
             >
                 <div class="dialog-content">
                     <div class="form-row">
@@ -494,31 +487,9 @@ export class LimitComponent extends LitElement {
                             <ha-select
                                 @selected=${this._handleTypeChange}
                                 @closed=${(ev: Event) => ev.stopPropagation()}
-                                fixedMenuPosition
-                                naturalMenuWidth="false"
+                                .options=${this._limitTypeOptions()}
                                 .value=${this._selectedLimitType}
-                            >
-                                <ha-list-item value=${'time'}
-                                    >${localize('time', this.language)}</ha-list-item
-                                >
-                                <ha-list-item value=${'energy'}
-                                    >${localize('energy', this.language)}</ha-list-item
-                                >
-                                ${this.feat_soc
-                                    ? html`
-                                          <ha-list-item value=${'soc'}
-                                              >${localize('battery', this.language)}</ha-list-item
-                                          >
-                                      `
-                                    : nothing}
-                                ${this.feat_range
-                                    ? html`
-                                          <ha-list-item value=${'range'}
-                                              >${localize('range', this.language)}</ha-list-item
-                                          >
-                                      `
-                                    : nothing}
-                            </ha-select>
+                            ></ha-select>
                         </div>
                     </div>
 
@@ -531,8 +502,8 @@ export class LimitComponent extends LitElement {
                                     type="number"
                                     inputmode="numeric"
                                     .value=${this._hours === undefined
-                                        ? ''
-                                        : String(this._hours)}
+                    ? ''
+                    : String(this._hours)}
                                     .label=${localize('hours', this.language)}
                                     name="hours"
                                     @change=${this._handleHoursChange}
@@ -550,8 +521,8 @@ export class LimitComponent extends LitElement {
                                     type="number"
                                     inputmode="numeric"
                                     .value=${this._minutes === undefined
-                                        ? ''
-                                        : String(this._minutes)}
+                    ? ''
+                    : String(this._minutes)}
                                     .label=${localize('minutes', this.language)}
                                     name="minutes"
                                     @change=${this._handleMinutesChange}
@@ -564,52 +535,53 @@ export class LimitComponent extends LitElement {
                         </div>
                     </div>
                     `
-                    : nothing}
+                : nothing}
                     ${this._selectedLimitType !== 'time' ? html`
                     <div class="form-row">
                         <div class="slider-input">
                             <custom-slider
                                 .min=${0}
                                 .max=${this._selectedLimitType === 'range'
-                                    ? this.range_max_value
-                                    : this._selectedLimitType === 'energy'
-                                    ? this.energy_max_value
-                                    : 100}
+                    ? this.range_max_value
+                    : this._selectedLimitType === 'energy'
+                        ? this.energy_max_value
+                        : 100}
                                 .step=${1}
                                 .value=${this._selectedLimitType === 'energy'
-                                    ? Math.round(this._value / 1000)
-                                    : this._value}
+                    ? Math.round(this._value / 1000)
+                    : this._value}
                                 height="10"
                                 .color=${'--limit-slider-color'}
                                 .unit=${this._selectedLimitType === 'range'
-                                    ? this.range_unit
-                                    : this._selectedLimitType === 'energy'
-                                    ? 'kWh'
-                                    : '%'}
+                    ? this.range_unit
+                    : this._selectedLimitType === 'energy'
+                        ? 'kWh'
+                        : '%'}
                                 @value-changed=${this._handleSliderChange}
                             ></custom-slider>
                         </div>
                     </div>
                     `
-                    : nothing}
+                : nothing}
                 </div> 
-                <ha-button
-                    slot="secondaryAction"
-                    size="small"
-                    appearance="plain"
-                    @click=${this._closeDialog}
-                >
-                        ${localize('cancel', this.language)}
-                </ha-button>
+                <div slot="footer" class="dialog-actions">
+                    <ha-button
+                        size="small"
+                        appearance="plain"
+                        @click=${this._closeDialog}
+                    >
+                            ${localize('cancel', this.language)}
+                    </ha-button>
 
-                <ha-button
-                    size="small"
-                    slot="primaryAction"
-                    @click=${this._addLimit}
-                    .disabled=${this._isAddButtonDisabled()}
-                >
-                    ${localize('add limit', this.language)}
-                </ha-button>
+                    <ha-button
+                        size="small"
+                        appearance="accent"
+                        @click=${this._addLimit}
+                        .disabled=${this._isAddButtonDisabled()}
+                    >
+                        ${localize('add limit', this.language)}
+                    </ha-button>
+                </div>
             </ha-dialog>
         `;
     }

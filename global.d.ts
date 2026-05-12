@@ -66,6 +66,8 @@ interface HaEntityPicker extends LitElement {
 interface HaDialog extends LitElement {
     open?: boolean;
     heading?: string;
+    headerTitle?: string;
+    width?: 'small' | 'medium' | 'large' | 'full';
     hideActions?: boolean;
 }
 
@@ -96,6 +98,7 @@ interface HaIconPicker extends LitElement {
 
 interface HaSelect extends LitElement {
     value?: string;
+    options?: Array<string | {value: string; label?: string}>;
     fixedMenuPosition?: boolean;
     naturalMenuWidth?: boolean;
 }
