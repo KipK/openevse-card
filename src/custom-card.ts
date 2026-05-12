@@ -28,14 +28,14 @@ import './components/info-grid';
 import './components/vehicle-info';
 import './components/override-controls';
 import './components/optional-entities';
-import type { RenderedOptionalEntity } from './components/optional-entities';
+import type { RenderedOptionalEntity } from './components/optional-entities.ts';
 import './components/toggle-button';
 const REQUIRED_HA_COMPONENTS = [
     'ha-form',
     'ha-icon',
     'ha-icon-button',
     'ha-selector',
-    'ha-textfield',
+    'ha-input',
     'ha-icon-picker',
     'ha-icon-button',
     'ha-entity-picker',

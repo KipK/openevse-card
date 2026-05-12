@@ -526,7 +526,7 @@ export class LimitComponent extends LitElement {
                     <div class="form-row">
                         <div class="time-inputs">
                             <div class="time-input">
-                                <ha-textfield
+                                <ha-input
                                     id="hours"
                                     type="number"
                                     inputmode="numeric"
@@ -542,10 +542,10 @@ export class LimitComponent extends LitElement {
                                     suffix=":"
                                     class="hasSuffix"
                                 >
-                                </ha-textfield>
+                                </ha-input>
                             </div>
                             <div class="time-input">
-                                <ha-textfield
+                                <ha-input
                                     id="minutes"
                                     type="number"
                                     inputmode="numeric"
@@ -559,7 +559,7 @@ export class LimitComponent extends LitElement {
                                     min="0"
                                     maxlength="2"
                                 >
-                                </ha-textfield>
+                                </ha-input>
                             </div>
                         </div>
                     </div>
@@ -601,6 +601,7 @@ export class LimitComponent extends LitElement {
                 >
                         ${localize('cancel', this.language)}
                 </ha-button>
+
                 <ha-button
                     size="small"
                     slot="primaryAction"

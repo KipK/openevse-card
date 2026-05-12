@@ -104,8 +104,8 @@ interface HaListItem extends LitElement {
     value?: string;
 }
 
-// Using type intersection for HaTextfield to avoid conflicts with LitElement properties
-type HaTextfield = LitElement & {
+// Using type intersection for HaInput to avoid conflicts with LitElement properties
+type HaInput = LitElement & {
     type?: string;
     inputmode?: string;
     value?: string;
@@ -148,7 +148,7 @@ declare global {
         'ha-icon-picker': HaIconPicker;
         'ha-select': HaSelect;
         'ha-list-item': HaListItem;
-        'ha-textfield': HaTextfield;
+        'ha-input': HaInput;
         'ha-button': HaButton;
     }
 }
