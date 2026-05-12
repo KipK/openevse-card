@@ -1,6 +1,5 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import lit from "eslint-plugin-lit";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import path from "node:path";
@@ -33,7 +32,6 @@ export default defineConfig([globalIgnores([
 
     plugins: {
         "@typescript-eslint": typescriptEslint,
-        lit,
     },
 
     languageOptions: {
@@ -58,8 +56,6 @@ export default defineConfig([globalIgnores([
         "@typescript-eslint/no-unused-vars": ["warn", {
             argsIgnorePattern: "^_",
         }],
-
-        "react/no-unknown-property": "off",
     },
 }, {
     files: ["**/rollup.config.js"],
@@ -75,8 +71,8 @@ export default defineConfig([globalIgnores([
     rules: {
         "@typescript-eslint/no-explicit-any": "off",
     },
-    {
-		// Note: there should be no other properties in this object
-		ignores: ["node_modules/*", "docs/*", "docs-src/*", "**/rollup-config.js", "**/custom-elements.json", "**/web-dev-server.config.js"],
-	},
-}]);
+}, {
+    // Note: there should be no other properties in this object
+    ignores: ["node_modules/*", "docs/*", "docs-src/*", "**/rollup-config.js", "**/custom-elements.json", "**/web-dev-server.config.js"],
+    }
+]);

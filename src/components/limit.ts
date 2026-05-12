@@ -413,7 +413,7 @@ export class LimitComponent extends LitElement {
     }
 
     override render() {
-        const isSystemLimit = this.limit?.auto_release ? false : true || false;
+        const isSystemLimit = !this.limit?.auto_release;
 
         return html`
             <div class="limit-container">
